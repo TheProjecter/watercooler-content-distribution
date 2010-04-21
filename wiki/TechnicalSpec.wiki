@@ -1,0 +1,18 @@
+#summary Specification of technical requirements for watercooler
+#labels Phase-Design
+
+Please update this page accordingly to facilitate later development to avoid confusion or incompatibility. 
+
+( ... ) means options we have
+
+Hardware Specs:
+ * Operating System: (Windows XP X86, Windows Server 2008 X86, Ubuntu9.1 X86, etc) (i do not know if MSDNAA allows us to install these Windows in those VM legally)
+ * Database Version: MYSQL, 5.1.45 X86, 32bit
+ * Python: 2.6.4 (please fix this)
+
+Other Specs:
+ * Feeds Supported currently: All version of RSS and Atom
+
+
+Notes:
+ * MSDNAA is basically free legal Microsoft software (like Windows) given to Engineering student, accessible from courseweb "Software Download"
