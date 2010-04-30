@@ -1,0 +1,64 @@
+Feed Retriever TASKS:
+
+1 day has 2 units of “time”
+List of task (must)
+1: Able to handle RSS feeds (2 units)
+2: Able to handle ATOM feeds (4 units)
+3: Parse out individual fields (4 units)
+4: communicate with the database (2 units)
+5: Process the fields (20 units)
+6: Wrap up information into stories (2 units)
+
+list of task (should)
+7: Categorize the entries of feeds if supported (8 units)
+8: parallelize the loop to retrieve different feeds so that they can be done together (8 units)
+
+list of task (may)
+9: allow plug-in of content processor so that the retriever can process a specific feed URL that is so special that cannot be done using universal algorithm (10 units)
+
+
+Sequence of steps that Feed Retriever would do
+Steps 1-7 will be wrapped as a function call
+Step 8 is a separate function call, requiring previous one to be called first
+1: Obtain latest time stamp from database (so as to know which feeds we retrieve later is new)
+2: Obtain a list of feeds URL that need to be retrieved from database
+3: Put the URLs into a Python list
+4: for each URL in the list:
+1.	Using Universal Feed Parser (UFP) to download and parse the feed
+2.	calculate how many entries there are in the feed
+3.	for each entry of the feed
+1.	Get the fields out of the UFP
+2.	Process the “content” by removing HTML codes
+3.	Further process the “content” by removing extra whitespaces or punctuations
+4.	calculate the time stamp (similar to UNIX time format)
+5.	Put the required fields together into a list. This is a story as defined.
+6.	Put this list into a global List List
+5: Now we have a List List (stories) (but excess)
+6: Process the List List:
+1.	Comparing the time stamp of each story with “newest” time stamp obtained
+2.	remove all old story
+7: Update the database with the processed List List, by unwrapping the List List and update the database field by field
+8: Give out the processed List List (stories)
+
+
+Database team please help the following:
+Definition: LAST_UPDATED SHOULD BE IN UNIX MODE, TO UNIFY ALL INTERPRETION
+STORY: [feed name, title name, content, category, entry URL, timestamp]
+This is containing extra information for email/SMS, but is essential for user scanner to do useful things without talking to database frequently. I believe given feed name, user scanner can query user name and hence user information easily.
+
+Here is what we need: Please provide codes to do below things
+1.	Given: nothing
+Output: Please talk to the database and give out latest timestamp
+Hint: make a DEFAULT (TITLE), URL localhost, feed which store this special timestamp and hence retrieve it, or use traditional query to do it if not.
+2.	Given: nothing
+Output: Please give out all SOURCE_URL as a list, found in FEEDS SOURCES
+3.	Given: latest timestamp
+Output: Please update the database with this timestamp if using DEFAULT tactics. Otherwise, this is not needed
+4.	Given: a story (a list of elements) such as:
+[feed name, title name, content, category, entry URL, timestamp]
+Please update/create the database accordingly:
+title name  TITLE in FEED ENTRIES
+content  CONTENT in FEED ENTRIES
+entry URL  URL in FEED ENTRIES
+timestamp  LAST_UPDATED in FEED ENTRIES
+depending on DB implementation, you may need to update LAST_UPDATED of FEEDS SOURCE accordingly
