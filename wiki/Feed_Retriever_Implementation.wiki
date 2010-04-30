@@ -1,4 +1,4 @@
-=Feed Retriever TASKS:=
+ =Feed Retriever TASKS:=
 
 1 day has 2 units of “time”
 List of task (must)
@@ -47,18 +47,19 @@ STORY: [feed name, title name, content, category, entry URL, timestamp]
 This is containing extra information for email/SMS, but is essential for user scanner to do useful things without talking to database frequently. I believe given feed name, user scanner can query user name and hence user information easily.
 
 Here is what we need: Please provide codes to do below things
-  #1.	Given: nothing
-Output: Please talk to the database and give out latest timestamp
-Hint: make a DEFAULT (TITLE), URL localhost, feed which store this special timestamp and hence retrieve it, or use traditional query to do it if not.
-  #2.	Given: nothing
-Output: Please give out all SOURCE_URL as a list, found in FEEDS SOURCES
-  #3.	Given: latest timestamp
-Output: Please update the database with this timestamp if using DEFAULT tactics. Otherwise, this is not needed
-  #4.	Given: a story (a list of elements) such as:
-[feed name, title name, content, category, entry URL, timestamp]
-Please update/create the database accordingly:
-title name  -> TITLE in FEED ENTRIES
-content -> CONTENT in FEED ENTRIES
-entry URL -> URL in FEED ENTRIES
-timestamp -> LAST_UPDATED in FEED ENTRIES
-depending on DB implementation, you may need to update LAST_UPDATED of FEEDS SOURCE accordingly
+  *1.	Given: nothing
+      Output: Please talk to the database and give out latest timestamp
+      Hint: make a DEFAULT (TITLE), URL localhost, feed which store this special timestamp and hence retrieve it, or use traditional query to do it if not.
+  *2.	Given: nothing
+      Output: Please give out all SOURCE_URL as a list, found in FEEDS SOURCES
+  *3.	Given: latest timestamp
+      Output: Please update the database with this timestamp if using DEFAULT tactics. Otherwise, this is not needed
+  *4.	Given: a story (a list of elements) such as:
+        [feed name, title name, content, category, entry URL, timestamp]
+
+    Please update/create the database accordingly:
+  * title name  -> TITLE in FEED ENTRIES
+  * content -> CONTENT in FEED ENTRIES
+  * entry URL -> URL in FEED ENTRIES
+  * timestamp -> LAST_UPDATED in FEED ENTRIES
+  * depending on DB implementation, you may need to update LAST_UPDATED of FEEDS SOURCE accordingly
