@@ -2,12 +2,12 @@
 
 1 day has 2 units of “time”
 List of task (must)
-#1: Able to handle RSS feeds (2 units)
-#2: Able to handle ATOM feeds (4 units)
-#3: Parse out individual fields (4 units)
-#4: communicate with the database (2 units)
-#5: Process the fields (20 units)
-#6: Wrap up information into stories (2 units)
+  #1: Able to handle RSS feeds (2 units)
+  #2: Able to handle ATOM feeds (4 units)
+  #3: Parse out individual fields (4 units)
+  #4: communicate with the database (2 units)
+  #5: Process the fields (20 units)
+  #6: Wrap up information into stories (2 units)
 
 list of task (should)
 #7: Categorize the entries of feeds if supported (8 units)
