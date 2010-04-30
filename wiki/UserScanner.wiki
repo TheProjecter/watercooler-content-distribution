@@ -1,0 +1,16 @@
+User Scanner, Alert Formatter List of Works:
+  #1.	Receiving the list of stories. (so list of list)
+      STORY: {feed name, title name, content, category, entry URL, timestamp}
+  #2.	expand the story, by adding UID to the end:
+      STORY: {feed name, title name, content, category, entry URL, timestamp, UID}
+      Do this by querying the DB for each story
+  #3.	Go through list of stories, generating a list of UID:
+      {UID1, UID2, ….}
+  #4.	for each item in UID list, read the user preference from DB,then go through the list of stories which match the UID, and determine if the feed is qualified. If not, remove the story from the list of story
+  #5.	Now you have a list of story processed, which all should be sent out
+  #6.	Generate a suitable list of list so that you can use it to send to user (above story list contains too much things)
+  #7.	Make sure you trim contents according to MSG length limit, and check user reception preference (SMS? EMAIL?)
+  #8.	Give out the appropriate format to email server module
+
+I UNDERSTAND ABOVE METHOD MAY NOT BE OPTIMAL (going through the list multiple times). You should come up a more efficient algorithm to do things.
+ABOVE IS FOR SHOWING WHAT USER SCANNER SHOULD DO IN MY PERCEPTION.
