@@ -36,8 +36,19 @@ Organized the "myfeed" so that we can keep track which works and
   which does not work
 4.4_TEST:
 Leo modified _ContentCutter to ensure correctness
+5.0:
+RSS:
+	Improve robustness against empty fields
+	introduce logging
+	make use of time function (converge all time into UNIX format)
+	Introduce Stories (list of list) to behave as specified
+
 
 """
+
+
+# handle time stamps
+import time
 
 # a function to remove trash, specifically HTML codes for content
 def _ContentCutter(content):
@@ -63,6 +74,9 @@ def _ContentCutter(content):
 
 # a helper function to display global feed information
 def _DisplayGlobal(myfeed, type):
+	# calculate how many "entries" in the feed
+	n_entries = len(myfeed['entries'])
+	print 'There are' , n_entries , 'entries in the feed'
 
 	# print details of the feeds (global):
 	if myfeed.feed.has_key('title'):
@@ -84,44 +98,78 @@ def _DisplayGlobal(myfeed, type):
 
 	return
 
-
 # a specialized function to parse and process RSS feeds
 #	input: f = local file to write to
+#		   log = local log for error
 #		   myfeed = feedparser parsed object
-def _RSS(f, myfeed):
+#   output: List of stories
+
+def _RSS(f, log, myfeed):
+	# intialize the story list, note, for each entry, it is a list, and append
+	#   the list into "stories"
+	# story is [Feed Title, Entry Title, Entry Content, Entry Category, Entry URL, Entry Timestamp]
+	stories = []
+
 	# calculate how many "entries" in the feed
 	n_entries = len(myfeed['entries'])
-	print 'There are' , n_entries , 'entries in the feed'
 
 	# print details of the feeds (global):
 	_DisplayGlobal(myfeed,'RSS')
 
-	# display first entry info on screen (first part)
-	# print ''
-	# print 'First Entry Information:'
-	# print 'Title:' , myfeed.entries[0].title
+	# get feed title
+	feedtitle = ''
+	if myfeed.feed.has_key('title'):
+		feedtitle = myfeed.feed.title
 
 	# write all entries parsed on local file
 	for count in range(n_entries):
 		f.write('Entry ' + str(count+1) + ' Information:\n')
-		f.write('Title: '+ myfeed.entries[count].title+'\n')
+		f.write('Feed Title: ' + feedtitle + '\n')
+		# get entry title
+		entrytitle = ''
+		if myfeed.entries[count].has_key('title'):
+			entrytitle = myfeed.entries[count].title
+			f.write('Title: '+ entrytitle + '\n')
+		else:
+			f.write('Title: Undefined' + '\n')
+			entrytitle = 'Undefined'
+			log.write('Entry ' + str(count+1) + ' error: Entry title = Undefined\n')
 
 		# process content info (clear out HTML codes)
 		content = myfeed.entries[count].description
 		content = _ContentCutter(content)
+		f.write('Content: ' + content + '\n')
 
-		# display first entry info on screen (second part)
-		if (count == 0):
-			print 'Link: ', myfeed.entries[0].link
-			print 'ID: ', myfeed.entries[0].id
-			print 'Content:' , content
-
-		f.write('Content: ' +content+'\n')
+		# get entry URL
+		entryURL = ''
+		if (myfeed.entries[count].has_key('link') and (len(myfeed.entries[count].link) != 0)):
+			entryURL = myfeed.entries[count].link
+		elif (myfeed.entries[count].has_key('id') and (len(myfeed.entries[count].id) != 0)):
+			entryURL = myfeed.entries[count].id
+		else:
+			entryURL = 'localhost'
+			log.write('Entry ' + str(count+1) + ' error: entryURL = localhost\n')
 
 		# write date of entries
-		last_updated = myfeed.entries[count].date_parsed
-		f.write('Last Updated: '+str(last_updated[0])+'/'+ str(last_updated[1]) +'/'+ str(last_updated[2])+'\n\n')
-	return
+		# convert Universal Feed Parser generated time (tuple) into UNIX time
+
+		UNIX_time = 0
+		if myfeed.entries[count].has_key('date_parsed'):
+			date_parsed = myfeed.entries[count].date_parsed
+			UNIX_time = int(time.mktime(date_parsed))
+			f.write('Time Stamp: ' + str(UNIX_time) + '\n')
+			f.write('Time Stamp GMT DEBUG: ' + str(date_parsed[0]) + '/' + str(date_parsed[1]) + '/' + \
+			str(date_parsed[2]) + ' ' + str(date_parsed[3]) + ':' + str(date_parsed[4]) + '\n\n')
+		else:
+			f.write('Time Stamp: 0\n\n')
+			log.write('Entry ' + str(count+1) + ' error: Time Stamp = 0\n')
+
+		# make a story from above parsed content
+		# story is [Feed Title, Entry Title, Entry Content, Entry Category, Entry URL, Entry Timestamp]
+		story = [feedtitle, entrytitle, content, 'NULL', entryURL, UNIX_time]
+		stories.append(story)
+
+	return stories
 
 
 def _ATOM(f, myfeed):
@@ -232,6 +280,9 @@ def main():
 	myfeed_encoding = myfeed.encoding
 	f = codecs.open('feeds.txt', encoding=myfeed_encoding, mode='w')
 
+	# create a local log for indicating error
+	errlog = open("ERRORLOG.txt", mode ='w')
+
 	# display global feed information that shared across all entries
 	print 'Feed Encoding: ', myfeed_encoding
 	print 'Feed version (type): ', myfeed.version
@@ -239,11 +290,12 @@ def main():
 	# run specified parser corresponding to type of feeds (RSS,atom,others)
 	if (myfeed.version[:3] == "rss"):
 		print 'VERBOSE: RSS feed detected!'
-		_RSS(f, myfeed)
+		stories = _RSS(f, errlog, myfeed)
 	elif (myfeed.version[:4] == "atom"):
 		print 'VERBOSE: ATOM feed detected!'
-		_ATOM(f, myfeed)
+		stories = _ATOM(f, errlog, myfeed)
 	else:
+		stories = []
 		print 'UNKNOWN feed type!'
 
 	f.close()
