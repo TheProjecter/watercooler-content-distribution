@@ -57,18 +57,30 @@ Implement subsequent ContentCutting functions to further process impurities
 			multiple packed \n or \n seperated with (spaces or tabs) (__Cutter1)
 	3: remove all words from end, up to a list of "whitelist" allowable ending
 			if such ending is not detected, this "remover" does nothing (__Cutter1)
-
-5.3: Future
+5.3:
 Testing of above codes works or not
+Fixed bug by removing ':' as LegalEndings
+Fixed bug of __Cutter1 on ending with 'H.264' using regular expression
+Currently __Cutter1 does nothing towards non-ascii texts, and we do not aim to process those
+Fixed bug of possibility of trailing whitespace and newlines (eg space after newline), which would escape __Cutter1 check
+
+Future (Immediate):
+Support Category
+Add function to remove empty content entry, most likely due to advertisements as an entry (graphics)
+remove '&nbsp;' phrases. This seems to be the only HTML leftovers
+
 """
 
 
 # handle time stamps
 import time
 
+# handle regular expression
+import re
+
 # define ending characters
 def __CheckEnding(ending):
-	LegalEndings = [']', '...', '.', '!', '?', '"', '\'', ':']
+	LegalEndings = [']', '...', '.', '!', '?', '"', '\'']
 	Endings = set(LegalEndings)
 	result = ending in Endings
 	return result
@@ -81,9 +93,22 @@ def __Cutter2(content):
 			return __Cutter2(newcontent)
 	return content
 
+# remove trailing space and newlines
+def __Cutter3(content):
+	last = len(content)-1
+	if (last >= 0):
+		if ((content[last] == '\n') or (content[last] == ' ')):
+			return __Cutter3(content[:last])
+		else:
+			return content
+	else:
+		return content
+
 # a function to remove trash words at the end of content (2, 3)
 # lemma: There is no useful information after this syntax: 'legal_ending' [space]* \n [space]* \n
 def __Cutter1(content):
+	# define CHARS_SET
+	CHARS_SET = re.compile(r'[a-zA-Z0-9]')
 	last_legal_pos=0;
 	endpos = 0;
 	# find last legal ending position
@@ -95,13 +120,22 @@ def __Cutter1(content):
 		endpos = 0
 		end = len(content)-1
 		current = last_legal_pos+1
+		newcurr = 0
 		for index in range(current, end):
 			if content[index] != ' ':
-				current = index
+				newcurr = index
 				break
 		# immediate end noticed, that means trailing whitespace only
-		if (current == (last_legal_pos + 1)):
+		if (newcurr == 0):
 			return content[:current]
+
+		current = newcurr
+		# extra code to proceed some special scenario (eg H.264)
+		# effect: stop at the position when it can no longer find chars or digits after '.' eg
+		for index in range (newcurr, end):
+			if  (not (bool(CHARS_SET.search(content[index])))):
+				current = index
+				break
 
 		# check if multiple \n following, only seperated by spaces if there is any
 		#   then we conclude anything afterwards are trash (likely ADs)
@@ -149,8 +183,9 @@ def _ContentCutter(content):
 	mycontent1 = __CutterHTML(content)
 	mycontent2 = __Cutter1(mycontent1)
 	mycontent3 = __Cutter2(mycontent2)
-	return mycontent3
-		
+	mycontent4 = __Cutter3(mycontent3)
+	return mycontent4
+
 # a helper function to display global feed information
 def _DisplayGlobal(myfeed, type):
 	# calculate how many "entries" in the feed
@@ -167,13 +202,13 @@ def _DisplayGlobal(myfeed, type):
 			print 'Feed Description: ', myfeed.feed.description
 		if myfeed.feed.has_key('date'):
 			print 'Feed Date: ', myfeed.feed.date
-			print 'Feed Date (in list form): ', myfeed.feed.date_parsed
+			# print 'Feed Date (in list form): ', myfeed.feed.date_parsed
 	elif (type == 'ATOM'):
 		if (myfeed.feed.has_key('subtitle') and (len(myfeed.feed.subtitle) != 0)):
 			print 'Feed Subtitle:' , myfeed.feed.subtitle
 		if myfeed.feed.has_key('updated'):
 			print 'Feed Date: ', myfeed.feed.updated
-			print 'Feed Date (in list form): ', myfeed.feed.updated_parsed
+			# print 'Feed Date (in list form): ', myfeed.feed.updated_parsed
 
 	return
 
@@ -363,27 +398,41 @@ def main():
 	import codecs
 
 	# create object myfeed, which stores information of parsed CNN top stories RSS
-	# WORKING:
-	# nicely regular RSS feed, easy to process HTML codes
+	# WORKING Flawlessly:
+	# nicely regular RSS feed, easy to process HTML codes (5.3 Verified)
 	# myfeed = feedparser.parse('http://rss.cnn.com/rss/cnn_topstories.rss')
 
-	# slightly more difficult RSS feed
+	# slightly more difficult RSS feed (5.3 Verified)
 	# myfeed = feedparser.parse('http://sports-ak.espn.go.com/espn/rss/news')
 
-	# atom feed, strangely formatted, but it is working
+	# atom feed, strangely formatted, but it is working (5.3 Verified)
 	myfeed = feedparser.parse('http://feeds.nytimes.com/nyt/rss/HomePage')
 
-
-	# NOT WORKING:
-	# some ADs are considered blank entries, there are trash words that are not HTML
-	# seems impossible to get rid of
+	# WORKING MOSTLY
+	# Resolved those crappy HTML codes which was flying around
 	# The ADs problem can be solved by removing blank content entries
-	# But we cannot do it now as it may hide bugs
+	# But we cannot do it now as it may hide bugs (RSS feeds) (5.3 Verified)
 	# myfeed = feedparser.parse('http://feeds.pheedo.com/toms_hardware_headlines')
 
-	# Leo tried to remove all HTML trash already, but the formatting of output still wierd
+	# Most entries "work" in these, some "not work" is basically something we cannot do.
+	# The ads contain legal ending syntax that we cannot differentiate them
+	# consider email SPAM filtering. We are very conservative, ensuring correctness.
+	# Possibility of performance issue, used 1 sec to process
+	# if you want "more working" version, we can implement more aggressive filter
+	# techniques, such as, disgard all information afterwards which is seperated by 
+	# 2 \n in a row, regardless of whats the characters in front
+	#   NOTE THIS AGGRESSIVE METHOD WILL BREAK RSS WITH FORMATS, since they
+	#   appear to have many \n after parsed and removed HTMLs
 	# myfeed = feedparser.parse('http://feeds.feedburner.com/caranddriver/blog')
 
+	# NOT WORKING:
+
+	# Possibility of performance issue, used 2 sec to process (over 300 entries)
+	# some hyperlink ads remaining. We cannot do anything as those are "near content"
+	# ads. We human are smart enough to comprehend the semantics!
+	# some HTML code remains: &nbsp;
+	# plan to remove it in the future
+	# myfeed = feedparser.parse('http://www.rss-specifications.com/blog-feed.xml')
 
 	# create a local temp file that store all parsed content for demostration purpose
 	# firstly, check for feeds encoding and synchronize this information
