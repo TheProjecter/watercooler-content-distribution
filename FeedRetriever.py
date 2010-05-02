@@ -49,22 +49,80 @@ ATOM:
 	introduce logging
 	make use of time function (converge all time into UNIX format)
 	Introduce Stories (list of list) to behave as specified
-5.5: Future
+5.2:
+Fixed extra print statements
 Implement subsequent ContentCutting functions to further process impurities
-	1: remove extra whitespace
+	1: remove extra whitespace (__Cutter2)
 	2: remove all subsequent sentences if we find:
-			multiple packed \n or \n seperated with (spaces or tabs)
+			multiple packed \n or \n seperated with (spaces or tabs) (__Cutter1)
 	3: remove all words from end, up to a list of "whitelist" allowable ending
-			if such ending is not detected, this "remover" does nothing
+			if such ending is not detected, this "remover" does nothing (__Cutter1)
 
+5.3: Future
+Testing of above codes works or not
 """
 
 
 # handle time stamps
 import time
 
+# define ending characters
+def __CheckEnding(ending):
+	LegalEndings = [']', '...', '.', '!', '?', '"', '\'', ':']
+	Endings = set(LegalEndings)
+	result = ending in Endings
+	return result
+
+# a function to remove duplicate whitespace in content
+def __Cutter2(content):
+	for index in (range((len(content))-1)):
+		if ((content[index] == ' ') and (content[index+1] == ' ')):
+			newcontent = content[:index+1] + content[index+2:]
+			return __Cutter2(newcontent)
+	return content
+
+# a function to remove trash words at the end of content (2, 3)
+# lemma: There is no useful information after this syntax: 'legal_ending' [space]* \n [space]* \n
+def __Cutter1(content):
+	last_legal_pos=0;
+	endpos = 0;
+	# find last legal ending position
+	for index in range(len(content)):
+		if (__CheckEnding(content[index])):
+			last_legal_pos=index
+	# last_legal_pos if == 0, means cant remove anything
+	if (last_legal_pos != 0):
+		endpos = 0
+		end = len(content)-1
+		current = last_legal_pos+1
+		for index in range(current, end):
+			if content[index] != ' ':
+				current = index
+				break
+		# immediate end noticed, that means trailing whitespace only
+		if (current == (last_legal_pos + 1)):
+			return content[:current]
+
+		# check if multiple \n following, only seperated by spaces if there is any
+		#   then we conclude anything afterwards are trash (likely ADs)
+		#   lemma: There is no useful information after this syntax: 'legal_ending' [space]* \n [space]* \n
+		if ((content[current] == '\n') or (content[current] == '\r\n')):
+			for index in range(current, end):
+				if ((content[index+1] == '\n') or (content[index+1] == '\r\n')):
+					endpos = index + 1
+					break
+				if ((content[index+1] != ' ') and (content[index+1] != '\n') and (content[index+1] != '\r\n')):
+					endpos = 0
+					break
+
+	if (endpos != 0):
+		return content[:endpos]
+	else:
+		return content
+		
+
 # a function to remove trash, specifically HTML codes for content
-def _ContentCutter(content):
+def __CutterHTML(content):
 	flag = 0
 	for index in range(len(content)):
 		if (content[index] == '<'):
@@ -85,6 +143,14 @@ def _ContentCutter(content):
 	else:
 		return content
 
+# a overall, main function to link up all content processing functions
+# this enable us to add more function without modifying many codes
+def _ContentCutter(content):
+	mycontent1 = __CutterHTML(content)
+	mycontent2 = __Cutter1(mycontent1)
+	mycontent3 = __Cutter2(mycontent2)
+	return mycontent3
+		
 # a helper function to display global feed information
 def _DisplayGlobal(myfeed, type):
 	# calculate how many "entries" in the feed
@@ -162,6 +228,8 @@ def _RSS(f, log, myfeed):
 			entryURL = 'localhost'
 			log.write('Entry ' + str(count+1) + ' error: entryURL = localhost\n')
 
+		f.write('Entry URL: ' + entryURL + '\n')
+
 		# write date of entries
 		# convert Universal Feed Parser generated time (tuple) into UNIX time
 
@@ -194,7 +262,6 @@ def _ATOM(f, log, myfeed):
 
 	# calculate how many "entries" in the feed
 	n_entries = len(myfeed['entries'])
-	print 'There are' , n_entries , 'entries in the feed'
 
 	# print details of the feeds (global):
 	_DisplayGlobal(myfeed,'ATOM')
@@ -254,6 +321,8 @@ def _ATOM(f, log, myfeed):
 		else:
 			entryURL = 'localhost'
 			log.write('Entry ' + str(count+1) + ' error: entryURL = localhost\n')
+
+		f.write('Entry URL: ' + entryURL + '\n')
 
 		# write date of entries
 		# convert Universal Feed Parser generated time (tuple) into UNIX time
