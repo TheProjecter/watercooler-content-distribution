@@ -16,3 +16,16 @@ Other Specs:
 
 Notes:
  * MSDNAA is basically free legal Microsoft software (like Windows) given to Engineering student, accessible from courseweb "Software Download"
+
+
+Definition of implementation details:
+Story: a list of items having this form:
+{Feed Title, Entry Title, Entry Content, Entry Category, Entry URL, Entry Timestamp}
+
+FeedRetriever Output: List of Stories, having following form:
+{{Story 1}, {Story 2} , ... , {Story N}}
+
+For Empty Stories:
+{}
+
+So, please make sure len(stories) >0 before you read the story out of the stories to avoid segmentation fault!
