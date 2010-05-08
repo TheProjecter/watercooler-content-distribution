@@ -63,6 +63,9 @@ Fixed bug by removing ':' as LegalEndings
 Fixed bug of __Cutter1 on ending with 'H.264' using regular expression
 Currently __Cutter1 does nothing towards non-ascii texts, and we do not aim to process those
 Fixed bug of possibility of trailing whitespace and newlines (eg space after newline), which would escape __Cutter1 check
+5.3.1:
+Category testing included, most RSS feeds have no such information
+more testing feeds added
 
 Future (Immediate):
 Support Category
@@ -209,6 +212,10 @@ def _DisplayGlobal(myfeed, type):
 		if myfeed.feed.has_key('updated'):
 			print 'Feed Date: ', myfeed.feed.updated
 			# print 'Feed Date (in list form): ', myfeed.feed.updated_parsed
+	if myfeed.feed.has_key('categories'):
+		print 'Feed Categories:' ,myfeed.feed.categories
+	else:
+		print 'This feed does not contain category information'
 
 	return
 
@@ -401,12 +408,13 @@ def main():
 	# WORKING Flawlessly:
 	# nicely regular RSS feed, easy to process HTML codes (5.3 Verified)
 	# myfeed = feedparser.parse('http://rss.cnn.com/rss/cnn_topstories.rss')
-
-	# slightly more difficult RSS feed (5.3 Verified)
+	# myfeed = feedparser.parse('http://rss.cnn.com/rss/cnn_world.rss')
+	# myfeed = feedparser.parse('http://feeds.foxnews.com/foxnews/world')
 	# myfeed = feedparser.parse('http://sports-ak.espn.go.com/espn/rss/news')
+	# myfeed = feedparser.parse('http://sports.espn.go.com/espn/rss/news')
 
 	# atom feed, strangely formatted, but it is working (5.3 Verified)
-	myfeed = feedparser.parse('http://feeds.nytimes.com/nyt/rss/HomePage')
+	# myfeed = feedparser.parse('http://feeds.nytimes.com/nyt/rss/HomePage')
 
 	# WORKING MOSTLY
 	# Resolved those crappy HTML codes which was flying around
@@ -433,6 +441,13 @@ def main():
 	# some HTML code remains: &nbsp;
 	# plan to remove it in the future
 	# myfeed = feedparser.parse('http://www.rss-specifications.com/blog-feed.xml')
+
+	# LC testing only
+
+	# myfeed = feedparser.parse('http://feedparser.org/docs/examples/rss20.xml')
+	# myfeed = feedparser.parse('http://feeds.feedburner.com/SlickdealsnetFP')
+	# myfeed = feedparser.parse('http://rssfeeds.s3.amazonaws.com/goldbox')
+	myfeed = feedparser.parse('http://www.census.gov/mp/www/cpu/index.xml')
 
 	# create a local temp file that store all parsed content for demostration purpose
 	# firstly, check for feeds encoding and synchronize this information
