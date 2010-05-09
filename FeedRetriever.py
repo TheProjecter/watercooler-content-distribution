@@ -8,40 +8,52 @@
 
 """
 Version LOG
+
 1.0:
 Elementary testing version
+
 2.0:
 Able to read RSS and eliminate some HTML trash
+
 3.0:
 organize some code and improved debug-ability
 Reordered license information
 Week 3 Demo version
+
 4.0: 
 Able to read and process ATOM as well
+
 4.1:
 Organized and commented in functions
 Week 4 Demo version
+
 4.2:
 Revised the content processing function,
 Able to remove trash more robustly
+
 4.3:
 Leo testing edition
+
 4.3.1_TEST:
 Now get description before content for content field,
 affecting ATOM feeds only
 Also changed _ContentCutter
+
 4.3.2_TEST:
 Modularize more codes into helper functions
 Organized the "myfeed" so that we can keep track which works and
-  which does not work
+which does not work
+
 4.4_TEST:
 Leo modified _ContentCutter to ensure correctness
+
 5.0:
 RSS:
 	Improve robustness against empty fields
 	introduce logging
 	make use of time function (converge all time into UNIX format)
 	Introduce Stories (list of list) to behave as specified
+
 5.1:
 Fixed some confusing printout names
 ATOM:
@@ -49,6 +61,7 @@ ATOM:
 	introduce logging
 	make use of time function (converge all time into UNIX format)
 	Introduce Stories (list of list) to behave as specified
+
 5.2:
 Fixed extra print statements
 Implement subsequent ContentCutting functions to further process impurities
@@ -57,20 +70,28 @@ Implement subsequent ContentCutting functions to further process impurities
 			multiple packed \n or \n seperated with (spaces or tabs) (__Cutter1)
 	3: remove all words from end, up to a list of "whitelist" allowable ending
 			if such ending is not detected, this "remover" does nothing (__Cutter1)
+
 5.3:
 Testing of above codes works or not
 Fixed bug by removing ':' as LegalEndings
 Fixed bug of __Cutter1 on ending with 'H.264' using regular expression
 Currently __Cutter1 does nothing towards non-ascii texts, and we do not aim to process those
 Fixed bug of possibility of trailing whitespace and newlines (eg space after newline), which would escape __Cutter1 check
+
 5.3.1:
 Category testing included, most RSS feeds have no such information
 more testing feeds added
 
-Future (Immediate):
-Support Category
-Add function to remove empty content entry, most likely due to advertisements as an entry (graphics)
-remove '&nbsp;' phrases. This seems to be the only HTML leftovers
+5.4
+replace '&lt;' '&gt;' unicode phrases. This is essential for __HTMLCutter to work
+replace '&nbsp;' phrases. This seems to be the only HTML leftovers
+Fixed possibility of RSS feed entries to have time stamp 0 (this case we use feed's time stamp)
+
+
+Future:
+add more test cases to test for any bugs
+Optimize code to process content more efficiently
+add threads to parallelize processing data when a list of URL is obtained
 
 """
 
@@ -88,11 +109,35 @@ def __CheckEnding(ending):
 	result = ending in Endings
 	return result
 
+# a function to replace corresponding unicode to '<' and '>', for __CutterHTML to work
+# verified logic, optimized
+def __PreHTMLUnicode(content):
+	for index in (range((len(content))-3)):
+		ending = index+4;
+		if (content[index:ending] == '&lt;'):
+			newcontent = content[:index] + '<' + content[ending:]
+			return __PreHTMLUnicode(newcontent)
+		if (content[index:ending] == '&gt;'):
+			newcontent = content[:index] + '>' + content[ending:]
+			return __PreHTMLUnicode(newcontent)
+	return content
+
+# a function to replace corresponding unicode to '<' and '>', for __CutterHTML to work
+# verified logic
+def __ProHTMLUnicode(content):
+	for index in (range((len(content))-3)):
+		ending = index+6;
+		if (content[index:ending] == '&nbsp;'):
+			newcontent = content[:index] + ' ' + content[ending:]
+			return __ProHTMLUnicode(newcontent)
+	return content
+ 
 # a function to remove duplicate whitespace in content
 def __Cutter2(content):
 	for index in (range((len(content))-1)):
-		if ((content[index] == ' ') and (content[index+1] == ' ')):
-			newcontent = content[:index+1] + content[index+2:]
+		ending = index+2
+		if (content[index:ending] == '  '):
+			newcontent = content[:index+1] + content[ending:]
 			return __Cutter2(newcontent)
 	return content
 
@@ -167,13 +212,8 @@ def __CutterHTML(content):
 			flag = 1
 		if (content[index] == '>'):
 			end_pos = index
-			#for index2 in range(index+1, len(content)):
-			#	if (ord(content[index2])<33):
-			#		end_pos=end_pos+1
-			#	else:
-			#		break
 			break
-			
+
 	if (flag == 1): 		
 		new_content = content[:start_pos] + content[end_pos+1:]
 		return _ContentCutter(new_content)
@@ -183,11 +223,13 @@ def __CutterHTML(content):
 # a overall, main function to link up all content processing functions
 # this enable us to add more function without modifying many codes
 def _ContentCutter(content):
-	mycontent1 = __CutterHTML(content)
+	mycontent0 = __PreHTMLUnicode(content)
+	mycontent1 = __CutterHTML(mycontent0)
 	mycontent2 = __Cutter1(mycontent1)
 	mycontent3 = __Cutter2(mycontent2)
 	mycontent4 = __Cutter3(mycontent3)
-	return mycontent4
+	mycontent5 = __ProHTMLUnicode(mycontent4)
+	return mycontent5
 
 # a helper function to display global feed information
 def _DisplayGlobal(myfeed, type):
@@ -278,6 +320,12 @@ def _RSS(f, log, myfeed):
 		UNIX_time = 0
 		if myfeed.entries[count].has_key('date_parsed'):
 			date_parsed = myfeed.entries[count].date_parsed
+			UNIX_time = int(time.mktime(date_parsed))
+			f.write('Time Stamp: ' + str(UNIX_time) + '\n')
+			f.write('Time Stamp GMT DEBUG: ' + str(date_parsed[0]) + '/' + str(date_parsed[1]) + '/' + \
+			str(date_parsed[2]) + ' ' + str(date_parsed[3]) + ':' + str(date_parsed[4]) + '\n\n')
+		elif myfeed.feed.has_key('date'):
+			date_parsed = myfeed.feed.date_parsed
 			UNIX_time = int(time.mktime(date_parsed))
 			f.write('Time Stamp: ' + str(UNIX_time) + '\n')
 			f.write('Time Stamp GMT DEBUG: ' + str(date_parsed[0]) + '/' + str(date_parsed[1]) + '/' + \
