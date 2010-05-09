@@ -87,6 +87,11 @@ replace '&lt;' '&gt;' unicode phrases. This is essential for __HTMLCutter to wor
 replace '&nbsp;' phrases. This seems to be the only HTML leftovers
 Fixed possibility of RSS feed entries to have time stamp 0 (this case we use feed's time stamp)
 
+5.4.1
+Modularize to work with driver script
+
+5.4.2
+Added more simple filters (remove leading whitespace and \n)
 
 Future:
 add more test cases to test for any bugs
@@ -101,6 +106,12 @@ import time
 
 # handle regular expression
 import re
+
+# import the module
+import feedparser
+
+# handle unicode
+import codecs
 
 # define ending characters
 def __CheckEnding(ending):
@@ -147,6 +158,17 @@ def __Cutter3(content):
 	if (last >= 0):
 		if ((content[last] == '\n') or (content[last] == ' ')):
 			return __Cutter3(content[:last])
+		else:
+			return content
+	else:
+		return content
+
+# remove leading space and newlines
+def __Cutter4(content):
+	length = len(content)
+	if (length > 0):
+		if ((content[0] == '\n') or (content[0] == ' ')):
+			return __Cutter4(content[1:])
 		else:
 			return content
 	else:
@@ -229,7 +251,8 @@ def _ContentCutter(content):
 	mycontent3 = __Cutter2(mycontent2)
 	mycontent4 = __Cutter3(mycontent3)
 	mycontent5 = __ProHTMLUnicode(mycontent4)
-	return mycontent5
+	mycontent6 = __Cutter4(mycontent5)
+	return mycontent6
 
 # a helper function to display global feed information
 def _DisplayGlobal(myfeed, type):
@@ -444,14 +467,7 @@ def _ATOM(f, log, myfeed):
 
 
 
-def main():
-
-	# import the module
-	import feedparser
-
-	# handle unicode
-	import codecs
-
+def UpdateFeed():
 	# create object myfeed, which stores information of parsed CNN top stories RSS
 	# WORKING Flawlessly:
 	# nicely regular RSS feed, easy to process HTML codes (5.3 Verified)
@@ -522,22 +538,41 @@ def main():
 		print 'UNKNOWN feed type!'
 
 	f.close()
+	return stories
 
 if __name__ == "__main__":
-	main()
+	UpdateFeed()
 
 
 # Copyright information
 """
-Authors: CS 130 Watercooler Content Distribution Engine
-GPL V3
-There is no warranty in using such source codes or programs.
-There may be bugs, incorrect infomation, delays, etc, that may induce loss to
-you. We are not held responsible in any way.
+Authors: CS 130 Watercooler Content Distribution Engine Team
+Copyright (c) 2010, CS 130 Watercooler Content Distribution Engine Team
+All rights reserved.
 
+Redistribution and use in source and binary forms, with or without modification,
+are permitted provided that the following conditions are met:
 
+* Redistributions of source code must retain the above copyright notice,
+  this list of conditions and the following disclaimer.
+* Redistributions in binary form must reproduce the above copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 'AS IS'
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
 """
 """
+feedparser module (Universal Feed Parser)
 Copyright (c) 2002-2005, Mark Pilgrim
 All rights reserved.
 
