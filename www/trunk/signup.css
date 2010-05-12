@@ -2,6 +2,12 @@ body
 {
 background-color:white;
 }
+
+.corner
+{
+float: left;
+}
+
 h1
 {
 color:navy;
@@ -21,11 +27,21 @@ margin: 0 auto 0 auto;
 
 label
 {
-width: 4em;
+width: 8em;
 float: left;
 text-align: right;
 margin-right: 0.5em;
 display: block
+}
+
+.multifield {
+float: left;
+}
+
+.rightcolumn {
+float: left;
+margin-top: 1em;
+margin-left: 10.2em;
 }
 
 .submit input
