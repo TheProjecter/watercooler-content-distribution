@@ -1,0 +1,63 @@
+body
+{
+background-color:white;
+}
+h1
+{
+color:navy;
+font-style:bold;
+text-align:center;
+font-family:sans-serif;
+}
+
+div.outerbody
+{
+text-align:center;
+background-color:white;
+padding:1em;
+width:30em;
+margin: 0 auto 0 auto;
+}
+
+label
+{
+width: 4em;
+float: left;
+text-align: right;
+margin-right: 0.5em;
+display: block
+}
+
+.submit input
+{
+margin-left: 4.5em;
+} 
+input
+{
+color: navy;
+background: #fee3ad;
+border: 1px solid navy;
+}
+
+.submit input
+{
+color: #000;
+background: #ffa20f;
+border: 2px outset #d7b9c9
+} 
+fieldset
+{
+margin: 0 auto;
+border: 1px solid navy;
+width: 20em;
+
+}
+
+legend
+{
+color: #navy;
+background: #ffa20c;
+border: 1px solid navy;
+padding: 2px 6px;
+margin-left: 2em;
+}

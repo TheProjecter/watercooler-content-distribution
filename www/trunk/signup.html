@@ -1,29 +1,40 @@
 <html>
-<head><title>Sign up</title></head>
+<head>
+<title>Sign up</title>
+<link rel="stylesheet" href="signup.css" title="signup">
+</head>
 <body>
   <a href="index.php">home</a>
   <h1>Sign up</h1>
   <form action="dosignup.php" method="post">
-    <p>Personal Information<br />
-    Username: <input type="text" name="username" /><br />
-    Password: <input type="password" name="password" /><br />
-    Repeat Password: <input type="password" name="password2" /><br />
-    Email: <input type="text" name="email" /><br />
-    Phone #: <input type="text" name="phone" /><br />
-    Carrier: <select name="carrier">
+    <fieldset>
+    <legend>Personal Information</legend>
+    <p><label for="username">Username</label>
+    <input type="text" name="username" /></p>
+    <p><label for="password">Password</label>
+    <input type="password" name="password" /></p>
+    <p><label for="repeatpass">Repeat Password</label>
+    <input type="password" name="repeatpass" /></p>
+    <p><label for="email">Email</label>
+    <input type="text" name="email" /></p>
+    <p><label for="phone">Cell Phone #</label>
+    <input type="text" name="phone" /></p>
+    <p><label for="carrier">Carrier</label>
+    <select name="carrier">
       <option value="att">AT&#38;T</option>
       <option value="verizon">Verizon</option>
     </select></p>
-    <p>Default Methods of Reception<br />
+    <p><label for="reception">Default Methods of Reception</label>
       <input type="checkbox" name="recieve_email" value="yes" />Email<br />
       <input type="checkbox" name="recieve_sms_text" value="yes" />SMS (Text)<br />
       <input type="checkbox" name="recieve_sms_link" value="yes" />SMS (Link)<br /></p>
-    <p>Feeds<br />
+    <p><label for="feeds">Feeds</label> <br />
       <input type="text" name="feed1" /><br />
-      <input type="text" name="feed1" /><br />
-      <input type="text" name="feed1" /><br />
-      <a>Add More Feeds</a></p>
+      <input type="text" name="feed2" /><br />
+      <input type="text" name="feed3" /><br />
+      <a href="#">Add More Feeds</a></p>
     <input type="submit" name="submit" value="Sign Up" />
+    </fieldset>
   </form>
 </body>
 </html>
