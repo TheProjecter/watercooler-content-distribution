@@ -12,5 +12,7 @@ User Scanner, Alert Formatter List of Works:
   #7	Make sure you trim contents according to MSG length limit, and check user reception preference (SMS? EMAIL?)
   #8	Give out the appropriate format to email server module
 
-I UNDERSTAND ABOVE METHOD MAY NOT BE OPTIMAL (going through the list multiple times). You should come up a more efficient algorithm to do things.
-ABOVE IS FOR SHOWING WHAT USER SCANNER SHOULD DO IN MY PERCEPTION.
+Someone once said:
+  I UNDERSTAND ABOVE METHOD MAY NOT BE OPTIMAL (going through the list multiple times). You should come up a more efficient algorithm to do things.
+  ABOVE IS FOR SHOWING WHAT USER SCANNER SHOULD DO IN MY PERCEPTION.
+Who said this?
