@@ -93,6 +93,11 @@ Modularize to work with driver script
 5.4.2
 Added more simple filters (remove leading whitespace and \n)
 
+6.0 Test
+Included database codes, given by Ricky
+ALL PRELIMINARY CODINGS DONE
+Tests pending (will be done soon afterwards)
+
 Future:
 add more test cases to test for any bugs
 Optimize code to process content more efficiently
@@ -112,6 +117,11 @@ import feedparser
 
 # handle unicode
 import codecs
+
+# handle database
+import sys
+import MySQLdb
+
 
 # define ending characters
 def __CheckEnding(ending):
@@ -467,7 +477,7 @@ def _ATOM(f, log, myfeed):
 
 
 
-def UpdateFeed():
+def UpdateFeed_deprecated():
 	# create object myfeed, which stores information of parsed CNN top stories RSS
 	# WORKING Flawlessly:
 	# nicely regular RSS feed, easy to process HTML codes (5.3 Verified)
@@ -539,6 +549,161 @@ def UpdateFeed():
 
 	f.close()
 	return stories
+
+def UpdateFeed()
+	debug = False
+	# create a local log for indicating error
+	errlog = open("ERRORLOG.txt", mode ='a')
+
+	# connect to the database
+	conn = MySQLdb.connect (host = "localhost", user = "root", passwd = "adminsql", db = "watercooler")
+
+	# Get last updated time: latest_ts
+	cursor = conn.cursor ()
+	cursor.execute ("""
+		SELECT feed_sources.source_name, feed_stories.time_stamp
+		FROM feed_stories, feed_sources, (SELECT feed_sources.sid AS source_id
+						FROM feed_stories, feed_sources
+						WHERE feed_stories.sid = feed_sources.sid
+						GROUP BY feed_sources.sid
+						HAVING MAX(time_stamp)) AS source_filter
+		WHERE feed_stories.sid = feed_sources.sid
+		AND feed_sources.sid = source_filter.source_id
+		ORDER BY feed_stories.time_stamp DESC;
+		""")
+
+	timestamp_list = cursor.fetchall ()
+	# first item is the latest time!
+	###(myfeed.entries[count].has_key('updated')	
+	latest_ts = 0
+	if (len(timestamp_list) > 0):
+		latest_ts_tuple = timestamp_list[0]
+		latest_ts = latest_ts_tuple[1]
+	else:
+		print ('INVALID TIMESTAMP LIST, refer to log file!')
+		errlog.write ('INVALID TIMESTAMP LIST: LENGTH 0\n')
+		cursor.close ()
+		conn.close ()
+		return []
+
+	cursor.close ()
+
+
+	# get a list of URL, source_URLs
+	cursor1 = conn.cursor ()
+	cursor1.execute ("""
+		SELECT DISTINCT source_name, source_url
+		FROM feed_sources
+		ORDER BY source_name;
+		""")
+	sources_list = cursor1.fetchall ()
+	if (len(sources_list) == 0):
+		print ('INVALID SOURCE URL LIST, refer to log file!')
+		errlog.write ('INVALID SOURCE URL LIST: LENGTH 0\n')
+		cursor1.close ()
+		conn.close ()
+		return []
+
+	source_URLs = []
+	for source_item in sources_list:
+		source_item_url = source_item[1]
+		source_URLs.append(source_item_url)
+
+	cursor1.close ()
+
+
+	# for each URL in the URL list, parse things.....
+	filename_counter = 0;
+	all_stories = []
+	for source_URL in source_URLs:
+		myfeed = feedparser.parse(source_URL)
+
+		if (debug):
+			# create a local temp file that store all parsed content for demostration purpose
+			# firstly, check for feeds encoding and synchronize this information
+			# f = open("feeds.txt", "w")
+
+			filename = 'feed' + str(filename_counter) + '.txt'
+			f = codecs.open(filename, encoding=myfeed.encoding, mode='w')
+
+			# display global feed information that shared across all entries
+			print 'Feed Encoding: ', myfeed.encoding
+			print 'Feed version (type): ', myfeed.version
+
+		# run specified parser corresponding to type of feeds (RSS,atom,others)
+		if (myfeed.version[:3] == "rss"):
+			if (debug):
+				print 'VERBOSE: RSS feed detected!'
+			stories = _RSS(f, errlog, myfeed)
+		elif (myfeed.version[:4] == "atom"):
+			if (debug):
+				print 'VERBOSE: ATOM feed detected!'
+			stories = _ATOM(f, errlog, myfeed)
+		else:
+			if (debug):
+				print 'UNKNOWN feed type!'
+			stories = []
+
+		if (debug):
+			f.close()
+
+		all_stories.extend(stories)
+
+	# now i have a big list of stories: all_stories (list of many story)
+	# story is [Feed Title, Entry Title, Entry Content, Entry Category, Entry URL, Entry Timestamp]
+
+	# Process the List List:
+	# 	Comparing the time stamp of each story with ¡§newest¡¨ time stamp obtained
+	# 	remove all old story
+	processed_stories = []
+	for r_story in all_stories:
+		r_story_ts = r_story[5]
+		if (r_story_ts > latest_ts):
+			processed_stories.append(r_story)
+
+	# now I have a processed list of stories as processed_stories
+	# get list of IDs... sources_id_list
+	cursor2 = conn.cursor ()
+	cursor2.execute ("""
+                SELECT DISTINCT sid, source_name
+                FROM feed_sources
+                ORDER BY sid;
+                """)
+	sources_id_list = cursor2.fetchall ()
+
+	# story is [Feed Title, Entry Title, Entry Content, Entry Category, Entry URL, Entry Timestamp]
+	cursor3 = conn.cursor ()
+	for p_story in processed_stories:
+		# loop to check and get feed title
+		mysid = 0
+		for id_list in source_id_list:
+			if (id_list[1] == p_story[0]):
+				mysid = id_list[0] 
+				break
+		if (mysid == 0)
+			print ('INVALID SID!, refer to log file!')
+			errlog.write ('INVALID SID: Processed STORY\n')
+			errlog.write('   FEED ENTRY TITLE IS:')
+			errlog.write(p_story[1])
+			cursor2.close()
+			cursor3.close()
+			conn.commit()
+			conn.close()
+			return []
+
+		cursor.execute ("""
+			INSERT INTO feed_stories (title, content, url, time_stamp, sid, gid)
+			VALUES (%s, %s, %s, %s, %s, %s)
+			ON DUPLICATE KEY UPDATE c=c+1;
+			""", (p_story[1], p_story[2], p_story[4], p_story[5], mysid, 1))
+
+	cursor3.close ()
+	cursor2.close ()
+	conn.commit ()
+	conn.close ()
+		
+	# return processed stories list
+	return processed_stories
 
 if __name__ == "__main__":
 	UpdateFeed()
