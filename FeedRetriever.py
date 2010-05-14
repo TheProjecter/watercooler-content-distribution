@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 # This is a sample "driver" to use a module called feedparser to
 # 	download, parse, and display RSS feed data.
 # To use this program, install Python 2.6.4.
@@ -550,7 +552,7 @@ def UpdateFeed_deprecated():
 	f.close()
 	return stories
 
-def UpdateFeed()
+def UpdateFeed():
 	debug = False
 	# create a local log for indicating error
 	errlog = open("ERRORLOG.txt", mode ='a')
@@ -653,7 +655,7 @@ def UpdateFeed()
 	# story is [Feed Title, Entry Title, Entry Content, Entry Category, Entry URL, Entry Timestamp]
 
 	# Process the List List:
-	# 	Comparing the time stamp of each story with ¡§newest¡¨ time stamp obtained
+	# 	Comparing the time stamp of each story with "newest" time stamp obtained
 	# 	remove all old story
 	processed_stories = []
 	for r_story in all_stories:
@@ -680,7 +682,7 @@ def UpdateFeed()
 			if (id_list[1] == p_story[0]):
 				mysid = id_list[0] 
 				break
-		if (mysid == 0)
+		if (mysid == 0):
 			print ('INVALID SID!, refer to log file!')
 			errlog.write ('INVALID SID: Processed STORY\n')
 			errlog.write('   FEED ENTRY TITLE IS:')
