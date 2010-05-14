@@ -190,15 +190,15 @@ function test_iUser($user_class) {
       || !($test_user_2 = 
 	   $user_class::create(array('username'=>'test_iUser_2')))
       // user deletion
-      || !($test_user.delete())
+      || !($test_user->delete())
       // get username
-      || ($test_user_2.get(array('username')) != 'test_iUser_2')
+      || ($test_user_2->get(array('username')) != 'test_iUser_2')
       // find by username
       || !($test_user_2_again = $user_class::find('username', 'test_iUser_2'))
-      || ($test_user_2_again.get('username') != $test_user_2.get('username'))
+      || ($test_user_2_again->get('username') != $test_user_2->get('username'))
       // set username
-      || !($test_user_2_again.set(array('username'=>'test_iUser_2_again')))
-      || ($test_user_2_again.get('username') != 'test_iUser_2_again'))
+      || !($test_user_2_again->set(array('username'=>'test_iUser_2_again')))
+      || ($test_user_2_again->get('username') != 'test_iUser_2_again'))
     return FALSE;
   return TRUE;
 }
