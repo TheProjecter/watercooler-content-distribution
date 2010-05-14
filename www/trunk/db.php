@@ -8,20 +8,6 @@ interface iDatabase {
   // XXX fill this in
 }
 
-/* abstract class DatabaseConn handles the singleton iDatabase connection 
-   object used for all database operations site-wide
-*/
-abstract class DatabaseConn implements iDatabase {
-  private static $instance;
-  public static function create() {
-    if (!isset(self::$instance)) {
-      $c = __CLASS__;
-      self::$instance = new $c;
-    }
-    return self::$instance;
-  }
-}
-
 /* interface iFeeds represents a group of feeds, and handles all operations
    involving multiple feeds
 */
