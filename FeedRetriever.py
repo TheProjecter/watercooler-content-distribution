@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python2.6
 
 # This is a sample "driver" to use a module called feedparser to
 # 	download, parse, and display RSS feed data.
@@ -99,6 +99,12 @@ Added more simple filters (remove leading whitespace and \n)
 Included database codes, given by Ricky
 ALL PRELIMINARY CODINGS DONE
 Tests pending (will be done soon afterwards)
+
+6.0.1 Test
+Fixed some syntax errors
+From now on, testing is done on server, using python 2.6.5
+Code freeze for Friday discussion for concensus
+
 
 Future:
 add more test cases to test for any bugs
@@ -620,14 +626,14 @@ def UpdateFeed():
 	for source_URL in source_URLs:
 		myfeed = feedparser.parse(source_URL)
 
+		# create a local temp file that store all parsed content for demostration purpose
+		# firstly, check for feeds encoding and synchronize this information
+		# f = open("feeds.txt", "w")
+
+		filename = 'feed' + str(filename_counter) + '.txt'
+		f = codecs.open(filename, encoding=myfeed.encoding, mode='w')
+
 		if (debug):
-			# create a local temp file that store all parsed content for demostration purpose
-			# firstly, check for feeds encoding and synchronize this information
-			# f = open("feeds.txt", "w")
-
-			filename = 'feed' + str(filename_counter) + '.txt'
-			f = codecs.open(filename, encoding=myfeed.encoding, mode='w')
-
 			# display global feed information that shared across all entries
 			print 'Feed Encoding: ', myfeed.encoding
 			print 'Feed version (type): ', myfeed.version
@@ -678,7 +684,7 @@ def UpdateFeed():
 	for p_story in processed_stories:
 		# loop to check and get feed title
 		mysid = 0
-		for id_list in source_id_list:
+		for id_list in sources_id_list:
 			if (id_list[1] == p_story[0]):
 				mysid = id_list[0] 
 				break
