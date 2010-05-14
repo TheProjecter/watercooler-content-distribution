@@ -22,24 +22,12 @@ if (!isset($_SESSION['username'])) {
               name="submit" /></p>
         </fieldset>
 	</form>
-	<p>Don't have an account yet?<br />
+	<p>Need an account?<br />
 	   <a href="signup.html">Sign up!</a></p>
         </div></div>
 </body>
 </html>
 <?php
 } else {
-?>
-<html>
-<head><title>User Homepage</title></head>
-<body>
-<div class="outerbody"><div class="google">
-	<a href="logout.php">logout</a>
-	<p>This should be <?php print($_SESSION['username']); ?>'s homepage</p>
-	<p>Feeds</p>
-	<a>settings</a>
-</div></div>
-</body>
-</html>
-<?php
+  include("homepage.php");
 }
