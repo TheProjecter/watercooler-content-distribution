@@ -110,6 +110,10 @@ Fixing feed title name matching, algorithm flaws
 Fix to a point ON DUPLICATE KEY UPDATE c=c+1;
 code freeze until solution found
 
+6.1 Beta
+No "compile" error
+More testings need to be done on more feeds
+
 Future:
 add more test cases to test for any bugs
 Optimize code to process content more efficiently
@@ -716,7 +720,7 @@ def UpdateFeed():
 
 	# story is [Feed Title, Entry Title, Entry Content, Entry Category, Entry URL, Entry Timestamp]
 	cursor3 = conn.cursor ()
-
+	"""
 	# LC DEBUG: DISPLAY ALL PROCESSED_STORIES
 	debug_counter0 = 0
 	for p_story in processed_stories:
@@ -725,9 +729,9 @@ def UpdateFeed():
 			print 'STORY ',  debug_counter0, 'Field ' , debug_counter, '; ', item
 			debug_counter = debug_counter + 1
 		debug_counter0 = debug_counter0 + 1
-
+	"""
 	for p_story in processed_stories:
-		print 'LC CHECK 1 ARRIVAL, PER STORY START' # LC DEBUG
+		# print 'LC CHECK 1 ARRIVAL, PER STORY START' # LC DEBUG
 		# loop to check and get feed title
 		mysid = 0
 		for id_list in sources_id_list:
@@ -748,7 +752,7 @@ def UpdateFeed():
 		cursor3.execute ("""
 			INSERT INTO feed_stories (title, content, url, time_stamp, sid, gid)
 			VALUES (%s, %s, %s, %s, %s, %s)
-			ON DUPLICATE KEY UPDATE c=c+1;
+			ON DUPLICATE KEY UPDATE fid=fid+1;
 			""", (p_story[1][:255], p_story[2][:255], p_story[4][:255], int(p_story[5]), mysid, 1))
 
 	cursor3.close ()
