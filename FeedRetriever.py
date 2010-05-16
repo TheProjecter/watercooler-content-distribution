@@ -67,18 +67,18 @@ ATOM:
 5.2:
 Fixed extra print statements
 Implement subsequent ContentCutting functions to further process impurities
-	1: remove extra whitespace (__Cutter2)
+	1: remove extra whitespace (__DuplicateSpace)
 	2: remove all subsequent sentences if we find:
-			multiple packed \n or \n seperated with (spaces or tabs) (__Cutter1)
+			multiple packed \n or \n seperated with (spaces or tabs) (__AdsFilter)
 	3: remove all words from end, up to a list of "whitelist" allowable ending
-			if such ending is not detected, this "remover" does nothing (__Cutter1)
+			if such ending is not detected, this "remover" does nothing (__AdsFilter)
 
 5.3:
 Testing of above codes works or not
 Fixed bug by removing ':' as LegalEndings
-Fixed bug of __Cutter1 on ending with 'H.264' using regular expression
-Currently __Cutter1 does nothing towards non-ascii texts, and we do not aim to process those
-Fixed bug of possibility of trailing whitespace and newlines (eg space after newline), which would escape __Cutter1 check
+Fixed bug of __AdsFilter on ending with 'H.264' using regular expression
+Currently __AdsFilter does nothing towards non-ascii texts, and we do not aim to process those
+Fixed bug of possibility of trailing whitespace and newlines (eg space after newline), which would escape __AdsFilter check
 
 5.3.1:
 Category testing included, most RSS feeds have no such information
@@ -114,9 +114,16 @@ code freeze until solution found
 No "compile" error
 More testings need to be done on more feeds
 
+6.1.1 Beta
+fixed some minor errors
+default debug flag is false, will not print unless exceptional case
+Only one line feed title is displayed for each feed!
+------ CODE FREEZE UNTIL BUGS FOUND -------
+------ USE 6.1.1 TO TEST! -----------------
+
 Future:
 add more test cases to test for any bugs
-Optimize code to process content more efficiently
+Optimize code to process content more efficiently (by the suggestions made by CMS team)
 add threads to parallelize processing data when a list of URL is obtained
 
 """
@@ -139,15 +146,18 @@ import sys
 import MySQLdb
 
 
-# define ending characters
+# define ending characters, and check it
+# verified logic
 def __CheckEnding(ending):
 	LegalEndings = [']', '...', '.', '!', '?', '"', '\'']
 	Endings = set(LegalEndings)
+	# is 'ending' in the set? Ture/False
 	result = ending in Endings
 	return result
 
+
 # a function to replace corresponding unicode to '<' and '>', for __CutterHTML to work
-# verified logic, optimized
+# verified logic
 def __PreHTMLUnicode(content):
 	for index in (range((len(content))-3)):
 		ending = index+4;
@@ -159,6 +169,7 @@ def __PreHTMLUnicode(content):
 			return __PreHTMLUnicode(newcontent)
 	return content
 
+
 # a function to replace corresponding unicode to '<' and '>', for __CutterHTML to work
 # verified logic
 def __ProHTMLUnicode(content):
@@ -168,41 +179,46 @@ def __ProHTMLUnicode(content):
 			newcontent = content[:index] + ' ' + content[ending:]
 			return __ProHTMLUnicode(newcontent)
 	return content
- 
+
+
 # a function to remove duplicate whitespace in content
-def __Cutter2(content):
+# verified logic
+def __DuplicateSpace(content):
 	for index in (range((len(content))-1)):
 		ending = index+2
 		if (content[index:ending] == '  '):
 			newcontent = content[:index+1] + content[ending:]
-			return __Cutter2(newcontent)
+			return __DuplicateSpace(newcontent)
 	return content
 
+
 # remove trailing space and newlines
-def __Cutter3(content):
+def __TrailingSpace(content):
 	last = len(content)-1
 	if (last >= 0):
 		if ((content[last] == '\n') or (content[last] == ' ')):
-			return __Cutter3(content[:last])
+			return __TrailingSpace(content[:last])
 		else:
 			return content
 	else:
 		return content
 
+
 # remove leading space and newlines
-def __Cutter4(content):
+def __LeadingSpace(content):
 	length = len(content)
 	if (length > 0):
 		if ((content[0] == '\n') or (content[0] == ' ')):
-			return __Cutter4(content[1:])
+			return __LeadingSpace(content[1:])
 		else:
 			return content
 	else:
 		return content
 
+
 # a function to remove trash words at the end of content (2, 3)
 # lemma: There is no useful information after this syntax: 'legal_ending' [space]* \n [space]* \n
-def __Cutter1(content):
+def __AdsFilter(content):
 	# define CHARS_SET
 	CHARS_SET = re.compile(r'[a-zA-Z0-9]')
 	last_legal_pos=0;
@@ -217,16 +233,20 @@ def __Cutter1(content):
 		end = len(content)-1
 		current = last_legal_pos+1
 		newcurr = 0
+		# detect non-space position, from legal_ending_position to end
 		for index in range(current, end):
 			if content[index] != ' ':
 				newcurr = index
 				break
 		# immediate end noticed, that means trailing whitespace only
+		# newcurr == 0 since it is never assigned with 'index' above
 		if (newcurr == 0):
 			return content[:current]
 
+		# reaching here means found non-space chars, so we must ensure that we preserve anything
+		#	before newcurr position
 		current = newcurr
-		# extra code to proceed some special scenario (eg H.264)
+		# extra code to proceed some special scenario (eg H.264) (basically preserve more characters)
 		# effect: stop at the position when it can no longer find chars or digits after '.' eg
 		for index in range (newcurr, end):
 			if  (not (bool(CHARS_SET.search(content[index])))):
@@ -244,12 +264,12 @@ def __Cutter1(content):
 				if ((content[index+1] != ' ') and (content[index+1] != '\n') and (content[index+1] != '\r\n')):
 					endpos = 0
 					break
-
+	# do we really able to kill crap things? (checking endpos)
 	if (endpos != 0):
 		return content[:endpos]
 	else:
 		return content
-		
+
 
 # a function to remove trash, specifically HTML codes for content
 def __CutterHTML(content):
@@ -269,16 +289,17 @@ def __CutterHTML(content):
 		return content
 
 # a overall, main function to link up all content processing functions
-# this enable us to add more function without modifying many codes
+# this enable us to add more function (filters) without modifying many codes
 def _ContentCutter(content):
 	mycontent0 = __PreHTMLUnicode(content)
 	mycontent1 = __CutterHTML(mycontent0)
-	mycontent2 = __Cutter1(mycontent1)
-	mycontent3 = __Cutter2(mycontent2)
-	mycontent4 = __Cutter3(mycontent3)
+	mycontent2 = __AdsFilter(mycontent1)
+	mycontent3 = __DuplicateSpace(mycontent2)
+	mycontent4 = __TrailingSpace(mycontent3)
 	mycontent5 = __ProHTMLUnicode(mycontent4)
-	mycontent6 = __Cutter4(mycontent5)
+	mycontent6 = __LeadingSpace(mycontent5)
 	return mycontent6
+
 
 # a helper function to display global feed information
 def _DisplayGlobal(myfeed, type):
@@ -292,14 +313,14 @@ def _DisplayGlobal(myfeed, type):
 	if myfeed.feed.has_key('link'):
 		print 'Feed Link: ', myfeed.feed.link
 	if (type == 'RSS'):
-		if myfeed.feed.has_key('description'):
-			print 'Feed Description: ', myfeed.feed.description
+		#if myfeed.feed.has_key('description'):
+		#	print 'Feed Description: ', myfeed.feed.description
 		if myfeed.feed.has_key('date'):
 			print 'Feed Date: ', myfeed.feed.date
 			# print 'Feed Date (in list form): ', myfeed.feed.date_parsed
 	elif (type == 'ATOM'):
-		if (myfeed.feed.has_key('subtitle') and (len(myfeed.feed.subtitle) != 0)):
-			print 'Feed Subtitle:' , myfeed.feed.subtitle
+		#if (myfeed.feed.has_key('subtitle') and (len(myfeed.feed.subtitle) != 0)):
+		#	print 'Feed Subtitle:' , myfeed.feed.subtitle
 		if myfeed.feed.has_key('updated'):
 			print 'Feed Date: ', myfeed.feed.updated
 			# print 'Feed Date (in list form): ', myfeed.feed.updated_parsed
@@ -310,13 +331,14 @@ def _DisplayGlobal(myfeed, type):
 
 	return
 
+
 # a specialized function to parse and process RSS feeds
 #	input: f = local file to write to
 #		   log = local log for error
 #		   myfeed = feedparser parsed object
 #   output: List of stories
 
-def _RSS(f, log, myfeed):
+def _RSS(f, log, myfeed, debug):
 	# intialize the story list, note, for each entry, it is a list, and append
 	#   the list into "stories"
 	# story is [Feed Title, Entry Title, Entry Content, Entry Category, Entry URL, Entry Timestamp]
@@ -326,30 +348,36 @@ def _RSS(f, log, myfeed):
 	n_entries = len(myfeed['entries'])
 
 	# print details of the feeds (global):
-	_DisplayGlobal(myfeed,'RSS')
+	if (debug):
+		_DisplayGlobal(myfeed,'RSS')
 
 	# get feed title
 	feedtitle = 'Undefined'
 	if myfeed.feed.has_key('title'):
 		feedtitle = myfeed.feed.title
+	print 'Feed Title:' , feedtitle
 
 	# write all entries parsed on local file
 	for count in range(n_entries):
-		f.write('Entry ' + str(count+1) + ' Information:\n')
-		f.write('Feed Title: ' + feedtitle + '\n')
+		if (debug):
+			f.write('Entry ' + str(count+1) + ' Information:\n')
+			f.write('Feed Title: ' + feedtitle + '\n')
 		# get entry title
 		entrytitle = 'Undefined'
 		if myfeed.entries[count].has_key('title'):
 			entrytitle = myfeed.entries[count].title
-			f.write('Entry Title: '+ entrytitle + '\n')
+			if (debug):
+				f.write('Entry Title: '+ entrytitle + '\n')
 		else:
-			f.write('Entry Title: Undefined' + '\n')
+			if (debug):
+				f.write('Entry Title: Undefined' + '\n')
 			log.write('Entry ' + str(count+1) + ' error: Entry title = Undefined\n')
 
 		# process content info (clear out HTML codes)
 		content = myfeed.entries[count].description
 		content = _ContentCutter(content)
-		f.write('Content: ' + content + '\n')
+		if (debug):
+			f.write('Content: ' + content + '\n')
 
 		# get entry URL
 		entryURL = ''
@@ -361,7 +389,8 @@ def _RSS(f, log, myfeed):
 			entryURL = 'localhost'
 			log.write('Entry ' + str(count+1) + ' error: entryURL = localhost\n')
 
-		f.write('Entry URL: ' + entryURL + '\n')
+		if (debug):
+			f.write('Entry URL: ' + entryURL + '\n')
 
 		# write date of entries
 		# convert Universal Feed Parser generated time (tuple) into UNIX time
@@ -370,30 +399,33 @@ def _RSS(f, log, myfeed):
 		if myfeed.entries[count].has_key('date_parsed'):
 			date_parsed = myfeed.entries[count].date_parsed
 			UNIX_time = int(time.mktime(date_parsed))
-			f.write('Time Stamp: ' + str(UNIX_time) + '\n')
-			f.write('Time Stamp GMT DEBUG: ' + str(date_parsed[0]) + '/' + str(date_parsed[1]) + '/' + \
-			str(date_parsed[2]) + ' ' + str(date_parsed[3]) + ':' + str(date_parsed[4]) + '\n\n')
+			if (debug):
+				f.write('Time Stamp: ' + str(UNIX_time) + '\n')
+				f.write('Time Stamp GMT DEBUG: ' + str(date_parsed[0]) + '/' + str(date_parsed[1]) + '/' + \
+				str(date_parsed[2]) + ' ' + str(date_parsed[3]) + ':' + str(date_parsed[4]) + '\n\n')
 		elif myfeed.feed.has_key('date'):
 			date_parsed = myfeed.feed.date_parsed
 			UNIX_time = int(time.mktime(date_parsed))
-			f.write('Time Stamp: ' + str(UNIX_time) + '\n')
-			f.write('Time Stamp GMT DEBUG: ' + str(date_parsed[0]) + '/' + str(date_parsed[1]) + '/' + \
-			str(date_parsed[2]) + ' ' + str(date_parsed[3]) + ':' + str(date_parsed[4]) + '\n\n')
+			if (debug):
+				f.write('Time Stamp: ' + str(UNIX_time) + '\n')
+				f.write('Time Stamp GMT DEBUG: ' + str(date_parsed[0]) + '/' + str(date_parsed[1]) + '/' + \
+				str(date_parsed[2]) + ' ' + str(date_parsed[3]) + ':' + str(date_parsed[4]) + '\n\n')
 		else:
-			f.write('Time Stamp: 0\n\n')
+			if (debug):
+				f.write('Time Stamp: 0\n\n')
 			log.write('Entry ' + str(count+1) + ' error: Time Stamp = 0\n')
 
 		# make a story from above parsed content
 		# story is [Feed Title, Entry Title, Entry Content, Entry Category, Entry URL, Entry Timestamp]
 		if content == '':
 			content = 'Undefined'
-		story = [feedtitle, entrytitle, content, 'NULL', entryURL, UNIX_time]
+		story = [feedtitle, entrytitle, content, 'Undefined', entryURL, UNIX_time]
 		stories.append(story)
 
 	return stories
 
 
-def _ATOM(f, log, myfeed):
+def _ATOM(f, log, myfeed, debug):
 	# intialize the story list, note, for each entry, it is a list, and append
 	#   the list into "stories"
 	# story is [Feed Title, Entry Title, Entry Content, Entry Category, Entry URL, Entry Timestamp]
@@ -403,24 +435,29 @@ def _ATOM(f, log, myfeed):
 	n_entries = len(myfeed['entries'])
 
 	# print details of the feeds (global):
-	_DisplayGlobal(myfeed,'ATOM')
+	if (debug):
+		_DisplayGlobal(myfeed,'ATOM')
 
 	# get feed title
 	feedtitle = 'Undefined'
 	if myfeed.feed.has_key('title'):
 		feedtitle = myfeed.feed.title
+	print 'Feed Title:' , feedtitle
 
 	# write all entries parsed on local file
 	for count in range(n_entries):
-		f.write('Entry ' + str(count+1) + ' Information:\n')
-		f.write('Feed Title: ' + feedtitle + '\n')
+		if (debug):
+			f.write('Entry ' + str(count+1) + ' Information:\n')
+			f.write('Feed Title: ' + feedtitle + '\n')
 		# get entry title
 		entrytitle = 'Undefined'
 		if myfeed.entries[count].has_key('title'):
 			entrytitle = myfeed.entries[count].title
-			f.write('Entry Title: '+ entrytitle + '\n')
+			if (debug):
+				f.write('Entry Title: '+ entrytitle + '\n')
 		else:
-			f.write('Entry Title: Undefined' + '\n')
+			if (debug):
+				f.write('Entry Title: Undefined' + '\n')
 			log.write('Entry ' + str(count+1) + ' error: Entry title = Undefined\n')
 
 
@@ -447,8 +484,9 @@ def _ATOM(f, log, myfeed):
 		else:
 			# ---------- Process content (clear out HTML codes) ---------------
 			content = _ContentCutter(content)
-			
-		f.write('Content: ' + content + '\n')
+
+		if (debug):
+			f.write('Content: ' + content + '\n')
 
 		# get entry URL (ID first, before LINK)
 		#   this order seems more correct in ATOM feeds
@@ -461,7 +499,8 @@ def _ATOM(f, log, myfeed):
 			entryURL = 'localhost'
 			log.write('Entry ' + str(count+1) + ' error: entryURL = localhost\n')
 
-		f.write('Entry URL: ' + entryURL + '\n')
+		if (debug):
+			f.write('Entry URL: ' + entryURL + '\n')
 
 		# write date of entries
 		# convert Universal Feed Parser generated time (tuple) into UNIX time
@@ -475,24 +514,27 @@ def _ATOM(f, log, myfeed):
 				date_parsed = myfeed.entries[count].published_parsed
 
 			UNIX_time = int(time.mktime(date_parsed))
-			f.write('Time Stamp: ' + str(UNIX_time) + '\n')
-			f.write('Time Stamp GMT DEBUG: ' + str(date_parsed[0]) + '/' + str(date_parsed[1]) + '/' + \
-			str(date_parsed[2]) + ' ' + str(date_parsed[3]) + ':' + str(date_parsed[4]) + '\n\n')
+			if (debug):
+				f.write('Time Stamp: ' + str(UNIX_time) + '\n')
+				f.write('Time Stamp GMT DEBUG: ' + str(date_parsed[0]) + '/' + str(date_parsed[1]) + '/' + \
+				str(date_parsed[2]) + ' ' + str(date_parsed[3]) + ':' + str(date_parsed[4]) + '\n\n')
 		else:
-			f.write('Time Stamp: 0\n\n')
+			if (debug):
+				f.write('Time Stamp: 0\n\n')
 			log.write('Entry ' + str(count+1) + ' error: Time Stamp = 0\n')
 
 		# make a story from above parsed content
 		# story is [Feed Title, Entry Title, Entry Content, Entry Category, Entry URL, Entry Timestamp]
 		if content == '':
 			content = 'Undefined'
-		story = [feedtitle, entrytitle, content, 'NULL', entryURL, UNIX_time]
+		story = [feedtitle, entrytitle, content, 'Undefined', entryURL, UNIX_time]
 		stories.append(story)
 
 	return stories
 
 
-
+# This is deprecated UpdateFeed, only useful to test output of ONE URL
+# THIS IS LOCAL TEST, NO modification to database is performed
 def UpdateFeed_deprecated():
 	# create object myfeed, which stores information of parsed CNN top stories RSS
 	# WORKING Flawlessly:
@@ -543,22 +585,23 @@ def UpdateFeed_deprecated():
 	# firstly, check for feeds encoding and synchronize this information
 	# f = open("feeds.txt", "w")
 	myfeed_encoding = myfeed.encoding
-	f = codecs.open('feeds.txt', encoding=myfeed_encoding, mode='w')
+	f = codecs.open('feeds_test1.txt', encoding=myfeed_encoding, mode='w')
 
 	# create a local log for indicating error
-	errlog = open("ERRORLOG.txt", mode ='w')
+	errlog = open("ERRORLOG_test1.txt", mode ='w')
 
 	# display global feed information that shared across all entries
 	print 'Feed Encoding: ', myfeed_encoding
 	print 'Feed version (type): ', myfeed.version
 
 	# run specified parser corresponding to type of feeds (RSS,atom,others)
+	debug = True
 	if (myfeed.version[:3] == "rss"):
 		print 'VERBOSE: RSS feed detected!'
-		stories = _RSS(f, errlog, myfeed)
+		stories = _RSS(f, errlog, myfeed, debug)
 	elif (myfeed.version[:4] == "atom"):
 		print 'VERBOSE: ATOM feed detected!'
-		stories = _ATOM(f, errlog, myfeed)
+		stories = _ATOM(f, errlog, myfeed, debug)
 	else:
 		stories = []
 		print 'UNKNOWN feed type!'
@@ -567,6 +610,7 @@ def UpdateFeed_deprecated():
 	return stories
 
 def UpdateFeed():
+	# DEBUG FLAG, LC DEBUG
 	debug = False
 	# create a local log for indicating error
 	errlog = open("ERRORLOG.txt", mode ='a')
@@ -669,8 +713,11 @@ def UpdateFeed():
 		# firstly, check for feeds encoding and synchronize this information
 		# f = open("feeds.txt", "w")
 
-		filename = 'feed' + str(filename_counter) + '.txt'
-		f = codecs.open(filename, encoding=myfeed.encoding, mode='w')
+		if (debug):
+			filename = 'feed' + str(filename_counter) + '.txt'
+			f = codecs.open(filename, encoding=myfeed.encoding, mode='a')
+		else:
+			f = codecs.open('placeholder_feed.txt', encoding=myfeed.encoding, mode='a')
 
 		if (debug):
 			# display global feed information that shared across all entries
@@ -681,20 +728,20 @@ def UpdateFeed():
 		if (myfeed.version[:3] == "rss"):
 			if (debug):
 				print 'VERBOSE: RSS feed detected!'
-			stories = _RSS(f, errlog, myfeed)
+			stories = _RSS(f, errlog, myfeed, debug)
 		elif (myfeed.version[:4] == "atom"):
 			if (debug):
 				print 'VERBOSE: ATOM feed detected!'
-			stories = _ATOM(f, errlog, myfeed)
+			stories = _ATOM(f, errlog, myfeed, debug)
 		else:
 			if (debug):
 				print 'UNKNOWN feed type!'
 			stories = []
 
-		if (debug):
-			f.close()
+		f.close()
 
 		all_stories.extend(stories)
+		filename_counter = filename_counter + 1
 
 	# now i have a big list of stories: all_stories (list of many story)
 	# story is [Feed Title, Entry Title, Entry Content, Entry Category, Entry URL, Entry Timestamp]
