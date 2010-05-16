@@ -105,6 +105,10 @@ Fixed some syntax errors
 From now on, testing is done on server, using python 2.6.5
 Code freeze for Friday discussion for concensus
 
+6.0.2 Test
+Fixing feed title name matching, algorithm flaws
+Fix to a point ON DUPLICATE KEY UPDATE c=c+1;
+code freeze until solution found
 
 Future:
 add more test cases to test for any bugs
@@ -626,6 +630,37 @@ def UpdateFeed():
 	for source_URL in source_URLs:
 		myfeed = feedparser.parse(source_URL)
 
+		# get feed title and update feed title to database, if not null
+		# we first get feed sid by URL, then update the title with sid
+		source_feed_title = 'Undefined'
+		if myfeed.feed.has_key('title'):
+			source_feed_title = myfeed.feed.title
+			if (len(source_feed_title) > 0):
+				cursor_title = conn.cursor ()
+				cursor_title.execute ("""
+                        SELECT sid
+                        FROM feed_sources
+						WHERE source_url = (%s);
+                        """, (source_URL))
+				feed_sid_tuple = cursor_title.fetchone ()
+				if (len(feed_sid_tuple) > 0):
+					feed_sid = feed_sid_tuple[0]
+					cursor_update_title = conn.cursor ()
+					cursor_update_title.execute ("""
+							UPDATE feed_sources
+							SET source_name = (%s)
+							WHERE sid = (%s);
+							""", (source_feed_title, feed_sid))
+
+					cursor_update_title.close ()
+				cursor_title.close ()
+				if (len(feed_sid_tuple) > 0):
+					conn.commit ()
+			else:
+				print 'NULL feed title detected, cannot update database for URL: ' , source_URL, '\n'
+				errlog.write('NULL feed title detected, cannot update database for URL: ', source_URL, '\n')
+
+
 		# create a local temp file that store all parsed content for demostration purpose
 		# firstly, check for feeds encoding and synchronize this information
 		# f = open("feeds.txt", "w")
@@ -681,7 +716,18 @@ def UpdateFeed():
 
 	# story is [Feed Title, Entry Title, Entry Content, Entry Category, Entry URL, Entry Timestamp]
 	cursor3 = conn.cursor ()
+
+	# LC DEBUG: DISPLAY ALL PROCESSED_STORIES
+	debug_counter0 = 0
 	for p_story in processed_stories:
+		debug_counter = 0
+		for item in p_story:
+			print 'STORY ',  debug_counter0, 'Field ' , debug_counter, '; ', item
+			debug_counter = debug_counter + 1
+		debug_counter0 = debug_counter0 + 1
+
+	for p_story in processed_stories:
+		print 'LC CHECK 1 ARRIVAL, PER STORY START' # LC DEBUG
 		# loop to check and get feed title
 		mysid = 0
 		for id_list in sources_id_list:
@@ -699,11 +745,11 @@ def UpdateFeed():
 			conn.close()
 			return []
 
-		cursor.execute ("""
+		cursor3.execute ("""
 			INSERT INTO feed_stories (title, content, url, time_stamp, sid, gid)
 			VALUES (%s, %s, %s, %s, %s, %s)
 			ON DUPLICATE KEY UPDATE c=c+1;
-			""", (p_story[1], p_story[2], p_story[4], p_story[5], mysid, 1))
+			""", (p_story[1][:255], p_story[2][:255], p_story[4][:255], int(p_story[5]), mysid, 1))
 
 	cursor3.close ()
 	cursor2.close ()
