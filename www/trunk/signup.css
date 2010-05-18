@@ -77,3 +77,12 @@ border: 1px solid navy;
 padding: 2px 6px;
 margin-left: 2em;
 }
+
+.validated
+{
+height:31px;
+width:88px;
+position:absolute;
+bottom:5px;
+right:5px;
+}

@@ -5,7 +5,7 @@ background-color:white;
 h1
 {
 color:navy;
-font-style:bold;
+font-weight:bold;
 text-align:center;
 font-family:sans-serif;
 }
@@ -55,9 +55,18 @@ width: 20em;
 
 legend
 {
-color: #navy;
+color: navy;
 background: #ffa20c;
 border: 1px solid navy;
 padding: 2px 6px;
 margin-left: 2em;
+}
+
+.validated
+{
+height:31px;
+width:88px;
+position:absolute;
+bottom:5px;
+right:5px;
 }
