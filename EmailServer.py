@@ -1,8 +1,8 @@
-#! /usr/bin/env python
+#!/usr/bin/python2.6
 
 import subprocess, shlex
 import sys
-import database # TODO: database is currently a test script
+import Database
 
 HOST = {'AT&T':'txt.att.net',
         'T-Mobile':'tmomail.net',
@@ -23,6 +23,10 @@ def runBashPipe(frontPipe, backPipe):
     backPipe = shlex.split(backPipe)
 
     # Execute the bash commands using subprocess
+    
+    #print "frontPipe:", frontPipe
+    #print "backPipe:", backPipe
+
     p1 = subprocess.Popen(frontPipe, stdout=subprocess.PIPE)
     p2 = subprocess.Popen(backPipe, stdin=p1.stdout, stdout=subprocess.PIPE)
     output = p2.communicate()[0]    
@@ -94,22 +98,22 @@ def sendStories(listOfStoriesURL):
             
             # Send
             if userMethod == "email":
-                sendAsEmail(userEmail, storyTitle, storyContent)
                 print "sendAsEmail"
                 print "mail:", userEmail
                 print "title:", storyTitle
                 print "storyContent:", storyContent
+                sendAsEmail(userEmail, storyTitle, storyContent)
             elif userMethod == "sms_text":
-                sendAsText(userPhone, userCarrier, storyTitle, storyContent)
                 print "sendAsText"
                 print "phone:", userPhone
                 print "carrier:", userCarrier
                 print "title:", storyTitle
                 print "storyContent:", storyContent
+                sendAsText(userPhone, userCarrier, storyTitle, storyContent)
             elif userMethod == "sms_link":
-                sendAsText(userPhone, userCarrier, storyTitle, storyURL)
                 print "sendAsText"
                 print "phone:", userPhone
                 print "carrier:", userCarrier
                 print "title:", storyTitle
-                print "storyURL:", storyURL
+                print "storyURL:", storyURLa
+                sendAsText(userPhone, userCarrier, storyTitle, storyURL)
