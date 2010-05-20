@@ -1,0 +1,263 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="/css/rss20.xsl" type="text/xsl"?>
+<rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:media="http://search.yahoo.com/mrss/" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:nyt="http://www.nytimes.com/namespaces/rss/2.0" version="2.0" xmlns:pheedo="http://www.pheedo.com/namespace/pheedo">
+	<channel>
+		<title>NYT &gt; Home Page</title>
+		<link>http://www.nytimes.com/pages/index.html?partner=rss</link>
+		<atom:link rel="self" type="application/rss+xml" href="http://www.nytimes.com/services/xml/rss/nyt/HomePage.xml"/>
+		<description/>
+		<language>en-us</language>
+		<copyright>Copyright 2010  The New York Times Company</copyright>
+		<lastBuildDate>Thu, 20 May 2010 20:49:29 GMT </lastBuildDate>
+		<image>
+			<title>NYT &gt; Home Page</title>
+			<url>http://graphics.nytimes.com/images/section/NytSectionHeader.gif</url>
+			<link>http://www.nytimes.com/pages/index.html?partner=rss</link>
+		</image>
+		<item>
+			<title>Bill to Overhaul Financial Rules Clears Hurdle in Senate Vote</title>
+			<link>http://feeds.nytimes.com/click.phdo?i=8caa554bc59c2d00971685228282bca2</link>
+			<pheedo:origLink>http://www.nytimes.com/2010/05/21/business/21regulate.html?partner=rss&amp;amp;emc=rss</pheedo:origLink>
+			<guid isPermaLink="false">http://www.nytimes.com/2010/05/21/business/21regulate.html</guid>
+			<media:content url="http://graphics8.nytimes.com/images/2010/05/21/business/21regulate2/21regulate2-thumbStandard.jpg" medium="image" height="75" width="75"/>
+			<media:description>The decisive vote to close debate on the financial regulation bill was supplied by Senator Scott Brown, the Republican freshman of Massachusetts.</media:description>
+			<media:credit>Chip Somodevilla/Getty Images North America, via Getty Images</media:credit>
+			<description>Three Republicans joined the Democratic majority in an action that put Congress on a path to approve a broad expansion of oversight of the financial markets.&lt;br clear=&quot;both&quot; style=&quot;clear: both;&quot;/&gt;
+&lt;br clear=&quot;both&quot; style=&quot;clear: both;&quot;/&gt;
+&lt;a href=&quot;http://ads.pheedo.com/click.phdo?s=8caa554bc59c2d00971685228282bca2&amp;p=1&quot;&gt;&lt;img alt=&quot;&quot; style=&quot;border: 0;&quot; border=&quot;0&quot; src=&quot;http://ads.pheedo.com/img.phdo?s=8caa554bc59c2d00971685228282bca2&amp;p=1&quot;/&gt;&lt;/a&gt;
+&lt;img alt=&quot;&quot; height=&quot;0&quot; width=&quot;0&quot; border=&quot;0&quot; style=&quot;display:none&quot; src=&quot;http://a.triggit.com/px?u=pheedo&amp;rtv=Business&amp;rtv=p29518&amp;rtv=f18272&quot;/&gt;&lt;img alt=&quot;&quot; height=&quot;0&quot; width=&quot;0&quot; border=&quot;0&quot; style=&quot;display:none&quot; src=&quot;http://pixel.quantserve.com/pixel/p-8bUhLiluj0fAw.gif?labels=pub.29518.rss.Business.18272,cat.Business.rss&quot;/&gt;</description>
+			<dc:creator>By DAVID M. HERSZENHORN</dc:creator>
+			<pubDate>Thu, 20 May 2010 20:34:50 GMT</pubDate>
+			<category domain="http://www.nytimes.com/namespaces/mdes">Banks and Banking</category>
+			<category domain="http://www.nytimes.com/namespaces/des">Reform and Reorganization</category>
+			<category domain="http://www.nytimes.com/namespaces/des">United States Politics and Government</category>
+			<category domain="http://www.nytimes.com/namespaces/des">Regulation and Deregulation of Industry</category>
+			<category domain="http://www.nytimes.com/namespaces/des">Subprime Mortgage Crisis</category>
+		</item>
+		<item>
+			<title>Stocks Fall Amid Concern About Europe&#x2019;s Economy</title>
+			<link>http://feeds.nytimes.com/click.phdo?i=d8eff149948a8e98d560880210346d8d</link>
+			<pheedo:origLink>http://www.nytimes.com/2010/05/21/business/21markets.html?partner=rss&amp;amp;emc=rss</pheedo:origLink>
+			<guid isPermaLink="false">http://www.nytimes.com/2010/05/21/business/21markets.html</guid>
+			<media:content url="http://graphics8.nytimes.com/images/2010/05/21/business/21markets1/21markets1-thumbStandard.jpg" medium="image" height="75" width="75"/>
+			<media:description>Trader Brendan Lanahan works on the floor of the New York Stock Exchange on Thursday. </media:description>
+			<media:credit>Brendan McDermid/Reuters</media:credit>
+			<description>Stocks on Wall Street fell sharply as uncertainty over Europe and financial regulation continued to weigh on the market.&lt;br clear=&quot;both&quot; style=&quot;clear: both;&quot;/&gt;
+&lt;br clear=&quot;both&quot; style=&quot;clear: both;&quot;/&gt;
+&lt;a href=&quot;http://ads.pheedo.com/click.phdo?s=d8eff149948a8e98d560880210346d8d&amp;p=1&quot;&gt;&lt;img alt=&quot;&quot; style=&quot;border: 0;&quot; border=&quot;0&quot; src=&quot;http://ads.pheedo.com/img.phdo?s=d8eff149948a8e98d560880210346d8d&amp;p=1&quot;/&gt;&lt;/a&gt;
+&lt;img alt=&quot;&quot; height=&quot;0&quot; width=&quot;0&quot; border=&quot;0&quot; style=&quot;display:none&quot; src=&quot;http://a.triggit.com/px?u=pheedo&amp;rtv=Business&amp;rtv=p29518&amp;rtv=f18272&quot;/&gt;&lt;img alt=&quot;&quot; height=&quot;0&quot; width=&quot;0&quot; border=&quot;0&quot; style=&quot;display:none&quot; src=&quot;http://pixel.quantserve.com/pixel/p-8bUhLiluj0fAw.gif?labels=pub.29518.rss.Business.18272,cat.Business.rss&quot;/&gt; </description>
+			<dc:creator>By CHRISTINE HAUSER and MATTHEW SALTMARSH</dc:creator>
+			<pubDate>Thu, 20 May 2010 20:17:14 GMT</pubDate>
+			<category domain="http://www.nytimes.com/namespaces/des">Stocks and Bonds</category>
+			<category domain="http://www.nytimes.com/namespaces/des">Euro (Currency)</category>
+		</item>
+		<item>
+			<title>Agency Orders BP to Use a Less Toxic Chemical in Cleanup</title>
+			<link>http://feeds.nytimes.com/click.phdo?i=a5b5de8f1a5c60dfedacd64be8b5910a</link>
+			<pheedo:origLink>http://www.nytimes.com/2010/05/21/science/earth/21disperse.html?partner=rss&amp;amp;emc=rss</pheedo:origLink>
+			<guid isPermaLink="false">http://www.nytimes.com/2010/05/21/science/earth/21disperse.html</guid>
+			<description>Citing concerns about the chemical the company is using to break up the oil in the gulf, the E.P.A. gave BP 24 hours to start using alternative dispersant.&lt;br clear=&quot;both&quot; style=&quot;clear: both;&quot;/&gt;
+&lt;br clear=&quot;both&quot; style=&quot;clear: both;&quot;/&gt;
+&lt;a href=&quot;http://ads.pheedo.com/click.phdo?s=a5b5de8f1a5c60dfedacd64be8b5910a&amp;p=1&quot;&gt;&lt;img alt=&quot;&quot; style=&quot;border: 0;&quot; border=&quot;0&quot; src=&quot;http://ads.pheedo.com/img.phdo?s=a5b5de8f1a5c60dfedacd64be8b5910a&amp;p=1&quot;/&gt;&lt;/a&gt;
+&lt;img alt=&quot;&quot; height=&quot;0&quot; width=&quot;0&quot; border=&quot;0&quot; style=&quot;display:none&quot; src=&quot;http://a.triggit.com/px?u=pheedo&amp;rtv=Business&amp;rtv=p29518&amp;rtv=f18272&quot;/&gt;&lt;img alt=&quot;&quot; height=&quot;0&quot; width=&quot;0&quot; border=&quot;0&quot; style=&quot;display:none&quot; src=&quot;http://pixel.quantserve.com/pixel/p-8bUhLiluj0fAw.gif?labels=pub.29518.rss.Business.18272,cat.Business.rss&quot;/&gt;</description>
+			<dc:creator>By ELISABETH ROSENTHAL</dc:creator>
+			<pubDate>Thu, 20 May 2010 19:19:45 GMT</pubDate>
+			<category domain="http://www.nytimes.com/namespaces/nyt_org_all">Environmental Protection Agency</category>
+			<category domain="http://www.nytimes.com/namespaces/nyt_org_all">BP Plc|BP|NYSE</category>
+			<category domain="http://www.nytimes.com/namespaces/des">Oil (Petroleum) and Gasoline</category>
+			<category domain="http://www.nytimes.com/namespaces/des">Accidents and Safety</category>
+		</item>
+		<item>
+			<title>Paul's Views on Civil Rights Cause a Stir</title>
+			<link>http://feeds.nytimes.com/click.phdo?i=ad7619ca2301f511baeabde40f307a35</link>
+			<pheedo:origLink>http://thecaucus.blogs.nytimes.com/2010/05/20/pauls-views-on-civil-rights-cause-a-stir/?partner=rss&amp;amp;emc=rss</pheedo:origLink>
+			<guid isPermaLink="false">http://thecaucus.blogs.nytimes.com/2010/05/20/pauls-views-on-civil-rights-cause-a-stir/</guid>
+			<description>The Republican nominee for the Senate seat in Kentucky gave a rather murky explanation of whether he supported the Civil Rights Act.&lt;br clear=&quot;both&quot; style=&quot;clear: both;&quot;/&gt;
+&lt;br clear=&quot;both&quot; style=&quot;clear: both;&quot;/&gt;
+&lt;a href=&quot;http://ads.pheedo.com/click.phdo?s=ad7619ca2301f511baeabde40f307a35&amp;p=1&quot;&gt;&lt;img alt=&quot;&quot; style=&quot;border: 0;&quot; border=&quot;0&quot; src=&quot;http://ads.pheedo.com/img.phdo?s=ad7619ca2301f511baeabde40f307a35&amp;p=1&quot;/&gt;&lt;/a&gt;
+&lt;img alt=&quot;&quot; height=&quot;0&quot; width=&quot;0&quot; border=&quot;0&quot; style=&quot;display:none&quot; src=&quot;http://a.triggit.com/px?u=pheedo&amp;rtv=Business&amp;rtv=p29518&amp;rtv=f18272&quot;/&gt;&lt;img alt=&quot;&quot; height=&quot;0&quot; width=&quot;0&quot; border=&quot;0&quot; style=&quot;display:none&quot; src=&quot;http://pixel.quantserve.com/pixel/p-8bUhLiluj0fAw.gif?labels=pub.29518.rss.Business.18272,cat.Business.rss&quot;/&gt; </description>
+			<dc:creator>By ADAM NAGOURNEY</dc:creator>
+			<pubDate>Thu, 20 May 2010 18:18:23 GMT</pubDate>
+			<category domain="http://www.nytimes.com/namespaces/">civil rights</category>
+			<category domain="http://www.nytimes.com/namespaces/">kentucky</category>
+			<category domain="http://www.nytimes.com/namespaces/">rand paul</category>
+			<category domain="http://www.nytimes.com/namespaces/">Republicans</category>
+			<category domain="http://www.nytimes.com/namespaces/">Senate</category>
+			<category domain="http://www.nytimes.com/namespaces/">Elections</category>
+			<category domain="http://www.nytimes.com/namespaces/">The Caucus</category>
+		</item>
+		<item>
+			<title>Swinger Tests China&#x2019;s Sex Morals</title>
+			<link>http://feeds.nytimes.com/click.phdo?i=86328b1b55bf48b21690e4da96f98d68</link>
+			<pheedo:origLink>http://www.nytimes.com/2010/05/21/world/asia/21china.html?partner=rss&amp;amp;emc=rss</pheedo:origLink>
+			<guid isPermaLink="false">http://www.nytimes.com/2010/05/21/world/asia/21china.html</guid>
+			<media:content url="http://graphics8.nytimes.com/images/2010/05/21/world/21china-cnd/21china-cnd-thumbStandard.jpg" medium="image" height="75" width="75"/>
+			<media:description>Ma Yaohai, 53, was sentenced on Thursday to three-and-a-half years in prison for being a member clubs that practiced group sex and partner swapping. </media:description>
+			<media:credit>Associated Press</media:credit>
+			<description>Ma Yaohai, who arranged group sex encounters in chat rooms, was sentenced to prison for &#x201C;crowd licentiousness.&#x201D;&lt;br clear=&quot;both&quot; style=&quot;clear: both;&quot;/&gt;
+&lt;br clear=&quot;both&quot; style=&quot;clear: both;&quot;/&gt;
+&lt;a href=&quot;http://ads.pheedo.com/click.phdo?s=86328b1b55bf48b21690e4da96f98d68&amp;p=1&quot;&gt;&lt;img alt=&quot;&quot; style=&quot;border: 0;&quot; border=&quot;0&quot; src=&quot;http://ads.pheedo.com/img.phdo?s=86328b1b55bf48b21690e4da96f98d68&amp;p=1&quot;/&gt;&lt;/a&gt;
+&lt;img alt=&quot;&quot; height=&quot;0&quot; width=&quot;0&quot; border=&quot;0&quot; style=&quot;display:none&quot; src=&quot;http://a.triggit.com/px?u=pheedo&amp;rtv=Business&amp;rtv=p29518&amp;rtv=f18272&quot;/&gt;&lt;img alt=&quot;&quot; height=&quot;0&quot; width=&quot;0&quot; border=&quot;0&quot; style=&quot;display:none&quot; src=&quot;http://pixel.quantserve.com/pixel/p-8bUhLiluj0fAw.gif?labels=pub.29518.rss.Business.18272,cat.Business.rss&quot;/&gt;</description>
+			<dc:creator>By EDWARD WONG</dc:creator>
+			<pubDate>Thu, 20 May 2010 17:30:50 GMT</pubDate>
+			<category domain="http://www.nytimes.com/namespaces/nyt_geo">China</category>
+			<category domain="http://www.nytimes.com/namespaces/des">Sex</category>
+			<category domain="http://www.nytimes.com/namespaces/nyt_per">Ma Yaohai</category>
+			<category domain="http://www.nytimes.com/namespaces/des">Computers and the Internet</category>
+		</item>
+		<item>
+			<title>Synthetic Bacterial Genome Takes Over Cell</title>
+			<link>http://feeds.nytimes.com/click.phdo?i=0aa1866ed218c98b7b186308bb22c6cb</link>
+			<pheedo:origLink>http://www.nytimes.com/2010/05/21/science/21cell.html?partner=rss&amp;amp;emc=rss</pheedo:origLink>
+			<guid isPermaLink="false">http://www.nytimes.com/2010/05/21/science/21cell.html</guid>
+			<description>J. Craig Venter called it a step toward making microbes from scratch, but some scientists criticize the approach.&lt;br clear=&quot;both&quot; style=&quot;clear: both;&quot;/&gt;
+&lt;br clear=&quot;both&quot; style=&quot;clear: both;&quot;/&gt;
+&lt;a href=&quot;http://ads.pheedo.com/click.phdo?s=0aa1866ed218c98b7b186308bb22c6cb&amp;p=1&quot;&gt;&lt;img alt=&quot;&quot; style=&quot;border: 0;&quot; border=&quot;0&quot; src=&quot;http://ads.pheedo.com/img.phdo?s=0aa1866ed218c98b7b186308bb22c6cb&amp;p=1&quot;/&gt;&lt;/a&gt;
+&lt;img alt=&quot;&quot; height=&quot;0&quot; width=&quot;0&quot; border=&quot;0&quot; style=&quot;display:none&quot; src=&quot;http://a.triggit.com/px?u=pheedo&amp;rtv=Business&amp;rtv=p29518&amp;rtv=f18272&quot;/&gt;&lt;img alt=&quot;&quot; height=&quot;0&quot; width=&quot;0&quot; border=&quot;0&quot; style=&quot;display:none&quot; src=&quot;http://pixel.quantserve.com/pixel/p-8bUhLiluj0fAw.gif?labels=pub.29518.rss.Business.18272,cat.Business.rss&quot;/&gt;</description>
+			<dc:creator>By NICHOLAS WADE</dc:creator>
+			<pubDate>Thu, 20 May 2010 18:38:00 GMT</pubDate>
+			<category domain="http://www.nytimes.com/namespaces/des">Genetic Engineering</category>
+			<category domain="http://www.nytimes.com/namespaces/nyt_per">Venter, J Craig</category>
+			<category domain="http://www.nytimes.com/namespaces/mdes">Bacteria</category>
+			<category domain="http://www.nytimes.com/namespaces/des">Science and Technology</category>
+		</item>
+		<item>
+			<title>Bangkok Grows Calm, but Social Divisions Remain</title>
+			<link>http://feeds.nytimes.com/click.phdo?i=f6c3eac52bb01020618dcf5ca2712ed0</link>
+			<pheedo:origLink>http://www.nytimes.com/2010/05/21/world/asia/21bangkok.html?partner=rss&amp;amp;emc=rss</pheedo:origLink>
+			<guid isPermaLink="false">http://www.nytimes.com/2010/05/21/world/asia/21bangkok.html</guid>
+			<media:content url="http://graphics8.nytimes.com/images/2010/05/21/world/21bangkok-cnd/21bangkok-cnd-thumbStandard.jpg" medium="image" height="75" width="75"/>
+			<media:description>An anti-government supporter cried while being escorted out of a temple where she was seeking refuge along with hundreds of other protesters in Bangkok on Thursday.</media:description>
+			<media:credit>Adrees Latif/Reuters</media:credit>
+			<description>The protesters have been dispersed, but the battle for power between the classes and the politicians who manipulate them remains.&lt;br clear=&quot;both&quot; style=&quot;clear: both;&quot;/&gt;
+&lt;br clear=&quot;both&quot; style=&quot;clear: both;&quot;/&gt;
+&lt;a href=&quot;http://ads.pheedo.com/click.phdo?s=f6c3eac52bb01020618dcf5ca2712ed0&amp;p=1&quot;&gt;&lt;img alt=&quot;&quot; style=&quot;border: 0;&quot; border=&quot;0&quot; src=&quot;http://ads.pheedo.com/img.phdo?s=f6c3eac52bb01020618dcf5ca2712ed0&amp;p=1&quot;/&gt;&lt;/a&gt;
+&lt;img alt=&quot;&quot; height=&quot;0&quot; width=&quot;0&quot; border=&quot;0&quot; style=&quot;display:none&quot; src=&quot;http://a.triggit.com/px?u=pheedo&amp;rtv=Business&amp;rtv=p29518&amp;rtv=f18272&quot;/&gt;&lt;img alt=&quot;&quot; height=&quot;0&quot; width=&quot;0&quot; border=&quot;0&quot; style=&quot;display:none&quot; src=&quot;http://pixel.quantserve.com/pixel/p-8bUhLiluj0fAw.gif?labels=pub.29518.rss.Business.18272,cat.Business.rss&quot;/&gt;</description>
+			<dc:creator>By SETH MYDANS</dc:creator>
+			<pubDate>Thu, 20 May 2010 16:10:30 GMT</pubDate>
+			<category domain="http://www.nytimes.com/namespaces/nyt_geo">Thailand</category>
+			<category domain="http://www.nytimes.com/namespaces/des">Politics and Government</category>
+			<category domain="http://www.nytimes.com/namespaces/des">Demonstrations and Riots</category>
+		</item>
+		<item>
+			<title>Calder&#xF3;n Calls for Restoring Assault Weapons Ban</title>
+			<link>http://feeds.nytimes.com/click.phdo?i=b0be81d4d0d19b0dce325c499903bdb3</link>
+			<pheedo:origLink>http://thecaucus.blogs.nytimes.com/2010/05/20/calderon-calls-for-restoring-assault-weapons-ban/?partner=rss&amp;amp;emc=rss</pheedo:origLink>
+			<guid isPermaLink="false">http://thecaucus.blogs.nytimes.com/2010/05/20/calderon-calls-for-restoring-assault-weapons-ban/</guid>
+			<description>The Mexican president also slammed Arizona's immigration law in a speech before a joint session of Congress.&lt;br clear=&quot;both&quot; style=&quot;clear: both;&quot;/&gt;
+&lt;br clear=&quot;both&quot; style=&quot;clear: both;&quot;/&gt;
+&lt;a href=&quot;http://ads.pheedo.com/click.phdo?s=b0be81d4d0d19b0dce325c499903bdb3&amp;p=1&quot;&gt;&lt;img alt=&quot;&quot; style=&quot;border: 0;&quot; border=&quot;0&quot; src=&quot;http://ads.pheedo.com/img.phdo?s=b0be81d4d0d19b0dce325c499903bdb3&amp;p=1&quot;/&gt;&lt;/a&gt;
+&lt;img alt=&quot;&quot; height=&quot;0&quot; width=&quot;0&quot; border=&quot;0&quot; style=&quot;display:none&quot; src=&quot;http://a.triggit.com/px?u=pheedo&amp;rtv=Business&amp;rtv=p29518&amp;rtv=f18272&quot;/&gt;&lt;img alt=&quot;&quot; height=&quot;0&quot; width=&quot;0&quot; border=&quot;0&quot; style=&quot;display:none&quot; src=&quot;http://pixel.quantserve.com/pixel/p-8bUhLiluj0fAw.gif?labels=pub.29518.rss.Business.18272,cat.Business.rss&quot;/&gt; </description>
+			<dc:creator>By BRIAN KNOWLTON</dc:creator>
+			<pubDate>Thu, 20 May 2010 19:18:01 GMT</pubDate>
+			<category domain="http://www.nytimes.com/namespaces/">assault weapons ban</category>
+			<category domain="http://www.nytimes.com/namespaces/">Congress</category>
+			<category domain="http://www.nytimes.com/namespaces/">drug trafficking</category>
+			<category domain="http://www.nytimes.com/namespaces/">Felipe Calderon</category>
+			<category domain="http://www.nytimes.com/namespaces/">immigration</category>
+			<category domain="http://www.nytimes.com/namespaces/">mexico</category>
+			<category domain="http://www.nytimes.com/namespaces/">Congress</category>
+			<category domain="http://www.nytimes.com/namespaces/">The Caucus</category>
+		</item>
+		<item>
+			<title>Google Moves to TVs With Help From Intel and Sony</title>
+			<link>http://feeds.nytimes.com/click.phdo?i=550917e0a832d2d24602e58a484d741f</link>
+			<pheedo:origLink>http://www.nytimes.com/2010/05/21/technology/21google.html?partner=rss&amp;amp;emc=rss</pheedo:origLink>
+			<guid isPermaLink="false">http://www.nytimes.com/2010/05/21/technology/21google.html</guid>
+			<media:content url="http://graphics8.nytimes.com/images/2010/05/21/technology/21google-web/21google-web-thumbStandard.jpg" medium="image" height="75" width="75"/>
+			<media:description>Google TV aims to mix the Web and TV seamlessly. </media:description>
+			<media:credit/>
+			<description>Google TV promises to integrate the Web and TV, but it relies on TV manufacturers to use its software.&lt;br clear=&quot;both&quot; style=&quot;clear: both;&quot;/&gt;
+&lt;br clear=&quot;both&quot; style=&quot;clear: both;&quot;/&gt;
+&lt;a href=&quot;http://ads.pheedo.com/click.phdo?s=550917e0a832d2d24602e58a484d741f&amp;p=1&quot;&gt;&lt;img alt=&quot;&quot; style=&quot;border: 0;&quot; border=&quot;0&quot; src=&quot;http://ads.pheedo.com/img.phdo?s=550917e0a832d2d24602e58a484d741f&amp;p=1&quot;/&gt;&lt;/a&gt;
+&lt;img alt=&quot;&quot; height=&quot;0&quot; width=&quot;0&quot; border=&quot;0&quot; style=&quot;display:none&quot; src=&quot;http://a.triggit.com/px?u=pheedo&amp;rtv=Business&amp;rtv=p29518&amp;rtv=f18272&quot;/&gt;&lt;img alt=&quot;&quot; height=&quot;0&quot; width=&quot;0&quot; border=&quot;0&quot; style=&quot;display:none&quot; src=&quot;http://pixel.quantserve.com/pixel/p-8bUhLiluj0fAw.gif?labels=pub.29518.rss.Business.18272,cat.Business.rss&quot;/&gt;</description>
+			<dc:creator>By BRAD STONE</dc:creator>
+			<pubDate>Thu, 20 May 2010 19:50:21 GMT</pubDate>
+			<category domain="http://www.nytimes.com/namespaces/des">Television</category>
+			<category domain="http://www.nytimes.com/namespaces/nyt_org_all">Google Inc|GOOG|NASDAQ</category>
+			<category domain="http://www.nytimes.com/namespaces/des">Computers and the Internet</category>
+			<category domain="http://www.nytimes.com/namespaces/nyt_org_all">Intel Corp|INTC|NASDAQ</category>
+			<category domain="http://www.nytimes.com/namespaces/nyt_org_all">SONY Corporation|SNE|NYSE</category>
+		</item>
+		<item>
+			<title>Reading Test Shows Mixed Results Under Bloomberg</title>
+			<link>http://feeds.nytimes.com/click.phdo?i=af6397030a2ce40d987f0013267082f2</link>
+			<pheedo:origLink>http://www.nytimes.com/2010/05/21/education/21scores.html?partner=rss&amp;amp;emc=rss</pheedo:origLink>
+			<guid isPermaLink="false">http://www.nytimes.com/2010/05/21/education/21scores.html</guid>
+			<description>Fourth graders&#x2019; scores have improved significantly during his term, but eighth graders&#x2019; scores have not.&lt;br clear=&quot;both&quot; style=&quot;clear: both;&quot;/&gt;
+&lt;br clear=&quot;both&quot; style=&quot;clear: both;&quot;/&gt;
+&lt;a href=&quot;http://ads.pheedo.com/click.phdo?s=af6397030a2ce40d987f0013267082f2&amp;p=1&quot;&gt;&lt;img alt=&quot;&quot; style=&quot;border: 0;&quot; border=&quot;0&quot; src=&quot;http://ads.pheedo.com/img.phdo?s=af6397030a2ce40d987f0013267082f2&amp;p=1&quot;/&gt;&lt;/a&gt;
+&lt;img alt=&quot;&quot; height=&quot;0&quot; width=&quot;0&quot; border=&quot;0&quot; style=&quot;display:none&quot; src=&quot;http://a.triggit.com/px?u=pheedo&amp;rtv=Business&amp;rtv=p29518&amp;rtv=f18272&quot;/&gt;&lt;img alt=&quot;&quot; height=&quot;0&quot; width=&quot;0&quot; border=&quot;0&quot; style=&quot;display:none&quot; src=&quot;http://pixel.quantserve.com/pixel/p-8bUhLiluj0fAw.gif?labels=pub.29518.rss.Business.18272,cat.Business.rss&quot;/&gt;</description>
+			<dc:creator>By SHARON OTTERMAN</dc:creator>
+			<pubDate>Thu, 20 May 2010 18:29:56 GMT</pubDate>
+			<category domain="http://www.nytimes.com/namespaces/mdes">National Assessment of Educational Progress</category>
+			<category domain="http://www.nytimes.com/namespaces/des">Tests and Testing</category>
+			<category domain="http://www.nytimes.com/namespaces/nyt_per">Bloomberg, Michael R</category>
+			<category domain="http://www.nytimes.com/namespaces/nyt_geo">New York State</category>
+			<category domain="http://www.nytimes.com/namespaces/nyt_geo">New York City</category>
+			<category domain="http://www.nytimes.com/namespaces/des">Education and Schools</category>
+		</item>
+		<item>
+			<title>Landis, Admitting Doping, Accuses Top U.S. Cyclists</title>
+			<link>http://feeds.nytimes.com/click.phdo?i=c586cabee8efa10aeef9624dcd56e4d4</link>
+			<pheedo:origLink>http://www.nytimes.com/2010/05/21/sports/cycling/21landis.html?partner=rss&amp;amp;emc=rss</pheedo:origLink>
+			<guid isPermaLink="false">http://www.nytimes.com/2010/05/21/sports/cycling/21landis.html</guid>
+			<media:content url="http://graphics8.nytimes.com/images/2010/05/20/sports/cycling/20floydlandis/20floydlandis-thumbStandard.jpg" medium="image" height="75" width="75"/>
+			<media:description>Floyd Landis, left, accused his former teammates, including Lance Armstrong, riding in the 2004 Tour de France, of doping.</media:description>
+			<media:credit>Bernard Papon/L'EQUIPE, via Associated Press</media:credit>
+			<description>Floyd Landis admitted to using performance-enhancing drugs and said many other top U.S. riders had also.&lt;br clear=&quot;both&quot; style=&quot;clear: both;&quot;/&gt;
+&lt;br clear=&quot;both&quot; style=&quot;clear: both;&quot;/&gt;
+&lt;a href=&quot;http://ads.pheedo.com/click.phdo?s=c586cabee8efa10aeef9624dcd56e4d4&amp;p=1&quot;&gt;&lt;img alt=&quot;&quot; style=&quot;border: 0;&quot; border=&quot;0&quot; src=&quot;http://ads.pheedo.com/img.phdo?s=c586cabee8efa10aeef9624dcd56e4d4&amp;p=1&quot;/&gt;&lt;/a&gt;
+&lt;img alt=&quot;&quot; height=&quot;0&quot; width=&quot;0&quot; border=&quot;0&quot; style=&quot;display:none&quot; src=&quot;http://a.triggit.com/px?u=pheedo&amp;rtv=Business&amp;rtv=p29518&amp;rtv=f18272&quot;/&gt;&lt;img alt=&quot;&quot; height=&quot;0&quot; width=&quot;0&quot; border=&quot;0&quot; style=&quot;display:none&quot; src=&quot;http://pixel.quantserve.com/pixel/p-8bUhLiluj0fAw.gif?labels=pub.29518.rss.Business.18272,cat.Business.rss&quot;/&gt;</description>
+			<dc:creator>By JULIET MACUR and MICHAEL S. SCHMIDT</dc:creator>
+			<pubDate>Thu, 20 May 2010 18:53:52 GMT</pubDate>
+			<category domain="http://www.nytimes.com/namespaces/des">Doping (Sports)</category>
+			<category domain="http://www.nytimes.com/namespaces/des">Bicycles and Bicycling</category>
+			<category domain="http://www.nytimes.com/namespaces/nyt_per">Landis, Floyd</category>
+			<category domain="http://www.nytimes.com/namespaces/nyt_per">Armstrong, Lance</category>
+			<category domain="http://www.nytimes.com/namespaces/nyt_per">Hincapie, George</category>
+			<category domain="http://www.nytimes.com/namespaces/nyt_per">Leipheimer, Levi</category>
+			<category domain="http://www.nytimes.com/namespaces/nyt_per">Novitzky, Jeff</category>
+		</item>
+		<item>
+			<title>Pakistan Widens Online Ban to Include YouTube</title>
+			<link>http://feeds.nytimes.com/click.phdo?i=199df883157a03da560a40473728c6ab</link>
+			<pheedo:origLink>http://www.nytimes.com/2010/05/21/world/asia/21pstan.html?partner=rss&amp;amp;emc=rss</pheedo:origLink>
+			<guid isPermaLink="false">http://www.nytimes.com/2010/05/21/world/asia/21pstan.html</guid>
+			<media:content url="http://graphics8.nytimes.com/images/2010/05/21/world/21pstanspan-cnd/21pstanspan-cnd-thumbStandard.jpg" medium="image" height="75" width="75"/>
+			<media:description>A protest in Karachi on Thursday against the published caricatures of the Prophet Muhammad on Facebook.</media:description>
+			<media:credit>Asif Hassan/Agence France-Presse &#x2014; Getty Images</media:credit>
+			<description>The government said it had blocked access to the video-sharing Web site because of &#x201C;growing sacrilegious content.&#x201D;&lt;br clear=&quot;both&quot; style=&quot;clear: both;&quot;/&gt;
+&lt;br clear=&quot;both&quot; style=&quot;clear: both;&quot;/&gt;
+&lt;a href=&quot;http://ads.pheedo.com/click.phdo?s=199df883157a03da560a40473728c6ab&amp;p=1&quot;&gt;&lt;img alt=&quot;&quot; style=&quot;border: 0;&quot; border=&quot;0&quot; src=&quot;http://ads.pheedo.com/img.phdo?s=199df883157a03da560a40473728c6ab&amp;p=1&quot;/&gt;&lt;/a&gt;
+&lt;img alt=&quot;&quot; height=&quot;0&quot; width=&quot;0&quot; border=&quot;0&quot; style=&quot;display:none&quot; src=&quot;http://a.triggit.com/px?u=pheedo&amp;rtv=Business&amp;rtv=p29518&amp;rtv=f18272&quot;/&gt;&lt;img alt=&quot;&quot; height=&quot;0&quot; width=&quot;0&quot; border=&quot;0&quot; style=&quot;display:none&quot; src=&quot;http://pixel.quantserve.com/pixel/p-8bUhLiluj0fAw.gif?labels=pub.29518.rss.Business.18272,cat.Business.rss&quot;/&gt; </description>
+			<dc:creator>By SABRINA TAVERNISE</dc:creator>
+			<pubDate>Thu, 20 May 2010 16:48:35 GMT</pubDate>
+			<category domain="http://www.nytimes.com/namespaces/nyt_geo">Pakistan</category>
+			<category domain="http://www.nytimes.com/namespaces/des">Computers and the Internet</category>
+			<category domain="http://www.nytimes.com/namespaces/nyt_org_all">YouTube.com</category>
+			<category domain="http://www.nytimes.com/namespaces/des">Islam</category>
+			<category domain="http://www.nytimes.com/namespaces/des">Freedom of Speech and Expression</category>
+		</item>
+		<item>
+			<title>Television: As &#x2018;Lost&#x2019; Ends on ABC, Mythology Trumps Mystery</title>
+			<link>http://feeds.nytimes.com/click.phdo?i=eba39bfa159b0abfbb7cd68027ad31cd</link>
+			<pheedo:origLink>http://www.nytimes.com/2010/05/21/arts/television/21lost.html?partner=rss&amp;amp;emc=rss</pheedo:origLink>
+			<guid isPermaLink="false">http://www.nytimes.com/2010/05/21/arts/television/21lost.html</guid>
+			<media:content url="http://graphics8.nytimes.com/images/2010/05/21/arts/21lostspan-1/21lostspan-1-thumbStandard.jpg" medium="image" height="75" width="75"/>
+			<media:description>&#x201C;Lost,&#x201D; which ends on Sunday, has inspired a frenzy of speculation about its meaning.</media:description>
+			<media:credit>Mario Perez/ABC</media:credit>
+			<description>As the &#x201C;Lost&#x201D; finale nears, speculation among fans about the direction and meaning of the series has become its own machine.&lt;br clear=&quot;both&quot; style=&quot;clear: both;&quot;/&gt;
+&lt;br clear=&quot;both&quot; style=&quot;clear: both;&quot;/&gt;
+&lt;a href=&quot;http://ads.pheedo.com/click.phdo?s=eba39bfa159b0abfbb7cd68027ad31cd&amp;p=1&quot;&gt;&lt;img alt=&quot;&quot; style=&quot;border: 0;&quot; border=&quot;0&quot; src=&quot;http://ads.pheedo.com/img.phdo?s=eba39bfa159b0abfbb7cd68027ad31cd&amp;p=1&quot;/&gt;&lt;/a&gt;
+&lt;img alt=&quot;&quot; height=&quot;0&quot; width=&quot;0&quot; border=&quot;0&quot; style=&quot;display:none&quot; src=&quot;http://a.triggit.com/px?u=pheedo&amp;rtv=Business&amp;rtv=p29518&amp;rtv=f18272&quot;/&gt;&lt;img alt=&quot;&quot; height=&quot;0&quot; width=&quot;0&quot; border=&quot;0&quot; style=&quot;display:none&quot; src=&quot;http://pixel.quantserve.com/pixel/p-8bUhLiluj0fAw.gif?labels=pub.29518.rss.Business.18272,cat.Business.rss&quot;/&gt;</description>
+			<dc:creator>By MIKE HALE</dc:creator>
+			<pubDate>Thu, 20 May 2010 20:35:23 GMT</pubDate>
+			<category domain="http://www.nytimes.com/namespaces/keywords/des">Television</category>
+			<category domain="http://www.nytimes.com/namespaces/keywords/nyt_ttl">Lost (TV Program)</category>
+			<category domain="http://www.nytimes.com/namespaces/keywords/nyt_org_all">ABC Inc</category>
+			<category domain="http://www.nytimes.com/namespaces/keywords/nyt_per">Cuse, Carlton</category>
+			<category domain="http://www.nytimes.com/namespaces/keywords/nyt_per">Lindelof, Damon</category>
+		</item>
+	</channel>
+</rss>

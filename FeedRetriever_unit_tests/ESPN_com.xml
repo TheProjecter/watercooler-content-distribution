@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="http://sports.espn.go.com/rss/friendlyRSSDemo.xsl" type="text/xsl" media="screen"?>
+<rss version="2.0" 	xmlns:dc="http://purl.org/dc/elements/1.1/"	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"	xmlns:admin="http://webns.net/mvcb/"	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"	xmlns:atom="http://purl.org/atom/ns#"	xmlns:content="http://purl.org/rss/1.0/modules/content/">
+<channel>
+	<title>ESPN.com</title>
+	<link>http://espn.go.com/</link>	<description>Latest news from ESPN.com</description>
+	<language>en-us</language>
+   <atom:link rel="self" href="http://sports.espn.go.com/espn/rss/news?null" />
+	<lastBuildDate>Thu, 20 May 2010 11:14:53 PDT</lastBuildDate>
+	<docs>http://backend.userland.com/rss</docs>
+	<managingEditor>webmaster@espn.go.com</managingEditor>
+ <image> 
+     <url>http://a.espncdn.com/i/tvlistings/tv_espn_original.gif</url>
+	<title>ESPN logo</title>
+	<link>http://espn.go.com</link>
+	<width>84</width>
+	<height>34</height>
+ </image> 
+ <ttl>30</ttl> 
+	<dc:rights>Copyright 2010</dc:rights>
+	<admin:generatorAgent rdf:resource="http://espn.go.com/rss/?v=0.9beta"/>
+	<admin:errorReportsTo rdf:resource="mailto:customer.service@espn.go.com"/>
+	<sy:updatePeriod>hourly</sy:updatePeriod>
+	<sy:updateFrequency>1</sy:updateFrequency>
+	<sy:updateBase>2000-01-01T12:00+00:00</sy:updateBase>
+<item>
+<dc:creator><![CDATA[Bonnie D. Ford]]></dc:creator>
+<title><![CDATA[Floyd Landis admits to using PEDs most of his career]]></title>
+<description><![CDATA[
+<a href="http://api.tweetmeme.com/share?url=http://sports.espn.go.com/oly/cycling/news/story?id=5203604&amp;campaign=rss&amp;source=ESPNHeadlines&amp;service=tinyurl.com&amp;source=espn"><img style="padding-left:10px;" align="right" border="0" style="border:none;" src="http://api.tweetmeme.com/imagebutton.gif?url=http://sports.espn.go.com/oly/cycling/news/story?id=5203604&amp;campaign=rss&amp;source=ESPNHeadlines" height="49" width="41" /></a>Nearly four years after he began waging a battle to discredit his positive test for synthetic testosterone at the 2006 Tour de France, Floyd Landis told ESPN.com Wednesday that he used performance-enhancing drugs for most of his career.]]></description>
+<pubDate>Thu, 20 May 2010 10:58:53 PDT</pubDate>
+<guid>http://sports.espn.go.com/oly/cycling/news/story?id=5203604&amp;campaign=rss&amp;source=ESPNHeadlines</guid>
+<link>http://sports.espn.go.com/oly/cycling/news/story?id=5203604&amp;campaign=rss&amp;source=ESPNHeadlines</link>
+</item>
+
+<item>
+<dc:creator><![CDATA[ESPN.com news services]]></dc:creator>
+<title><![CDATA[Report: Santana Moss of Washington Redskins got HGH from Galea]]></title>
+<description><![CDATA[
+<a href="http://api.tweetmeme.com/share?url=http://sports.espn.go.com/nfl/news/story?id=5204001&amp;campaign=rss&amp;source=ESPNHeadlines&amp;service=tinyurl.com&amp;source=espn"><img style="padding-left:10px;" align="right" border="0" style="border:none;" src="http://api.tweetmeme.com/imagebutton.gif?url=http://sports.espn.go.com/nfl/news/story?id=5204001&amp;campaign=rss&amp;source=ESPNHeadlines" height="49" width="41" /></a>Washington Redskins receiver Santana Moss received human growth hormone from Dr. Anthony Galea, the Canadian doctor who is charged with providing illegal drugs to professional players, the Washington Post reported, citing an unnamed source.]]></description>
+<pubDate>Thu, 20 May 2010 08:54:06 PDT</pubDate>
+<guid>http://sports.espn.go.com/nfl/news/story?id=5204001&amp;campaign=rss&amp;source=ESPNHeadlines</guid>
+<link>http://sports.espn.go.com/nfl/news/story?id=5204001&amp;campaign=rss&amp;source=ESPNHeadlines</link>
+</item>
+
+<item>
+<dc:creator><![CDATA[ESPN.com news services]]></dc:creator>
+<title><![CDATA[Hanley Ramirez: Hall of Famers Andre Dawson, Tony Perez took Florida Marlins shorstop aside for lecture]]></title>
+<description><![CDATA[
+<a href="http://api.tweetmeme.com/share?url=http://sports.espn.go.com/mlb/news/story?id=5204020&amp;campaign=rss&amp;source=ESPNHeadlines&amp;service=tinyurl.com&amp;source=espn"><img style="padding-left:10px;" align="right" border="0" style="border:none;" src="http://api.tweetmeme.com/imagebutton.gif?url=http://sports.espn.go.com/mlb/news/story?id=5204020&amp;campaign=rss&amp;source=ESPNHeadlines" height="49" width="41" /></a>Hall of Famers Andre Dawson and Tony Perez took Marlins shortstop Hanley Ramirez aside on Tuesday and let him know he needed to apologize and atone for failing to hustle and showing up his manager, according to The Palm Beach Post. ]]></description>
+<pubDate>Thu, 20 May 2010 09:41:51 PDT</pubDate>
+<guid>http://sports.espn.go.com/mlb/news/story?id=5204020&amp;campaign=rss&amp;source=ESPNHeadlines</guid>
+<link>http://sports.espn.go.com/mlb/news/story?id=5204020&amp;campaign=rss&amp;source=ESPNHeadlines</link>
+</item>
+
+<item>
+<dc:creator><![CDATA[ESPN.com news services]]></dc:creator>
+<title><![CDATA[Andre Johnson of Houston Texans says absence out of character]]></title>
+<description><![CDATA[
+<a href="http://api.tweetmeme.com/share?url=http://sports.espn.go.com/nfl/news/story?id=5204044&amp;campaign=rss&amp;source=ESPNHeadlines&amp;service=tinyurl.com&amp;source=espn"><img style="padding-left:10px;" align="right" border="0" style="border:none;" src="http://api.tweetmeme.com/imagebutton.gif?url=http://sports.espn.go.com/nfl/news/story?id=5204044&amp;campaign=rss&amp;source=ESPNHeadlines" height="49" width="41" /></a>Saying his absence from the team's first three voluntary practices over a contract dispute was "out of character", Texans receiver Andre Johnson told KRIV-TV in Houston that he was eager to rejoin his teammates Thursday.]]></description>
+<pubDate>Thu, 20 May 2010 10:59:23 PDT</pubDate>
+<guid>http://sports.espn.go.com/nfl/news/story?id=5204044&amp;campaign=rss&amp;source=ESPNHeadlines</guid>
+<link>http://sports.espn.go.com/nfl/news/story?id=5204044&amp;campaign=rss&amp;source=ESPNHeadlines</link>
+</item>
+
+<item>
+<dc:creator><![CDATA[Henry Abbott]]></dc:creator>
+<title><![CDATA[2010 NBA Playoffs: Dwight Howard of Orlando Magic won't be suspended for Game 3 over flagrant foul]]></title>
+<description><![CDATA[
+<a href="http://api.tweetmeme.com/share?url=http://sports.espn.go.com/nba/playoffs/2010/news/story?id=5202118&amp;campaign=rss&amp;source=ESPNHeadlines&amp;service=tinyurl.com&amp;source=espn"><img style="padding-left:10px;" align="right" border="0" style="border:none;" src="http://api.tweetmeme.com/imagebutton.gif?url=http://sports.espn.go.com/nba/playoffs/2010/news/story?id=5202118&amp;campaign=rss&amp;source=ESPNHeadlines" height="49" width="41" /></a>The NBA will not suspend Orlando's Dwight Howard for Game 3 of the Eastern Conference finals for his flagrant foul in Game 2.]]></description>
+<pubDate>Wed, 19 May 2010 17:28:02 PDT</pubDate>
+<guid>http://sports.espn.go.com/nba/playoffs/2010/news/story?id=5202118&amp;campaign=rss&amp;source=ESPNHeadlines</guid>
+<link>http://sports.espn.go.com/nba/playoffs/2010/news/story?id=5202118&amp;campaign=rss&amp;source=ESPNHeadlines</link>
+</item>
+
+<item>
+<dc:creator><![CDATA[ESPNChicago.com]]></dc:creator>
+<title><![CDATA[Chicago Bears linebacker Brian Urlacher criticizes Gale Sayers]]></title>
+<description><![CDATA[
+<a href="http://api.tweetmeme.com/share?url=http://sports.espn.go.com/chicago/nfl/news/story?id=5204392&amp;campaign=rss&amp;source=ESPNHeadlines&amp;service=tinyurl.com&amp;source=espn"><img style="padding-left:10px;" align="right" border="0" style="border:none;" src="http://api.tweetmeme.com/imagebutton.gif?url=http://sports.espn.go.com/chicago/nfl/news/story?id=5204392&amp;campaign=rss&amp;source=ESPNHeadlines" height="49" width="41" /></a>Chicago Bears linebacker Brian Urlacher rips Gale Sayers for criticizing the Bears.]]></description>
+<pubDate>Thu, 20 May 2010 10:07:25 PDT</pubDate>
+<guid>http://sports.espn.go.com/chicago/nfl/news/story?id=5204392&amp;campaign=rss&amp;source=ESPNHeadlines</guid>
+<link>http://sports.espn.go.com/chicago/nfl/news/story?id=5204392&amp;campaign=rss&amp;source=ESPNHeadlines</link>
+</item>
+
+<item>
+<dc:creator><![CDATA[ESPN.com news services]]></dc:creator>
+<title><![CDATA[Source: Philadelphia 76ers negotiating with Doug Collins to coach]]></title>
+<description><![CDATA[
+<a href="http://api.tweetmeme.com/share?url=http://sports.espn.go.com/nba/news/story?id=5202193&amp;campaign=rss&amp;source=ESPNHeadlines&amp;service=tinyurl.com&amp;source=espn"><img style="padding-left:10px;" align="right" border="0" style="border:none;" src="http://api.tweetmeme.com/imagebutton.gif?url=http://sports.espn.go.com/nba/news/story?id=5202193&amp;campaign=rss&amp;source=ESPNHeadlines" height="49" width="41" /></a>The Philadelphia 76ers are negotiating with TNT analyst Doug Collins to become their new coach, a source told ESPN The Magazine's Ric Bucher on Wednesday.]]></description>
+<pubDate>Wed, 19 May 2010 19:22:03 PDT</pubDate>
+<guid>http://sports.espn.go.com/nba/news/story?id=5202193&amp;campaign=rss&amp;source=ESPNHeadlines</guid>
+<link>http://sports.espn.go.com/nba/news/story?id=5202193&amp;campaign=rss&amp;source=ESPNHeadlines</link>
+</item>
+
+<item>
+<dc:creator><![CDATA[Associated Press]]></dc:creator>
+<title><![CDATA[Lawrence Taylor sued over 2009 car crash]]></title>
+<description><![CDATA[
+<a href="http://api.tweetmeme.com/share?url=http://sports.espn.go.com/new-york/nfl/news/story?id=5204499&amp;campaign=rss&amp;source=ESPNHeadlines&amp;service=tinyurl.com&amp;source=espn"><img style="padding-left:10px;" align="right" border="0" style="border:none;" src="http://api.tweetmeme.com/imagebutton.gif?url=http://sports.espn.go.com/new-york/nfl/news/story?id=5204499&amp;campaign=rss&amp;source=ESPNHeadlines" height="49" width="41" /></a>Former NFL star Lawrence Taylor is being sued over a South Florida car crash last year in which he was charged with leaving the scene of an accident with property damage.]]></description>
+<pubDate>Thu, 20 May 2010 09:27:43 PDT</pubDate>
+<guid>http://sports.espn.go.com/new-york/nfl/news/story?id=5204499&amp;campaign=rss&amp;source=ESPNHeadlines</guid>
+<link>http://sports.espn.go.com/new-york/nfl/news/story?id=5204499&amp;campaign=rss&amp;source=ESPNHeadlines</link>
+</item>
+
+<item>
+<dc:creator><![CDATA[Jay Privman]]></dc:creator>
+<title><![CDATA[Mine That Bird to be trained by D. Wayne Lukas]]></title>
+<description><![CDATA[
+<a href="http://api.tweetmeme.com/share?url=http://sports.espn.go.com/sports/horse/news/story?id=5204285&amp;campaign=rss&amp;source=ESPNHeadlines&amp;service=tinyurl.com&amp;source=espn"><img style="padding-left:10px;" align="right" border="0" style="border:none;" src="http://api.tweetmeme.com/imagebutton.gif?url=http://sports.espn.go.com/sports/horse/news/story?id=5204285&amp;campaign=rss&amp;source=ESPNHeadlines" height="49" width="41" /></a>Mine That Bird, the 2009 Kentucky Derby winner, left New Mexico on Wednesday morning bound for Churchill Downs, where he will be trained by D. Wayne Lukas, Leonard Blach, a co-owner of the gelding, said.]]></description>
+<pubDate>Thu, 20 May 2010 09:13:36 PDT</pubDate>
+<guid>http://sports.espn.go.com/sports/horse/news/story?id=5204285&amp;campaign=rss&amp;source=ESPNHeadlines</guid>
+<link>http://sports.espn.go.com/sports/horse/news/story?id=5204285&amp;campaign=rss&amp;source=ESPNHeadlines</link>
+</item>
+
+<item>
+<dc:creator><![CDATA[Associated Press]]></dc:creator>
+<title><![CDATA[Milton Bradley rejoins Mariners after two weeks of counseling]]></title>
+<description><![CDATA[
+<a href="http://api.tweetmeme.com/share?url=http://sports.espn.go.com/mlb/news/story?id=5202524&amp;campaign=rss&amp;source=ESPNHeadlines&amp;service=tinyurl.com&amp;source=espn"><img style="padding-left:10px;" align="right" border="0" style="border:none;" src="http://api.tweetmeme.com/imagebutton.gif?url=http://sports.espn.go.com/mlb/news/story?id=5202524&amp;campaign=rss&amp;source=ESPNHeadlines" height="49" width="41" /></a>Milton Bradley has rejoined the Seattle Mariners after two weeks of counseling to deal with personal issues and anger.]]></description>
+<pubDate>Wed, 19 May 2010 23:27:08 PDT</pubDate>
+<guid>http://sports.espn.go.com/mlb/news/story?id=5202524&amp;campaign=rss&amp;source=ESPNHeadlines</guid>
+<link>http://sports.espn.go.com/mlb/news/story?id=5202524&amp;campaign=rss&amp;source=ESPNHeadlines</link>
+</item>
+
+<item>
+<dc:creator><![CDATA[Associated Press]]></dc:creator>
+<title><![CDATA[Washington Nationals pitching prospect Stephen Strasburg again dominant in Triple-A]]></title>
+<description><![CDATA[
+<a href="http://api.tweetmeme.com/share?url=http://sports.espn.go.com/mlb/news/story?id=5203037&amp;campaign=rss&amp;source=ESPNHeadlines&amp;service=tinyurl.com&amp;source=espn"><img style="padding-left:10px;" align="right" border="0" style="border:none;" src="http://api.tweetmeme.com/imagebutton.gif?url=http://sports.espn.go.com/mlb/news/story?id=5203037&amp;campaign=rss&amp;source=ESPNHeadlines" height="49" width="41" /></a> Stephen Strasburg had another dominant outing, giving up just three hits and striking out nine in 6 1-3 scoreless innings for Triple-A Syracuse on Wednesday night.]]></description>
+<pubDate>Thu, 20 May 2010 09:42:55 PDT</pubDate>
+<guid>http://sports.espn.go.com/mlb/news/story?id=5203037&amp;campaign=rss&amp;source=ESPNHeadlines</guid>
+<link>http://sports.espn.go.com/mlb/news/story?id=5203037&amp;campaign=rss&amp;source=ESPNHeadlines</link>
+</item>
+
+<item>
+<dc:creator><![CDATA[Associated Press]]></dc:creator>
+<title><![CDATA[MLB-leading Rays jump on Yanks, hang on]]></title>
+<description><![CDATA[
+<a href="http://api.tweetmeme.com/share?url=http://sports.espn.go.com/mlb/recap?gameId=300519110&amp;campaign=rss&amp;source=ESPNHeadlines&amp;service=tinyurl.com&amp;source=espn"><img style="padding-left:10px;" align="right" border="0" style="border:none;" src="http://api.tweetmeme.com/imagebutton.gif?url=http://sports.espn.go.com/mlb/recap?gameId=300519110&amp;campaign=rss&amp;source=ESPNHeadlines" height="49" width="41" /></a>The league-leading Rays jumped on the Yankees and held on Wednesday.]]></description>
+<pubDate>Thu, 20 May 2010 08:35:23 PDT</pubDate>
+<guid>http://sports.espn.go.com/mlb/recap?gameId=300519110&amp;campaign=rss&amp;source=ESPNHeadlines</guid>
+<link>http://sports.espn.go.com/mlb/recap?gameId=300519110&amp;campaign=rss&amp;source=ESPNHeadlines</link>
+</item>
+
+<item>
+<dc:creator><![CDATA[Associated Press]]></dc:creator>
+<title><![CDATA[Triple play, inside-park HR not enough for Mets]]></title>
+<description><![CDATA[
+<a href="http://api.tweetmeme.com/share?url=http://sports.espn.go.com/mlb/recap?gameId=300519120&amp;campaign=rss&amp;source=ESPNHeadlines&amp;service=tinyurl.com&amp;source=espn"><img style="padding-left:10px;" align="right" border="0" style="border:none;" src="http://api.tweetmeme.com/imagebutton.gif?url=http://sports.espn.go.com/mlb/recap?gameId=300519120&amp;campaign=rss&amp;source=ESPNHeadlines" height="49" width="41" /></a>A triple play and inside-the-park homer weren't enough for the Mets against the Nationals on Wednesday.]]></description>
+<pubDate>Wed, 19 May 2010 22:20:33 PDT</pubDate>
+<guid>http://sports.espn.go.com/mlb/recap?gameId=300519120&amp;campaign=rss&amp;source=ESPNHeadlines</guid>
+<link>http://sports.espn.go.com/mlb/recap?gameId=300519120&amp;campaign=rss&amp;source=ESPNHeadlines</link>
+</item>
+
+<item>
+<dc:creator><![CDATA[Associated Press]]></dc:creator>
+<title><![CDATA[Gasol provides late spark as Lakers drop Suns]]></title>
+<description><![CDATA[
+<a href="http://api.tweetmeme.com/share?url=http://sports.espn.go.com/nba/recap?gameId=300519013&amp;campaign=rss&amp;source=ESPNHeadlines&amp;service=tinyurl.com&amp;source=espn"><img style="padding-left:10px;" align="right" border="0" style="border:none;" src="http://api.tweetmeme.com/imagebutton.gif?url=http://sports.espn.go.com/nba/recap?gameId=300519013&amp;campaign=rss&amp;source=ESPNHeadlines" height="49" width="41" /></a>Pau Gasol scored 14 of his 29 points in the fourth quarter, Kobe Bryant had 21 points and 13 assists, and the Los Angeles Lakers roared away in the final minutes for a 124-112 victory over the Phoenix Suns on Wednesday night.]]></description>
+<pubDate>Thu, 20 May 2010 00:19:46 PDT</pubDate>
+<guid>http://sports.espn.go.com/nba/recap?gameId=300519013&amp;campaign=rss&amp;source=ESPNHeadlines</guid>
+<link>http://sports.espn.go.com/nba/recap?gameId=300519013&amp;campaign=rss&amp;source=ESPNHeadlines</link>
+</item>
+
+<item>
+<dc:creator><![CDATA[ESPNBoston.com]]></dc:creator>
+<title><![CDATA[2010 NBA Playoffs: Paul Pierce denies tweeting about sweeping Orlando Magic ]]></title>
+<description><![CDATA[
+<a href="http://api.tweetmeme.com/share?url=http://sports.espn.go.com/boston/nba/news/story?id=5201804&amp;campaign=rss&amp;source=ESPNHeadlines&amp;service=tinyurl.com&amp;source=espn"><img style="padding-left:10px;" align="right" border="0" style="border:none;" src="http://api.tweetmeme.com/imagebutton.gif?url=http://sports.espn.go.com/boston/nba/news/story?id=5201804&amp;campaign=rss&amp;source=ESPNHeadlines" height="49" width="41" /></a>Paul Pierce denies tweet that suggested a Celtics sweep of the Magic. ]]></description>
+<pubDate>Wed, 19 May 2010 14:08:19 PDT</pubDate>
+<guid>http://sports.espn.go.com/boston/nba/news/story?id=5201804&amp;campaign=rss&amp;source=ESPNHeadlines</guid>
+<link>http://sports.espn.go.com/boston/nba/news/story?id=5201804&amp;campaign=rss&amp;source=ESPNHeadlines</link>
+</item>
+
+</channel></rss>
