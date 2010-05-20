@@ -121,8 +121,16 @@ Only one line feed title is displayed for each feed!
 
 6.1.2 Beta
 fixed some minor errors (;)
+
+6.1.3 Beta
+Realized more bugs on unicode, fixed (&mdash;)
+Fixed some more index out of bound issue
+
+6.1.4 Beta Tested
+Tested with email server, emails successfully sent
+
 ------ CODE FREEZE UNTIL BUGS FOUND -------
------- USE 6.1.2 TO TEST! -----------------
+------ USE 6.1.4 TO TEST! -----------------
 
 Future:
 add more test cases to test for any bugs
@@ -163,7 +171,7 @@ def __CheckEnding(ending):
 # verified logic
 def __PreHTMLUnicode(content):
 	for index in (range((len(content))-3)):
-		ending = index+4;
+		ending = index+4
 		if (content[index:ending] == '&lt;'):
 			newcontent = content[:index] + '<' + content[ending:]
 			return __PreHTMLUnicode(newcontent)
@@ -173,14 +181,22 @@ def __PreHTMLUnicode(content):
 	return content
 
 
-# a function to replace corresponding unicode to '<' and '>', for __CutterHTML to work
+# functions to replace corresponding unicode to ' ' and '--'
 # verified logic
-def __ProHTMLUnicode(content):
-	for index in (range((len(content))-3)):
-		ending = index+6;
+def __ProHTMLUnicodeSpace(content):
+	for index in (range((len(content))-5)):
+		ending = index+6
 		if (content[index:ending] == '&nbsp;'):
 			newcontent = content[:index] + ' ' + content[ending:]
-			return __ProHTMLUnicode(newcontent)
+			return __ProHTMLUnicodeSpace(newcontent)
+	return content
+
+def __ProHTMLUnicodeDash(content):
+	for index in (range((len(content))-6)):
+		ending = index+7
+		if (content[index:ending] == '&mdash;'):
+			newcontent = content[:index] + '--' + content[ending:]
+			return __ProHTMLUnicodeDash(newcontent)
 	return content
 
 
@@ -224,8 +240,8 @@ def __LeadingSpace(content):
 def __AdsFilter(content):
 	# define CHARS_SET
 	CHARS_SET = re.compile(r'[a-zA-Z0-9]')
-	last_legal_pos=0;
-	endpos = 0;
+	last_legal_pos=0
+	endpos = 0
 	# find last legal ending position
 	for index in range(len(content)):
 		if (__CheckEnding(content[index])):
@@ -299,9 +315,10 @@ def _ContentCutter(content):
 	mycontent2 = __AdsFilter(mycontent1)
 	mycontent3 = __DuplicateSpace(mycontent2)
 	mycontent4 = __TrailingSpace(mycontent3)
-	mycontent5 = __ProHTMLUnicode(mycontent4)
-	mycontent6 = __LeadingSpace(mycontent5)
-	return mycontent6
+	mycontent5 = __ProHTMLUnicodeSpace(mycontent4)
+	mycontent6 = __ProHTMLUnicodeDash(mycontent5)
+	mycontent7 = __LeadingSpace(mycontent6)
+	return mycontent7
 
 
 # a helper function to display global feed information
@@ -573,7 +590,7 @@ def UpdateFeed_deprecated():
 	# Possibility of performance issue, used 2 sec to process (over 300 entries)
 	# some hyperlink ads remaining. We cannot do anything as those are "near content"
 	# ads. We human are smart enough to comprehend the semantics!
-	# some HTML code remains: &nbsp;
+	# some HTML code remains: &nbsp
 	# plan to remove it in the future
 	# myfeed = feedparser.parse('http://www.rss-specifications.com/blog-feed.xml')
 
@@ -676,7 +693,7 @@ def UpdateFeed():
 
 
 	# for each URL in the URL list, parse things.....
-	filename_counter = 0;
+	filename_counter = 0
 	all_stories = []
 	for source_URL in source_URLs:
 		myfeed = feedparser.parse(source_URL)
@@ -776,7 +793,7 @@ def UpdateFeed():
 	for p_story in processed_stories:
 		debug_counter = 0
 		for item in p_story:
-			print 'STORY ',  debug_counter0, 'Field ' , debug_counter, '; ', item
+			print 'STORY ',  debug_counter0, 'Field ' , debug_counter, ': ', item
 			debug_counter = debug_counter + 1
 		debug_counter0 = debug_counter0 + 1
 	"""
