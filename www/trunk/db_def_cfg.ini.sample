@@ -1,0 +1,9 @@
+[MySQLDatabase]
+username=root
+password=adminsql
+host=localhost
+;port=1234
+dbname=watercooler
+
+[MySQLDatabase opts]
+PDO::ATTR_PERSISTENT="true"

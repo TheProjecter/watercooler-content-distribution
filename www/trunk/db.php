@@ -5,7 +5,33 @@
    database should be in their other respective interfaces.
 */
 interface iDatabase {
-  // XXX fill this in
+/* function iDatabase::connect connects to a database using the specified
+   configuration variables
+
+   $cfg_vars: (array) the configuration variables for the connection to make, 
+              encoded in key-value pairs which are to be defined by the 
+	      implementation (see corresponding documentation)
+
+   returns an iDatabase implementing object connected to the specified database
+*/
+  public static function connect(array $cfg_vars);
+/* function iDatabase::connectFromIni connects to a database using 
+   configuration variables read from the specified ini file
+
+   $cfg_vars: (string) the filename of an ini file which contains the
+              configuration variables for the connection to make, encoded in
+	      ini sections and variables which are to be defined by the
+	      implementation (see corresponding documentation)
+
+   returns an iDatabase implementing object connected to the specified database
+*/
+  public static function connectFromIni($cfg_file);
+
+/* iDatabase::setAsSiteDefault sets the site default database to the current
+   database object. This site default is used in other database object classes
+   as the default database to access (see corresponding documentation).
+*/
+  public function setAsSiteDefault();
 }
 
 /* interface iFeeds represents a group of feeds, and handles all operations
@@ -21,8 +47,8 @@ interface iFeed {
   // XXX fill this in
 }
 
-/* interface iUsers represents a group of users, and handles all operations
-   directly involving multiple users
+/* interface iUsers represents a group of users, and handles all database
+   operations directly involving multiple users
 */
 interface iUsers {
 /* function iUsers::searchAll searches for users in the database matching ALL
@@ -43,11 +69,14 @@ interface iUsers {
 		   delivery, FALSE otherwise
 		 'feeds': (iFeeds) an object representing the user's 
 		   subscribed feeds
+   $db: (object) an object representing the database to use, or NULL to use
+        the database established as the site default. Note that the type of
+	object required for this parameter is implementation-specific
 
     returns an iUsers object representing the matched users or NULL if an error
       occurred
 */
-  public static function searchAll($userinfo);
+  public static function searchAll($userinfo, $db = NULL);
 
 /* function iUsers::searchAny searches for users in the database matching ANY
    of the given user information
@@ -67,24 +96,29 @@ interface iUsers {
 		   delivery, FALSE otherwise
 		 'feeds': (iFeeds) an object representing the users' 
 		   subscribed feeds
+   $db: (object) an object representing the database to use, or NULL to use
+        the database established as the site default. Note that the type of
+	object required for this parameter is implementation-specific
 
     returns an iUsers object representing the matched users or NULL if an error
       occurred
 */
-  public static function searchAny($userinfo);
+  public static function searchAny($userinfo, $db = NULL);
 
 /* function iUsers::merge merges this iUsers object with another, creating a
    new iUser object that represents all users in both groups
 
-   $users: (iUsers) the iUsers object to merge with
+   $users: (object) the iUsers implementing object to merge with. Note that the
+           two objects to merge must be instances of the same class and objects
+	   from the same database
 
-   returns an iUsers object representing all users in both groups, or NULL if
-     an error occurred
+   returns an iUsers implementing object representing all users in both groups,
+     or NULL if an error occurred
 */
-  public function merge(iUsers $users);
+  public function merge($users);
 }
 
-/* interface iUser handles all operations involving a single user
+/* interface iUser handles all database operations involving a single user
 */
 interface iUser {
 /* function iUser::find finds a user by any attribute guaranteed to be unique
@@ -96,11 +130,14 @@ interface iUser {
             'username': (string) the user's username
 	    'email': (string) the user's email
 	    'phone': (string) the user's phone number
+   $db: (object) an object representing the database to use, or NULL to use
+        the database established as the site default. Note that the type of
+	object required for this parameter is implementation-specific
 
    returns an iUser object representing the matched user, or NULL if an error
      occurred
 */
-  public static function find($attr, $value);
+  public static function find($attr, $value, $db = NULL);
 
 /* function iUser::set sets the user's information in the database
 
@@ -164,11 +201,14 @@ interface iUser {
 
    $userinfo: (array) initial user information to set, encoded in key-value
               pairs as described for the $userinfo parameter in iUser::set
+   $db: (object) an object representing the database to use, or NULL to use
+        the database established as the site default. Note that the type of
+	object required for this parameter is implementation-specific
 
    returns an iUser object representing the newly created user, or NULL if
      an error occurred
 */
-  public static function create($userinfo);
+  public static function create($userinfo, $db = NULL);
 
 /* function iUser::delete deletes the user and all information associated with
    the user in the database
@@ -177,7 +217,6 @@ interface iUser {
 */
   public function delete();
 }
-
 
 // sample use of iUser
 /* PHP 5.3.0 CODE (referencing a class using a variable)
@@ -203,3 +242,12 @@ function test_iUser($user_class) {
   return TRUE;
 }
 */
+
+/* abstract class DatabaseObject should be the base class for all classes
+   representing database objects, if its functionality is needed that is
+*/
+abstract class DatabaseObject {
+  /* $site_db is the site default database, set by
+     DatabaseObject::setAsSiteDefault */
+  protected static $site_db;
+}
