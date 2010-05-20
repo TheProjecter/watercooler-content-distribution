@@ -1,0 +1,80 @@
+Entry 1 Information:
+Feed Title: CNN.com - World
+Entry Title: N. Korea denies torpedo attack
+Content: North Korea denied Thursday that it fired a torpedo that sank a South Korean warship in March, killing 46 sailors. FULL STORY l AGONY STILL RAW FOR FAMILIES l WHAT'S NEXT? l OPINION: OATH I CAN'T KEEP
+Entry URL: http://rss.cnn.com/~r/rss/cnn_world/~3/exwFZnEh8ck/index.html
+Time Stamp: 1274393917
+Time Stamp GMT DEBUG: 2010/5/20 14:18
+
+Entry 2 Information:
+Feed Title: CNN.com - World
+Entry Title: Mexico's president asks U.S. to ban assault weapons
+Content: Mexican President Felipe Calderon's visit to the United States continues Thursday with an address to a joint meeting of Congress.
+Entry URL: http://rss.cnn.com/~r/rss/cnn_world/~3/_VdtuYhCoJs/index.html
+Time Stamp: 1274401433
+Time Stamp GMT DEBUG: 2010/5/20 16:23
+
+Entry 3 Information:
+Feed Title: CNN.com - World
+Entry Title: 200 arrested after killings in Karachi
+Content: Authorities in Pakistan say they have arrested 200 people in Karachi after a series of what appear to be political killings there this week.
+Entry URL: http://rss.cnn.com/~r/rss/cnn_world/~3/BlqzJ353PpY/index.html
+Time Stamp: 1274392526
+Time Stamp GMT DEBUG: 2010/5/20 13:55
+
+Entry 4 Information:
+Feed Title: CNN.com - World
+Entry Title: Pakistan blocks YouTube, Facebook over 'sacrilegious content'
+Content: Pakistan on Thursday blocked access to YouTube -- a day after it shut down social networking site Facebook -- in response to an online group calling on people to draw the Prophet Mohammed.
+Entry URL: http://rss.cnn.com/~r/rss/cnn_world/~3/yUiq-Y4B2oI/index.html
+Time Stamp: 1274398122
+Time Stamp GMT DEBUG: 2010/5/20 15:28
+
+Entry 5 Information:
+Feed Title: CNN.com - World
+Entry Title: Thailand to prosecute protest leaders
+Content: The Thai government says it will prosecute the opposition Red Shirt protesters arrested during riots in Bangkok, and extended a curfew as violence continued.
+Entry URL: http://rss.cnn.com/~r/rss/cnn_world/~3/B_L2GgTOykg/index.html
+Time Stamp: 1274373169
+Time Stamp GMT DEBUG: 2010/5/20 8:32
+
+Entry 6 Information:
+Feed Title: CNN.com - World
+Entry Title: Afghan plane crash wreckage found
+Content: A satellite has spotted part of the plane that crashed in the mountains of Afghanistan with 44 people aboard, an official with the country's Transport and Aviation Ministry said Thursday.
+Entry URL: http://rss.cnn.com/~r/rss/cnn_world/~3/BZAwD5xjnB8/index.html
+Time Stamp: 1274392092
+Time Stamp GMT DEBUG: 2010/5/20 13:48
+
+Entry 7 Information:
+Feed Title: CNN.com - World
+Entry Title: BA cabin crews set strike dates
+Content: British Airways cabin crews plan to go on strike for five days beginning Monday if a dispute with management is not settled, the union said.
+Entry URL: http://rss.cnn.com/~r/rss/cnn_world/~3/eE-s7hTxLxY/index.html
+Time Stamp: 1274399469
+Time Stamp GMT DEBUG: 2010/5/20 15:51
+
+Entry 8 Information:
+Feed Title: CNN.com - World
+Entry Title: Malawi gay couple jailed for indecency, unnatural acts
+Content: A gay couple in Malawi, found guilty of gross indecency and unnatural acts after they took part in an "engagement ceremony," was sentenced to 14 years in prison Thursday.
+Entry URL: http://rss.cnn.com/~r/rss/cnn_world/~3/xPqP8N7hwhY/index.html
+Time Stamp: 1274382258
+Time Stamp GMT DEBUG: 2010/5/20 11:4
+
+Entry 9 Information:
+Feed Title: CNN.com - World
+Entry Title: Greece, Spain hit by strikes over cuts
+Content: Workers in Greece and Spain were staging protests Thursday over their respective governments' austerity measures.
+Entry URL: http://rss.cnn.com/~r/rss/cnn_world/~3/eUKopvhdVkc/index.html
+Time Stamp: 1274397662
+Time Stamp GMT DEBUG: 2010/5/20 15:21
+
+Entry 10 Information:
+Feed Title: CNN.com - World
+Entry Title: $635 million in art stolen in Paris heist
+Content: Five paintings, reportedly including a Matisse and a Picasso, were stolen overnight from a Paris museum, the Paris mayor's office said Thursday.
+Entry URL: http://rss.cnn.com/~r/rss/cnn_world/~3/sxFH_7aDgR8/index.html
+Time Stamp: 1274400427
+Time Stamp GMT DEBUG: 2010/5/20 16:7
+
