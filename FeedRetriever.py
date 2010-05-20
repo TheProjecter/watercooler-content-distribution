@@ -118,8 +118,11 @@ More testings need to be done on more feeds
 fixed some minor errors
 default debug flag is false, will not print unless exceptional case
 Only one line feed title is displayed for each feed!
+
+6.1.2 Beta
+fixed some minor errors (;)
 ------ CODE FREEZE UNTIL BUGS FOUND -------
------- USE 6.1.1 TO TEST! -----------------
+------ USE 6.1.2 TO TEST! -----------------
 
 Future:
 add more test cases to test for any bugs
