@@ -50,16 +50,6 @@ Entry 7 Information:
 Feed Title: News Tom's Hardware US
 Entry Title: 'Wireless' 2Mbps Internet Using Blinking LEDs
 Content: Get your blinking internet working.
-
- 
- 
- 
- 
-
-
-
- 
-Light-emitting diode - Wireless - Access Providers - Data Communications - 802.11
 Entry URL: http://www.pheedcontent.com/click.phdo?i=f6b0790a131d08eba736e1967c17d6e0
 Time Stamp: 1274410800
 Time Stamp GMT DEBUG: 2010/5/20 19:0
