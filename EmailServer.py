@@ -9,6 +9,8 @@ HOST = {'AT&T':'txt.att.net',
         'Verizon':'vtext.com',
         'SprinT':'messaging.sprintpcs.com'}
 
+SPECIAL_CHARS = ['"', "\""]
+
 def runBashPipe(frontPipe, backPipe):
     """Run the two inputs as commands joined by a pipe
     
@@ -18,15 +20,16 @@ def runBashPipe(frontPipe, backPipe):
     command is executed and its output is sent to second
     command as input.
     """
+
+    # DEBUG
+    print "frontPipe:", frontPipe
+    print "backPipe:", backPipe
+
     # Split the bash commands into python lists
     frontPipe = shlex.split(frontPipe)
     backPipe = shlex.split(backPipe)
 
-    # Execute the bash commands using subprocess
-    
-    #print "frontPipe:", frontPipe
-    #print "backPipe:", backPipe
-
+    # Execute the bash commands using subprocess TODO:Uncomment
     p1 = subprocess.Popen(frontPipe, stdout=subprocess.PIPE)
     p2 = subprocess.Popen(backPipe, stdin=p1.stdout, stdout=subprocess.PIPE)
     output = p2.communicate()[0]    
@@ -39,8 +42,8 @@ def sendAsEmail(emailAddr, subject, body):
     must be strings.
     """
     # Set the bash commands to be executed
-    frontPipe = "echo " + body
-    backPipe = "mail -s \"" + subject + "\" " + emailAddr
+    frontPipe = 'echo "' + body + '"'
+    backPipe = 'mail -s "' + subject + '" ' + emailAddr
 
     # Execute the command
     runBashPipe(frontPipe, backPipe)
@@ -61,8 +64,8 @@ def sendAsText(phoneNum, provider, subject, body):
     emailAddr = phoneNum + "@" + HOST[provider] 
 
     # Set the bash commands to be executed
-    frontPipe = "echo " + body
-    backPipe = "mail -s \"" + subject + "\" " + emailAddr
+    frontPipe = 'echo "' + body + '"'
+    backPipe = 'mail -s "' + subject + '" ' + emailAddr
 
     runBashPipe(frontPipe, backPipe)
 
@@ -82,8 +85,15 @@ def sendStories(listOfStoriesURL):
         storyURL = story[0]
         storyTitle = story[1]
         storyContent = story[2]
-        
-        listOfUsers = database.getUsersByStory(storyURL)
+    
+        # Remove all special characters with \char
+        # TODO: This is a temp fix for double quotes
+        #       We need a more robust 
+        for specialChar in SPECIAL_CHARS:
+            storyTitle = storyTitle.replace(specialChar, "")
+            storyContent = storyContent.replace(specialChar, "")
+
+        listOfUsers = Database.getUsersByStory(storyURL)
         
         for user in listOfUsers:
         
@@ -115,5 +125,5 @@ def sendStories(listOfStoriesURL):
                 print "phone:", userPhone
                 print "carrier:", userCarrier
                 print "title:", storyTitle
-                print "storyURL:", storyURLa
+                print "storyURL:", storyURL
                 sendAsText(userPhone, userCarrier, storyTitle, storyURL)
