@@ -59,7 +59,7 @@ interface iUsers {
 	         'uid': (integer) the user's id number
 	         'username': (string) the user's username
 	 	 'email': (string) the user's email
-		 'phone': (string) the user's cell phone number
+		 'phone_number': (string) the user's cell phone number
 		 'carrier': (string) the user's cell phone carrier
 		 'send_email': (boolean) TRUE if the user selected email
 		   delivery, FALSE otherwise
@@ -86,7 +86,8 @@ interface iUsers {
 	         'uid': (array of integers) the users' id numbers
 	         'username': (array of strings) the users' usernames
 	 	 'email': (array of strings) the users' emails
-		 'phone': (array of strings) the users' cell phone numbers
+		 'phone_number': (array of strings) the users' cell phone
+		   numbers
 		 'carrier': (array of strings) the users' cell phone carriers
 		 'send_email': (boolean) TRUE if the user selected email
 		   delivery, FALSE otherwise
@@ -129,7 +130,7 @@ interface iUser {
 	    'uid': (integer) the user's id number
             'username': (string) the user's username
 	    'email': (string) the user's email
-	    'phone': (string) the user's phone number
+	    'phone_number': (string) the user's phone number
    $db: (object) an object representing the database to use, or NULL to use
         the database established as the site default. Note that the type of
 	object required for this parameter is implementation-specific
@@ -146,8 +147,9 @@ interface iUser {
 	        'username': (string) the desired username
 		'password': (string) the desired password, in plaintext
 		'email': (string) the user's email
-		'phone': (string) the user's cell phone number, with no spaces
-		  or dashes, optionally with a '+' as the first character
+		'phone_number': (string) the user's cell phone number, with
+		  no spaces or dashes, optionally with a '+' as the first
+		  character
 	        'carrier': (string) the user's cell phone carrier
 		'send_email': (boolean) TRUE if the user selected email 
 		  delivery, FALSE otherwise
@@ -170,7 +172,7 @@ interface iUser {
 	         'uid': (integer) the user's id number
 	         'username': (string) the user's username
 	 	 'email': (string) the user's email
-		 'phone': (string) the user's cell phone number
+		 'phone_number': (string) the user's cell phone number
 		 'carrier': (string) the user's cell phone carrier
 		 'send_email': (boolean) TRUE if the user selected email
 		   delivery, FALSE otherwise
