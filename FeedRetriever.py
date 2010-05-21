@@ -129,6 +129,14 @@ Fixed some more index out of bound issue
 6.1.4 Beta Tested
 Tested with email server, emails successfully sent
 
+6.2 Test
+Improving efficiency: checking time stamp before processing content
+	avoiding need to remove extra stories later also
+Corrected some more stupid serious bugs (ContentCutter)
+
+6.3 Test
+Add another Filter to filter away difficult-to-remove advertisements
+	currently, most advertisements are deleted, all unit test case give "perfect" result
 ------ CODE FREEZE UNTIL BUGS FOUND -------
 ------ USE 6.1.4 TO TEST! -----------------
 
@@ -290,6 +298,46 @@ def __AdsFilter(content):
 		return content
 
 
+
+# an advanced function to remove more trash content
+# lemma: There is no useful information when there are two legal ending syntax,
+#        and, the previous one is immediately seperated by following syntax:
+#        '2nd last legal ending' [space]* \n [space]* \n [space]* \n [space]* \n
+def __AdvAdsFilter(content):
+	# define CHARS_SET
+	CHARS_SET = re.compile(r'[a-zA-Z0-9]')
+	legal_pos = 0
+	previous_legal_pos = 0
+	nl_count = 0
+	
+	# find last legal ending position
+	for index in range(len(content)):
+		if (__CheckEnding(content[index])):
+			previous_legal_pos = legal_pos
+			legal_pos = index
+
+	endpos = 0
+	# legal_pos if == 0 or previous_legal_pos == 0, means cant remove anything
+	if ((previous_legal_pos != 0) and (legal_pos != 0)):
+		# check previous_legal_pos follows by the defined lemma condtions....
+		end = len(content)-1
+		current = previous_legal_pos+1
+
+		for index in range(current, end):
+			if ((content[index] == '\n') or (content[index] == '\r\n')):
+				nl_count = nl_count + 1
+			if ((content[index] != '\n') and (content[index] != '\r\n') and (content[index] != ' ')):
+				break
+			if (nl_count == 4):
+				endpos = current + 1
+				break
+
+	if (endpos != 0):
+		return content[:endpos]
+	else:
+		return content
+
+
 # a function to remove trash, specifically HTML codes for content
 def __CutterHTML(content):
 	flag = 0
@@ -303,7 +351,7 @@ def __CutterHTML(content):
 
 	if (flag == 1): 		
 		new_content = content[:start_pos] + content[end_pos+1:]
-		return _ContentCutter(new_content)
+		return __CutterHTML(new_content)
 	else:
 		return content
 
@@ -313,13 +361,52 @@ def _ContentCutter(content):
 	mycontent0 = __PreHTMLUnicode(content)
 	mycontent1 = __CutterHTML(mycontent0)
 	mycontent2 = __AdsFilter(mycontent1)
-	mycontent3 = __DuplicateSpace(mycontent2)
+	mycontent2n = __AdvAdsFilter(mycontent2)
+	mycontent3 = __DuplicateSpace(mycontent2n)
 	mycontent4 = __TrailingSpace(mycontent3)
 	mycontent5 = __ProHTMLUnicodeSpace(mycontent4)
 	mycontent6 = __ProHTMLUnicodeDash(mycontent5)
 	mycontent7 = __LeadingSpace(mycontent6)
 	return mycontent7
 
+def _ContentCutterD(content):
+	# a debugging content cutter to print intermediate value
+	print '000000'
+	print content
+	print '000000'
+	mycontent0 = __PreHTMLUnicode(content)
+	print '111111'
+	print mycontent0
+	print '111111'
+	mycontent1 = __CutterHTML(mycontent0)
+	print '222222'
+	print mycontent1
+	print '222222'
+	mycontent2 = __AdsFilter(mycontent1)
+	print '333333'
+	print mycontent2
+	print '333333'
+	mycontent3 = __DuplicateSpace(mycontent2)
+	print '444444'
+	print mycontent3
+	print '444444'
+	mycontent4 = __TrailingSpace(mycontent3)
+	print '555555'
+	print mycontent4
+	print '555555'
+	mycontent5 = __ProHTMLUnicodeSpace(mycontent4)
+	print '666666'
+	print mycontent5
+	print '666666'
+	mycontent6 = __ProHTMLUnicodeDash(mycontent5)
+	print '777777'
+	print mycontent6
+	print '777777'
+	mycontent7 = __LeadingSpace(mycontent6)
+	print '888888'
+	print mycontent7
+	print '888888'
+	return mycontent7
 
 # a helper function to display global feed information
 def _DisplayGlobal(myfeed, type):
@@ -358,7 +445,7 @@ def _DisplayGlobal(myfeed, type):
 #		   myfeed = feedparser parsed object
 #   output: List of stories
 
-def _RSS(f, log, myfeed, debug):
+def _RSS(f, log, myfeed, latest_ts, debug):
 	# intialize the story list, note, for each entry, it is a list, and append
 	#   the list into "stories"
 	# story is [Feed Title, Entry Title, Entry Content, Entry Category, Entry URL, Entry Timestamp]
@@ -379,73 +466,75 @@ def _RSS(f, log, myfeed, debug):
 
 	# write all entries parsed on local file
 	for count in range(n_entries):
-		if (debug):
-			f.write('Entry ' + str(count+1) + ' Information:\n')
-			f.write('Feed Title: ' + feedtitle + '\n')
-		# get entry title
-		entrytitle = 'Undefined'
-		if myfeed.entries[count].has_key('title'):
-			entrytitle = myfeed.entries[count].title
-			if (debug):
-				f.write('Entry Title: '+ entrytitle + '\n')
-		else:
-			if (debug):
-				f.write('Entry Title: Undefined' + '\n')
-			log.write('Entry ' + str(count+1) + ' error: Entry title = Undefined\n')
-
-		# process content info (clear out HTML codes)
-		content = myfeed.entries[count].description
-		content = _ContentCutter(content)
-		if (debug):
-			f.write('Content: ' + content + '\n')
-
-		# get entry URL
-		entryURL = ''
-		if (myfeed.entries[count].has_key('link') and (len(myfeed.entries[count].link) != 0)):
-			entryURL = myfeed.entries[count].link
-		elif (myfeed.entries[count].has_key('id') and (len(myfeed.entries[count].id) != 0)):
-			entryURL = myfeed.entries[count].id
-		else:
-			entryURL = 'localhost'
-			log.write('Entry ' + str(count+1) + ' error: entryURL = localhost\n')
-
-		if (debug):
-			f.write('Entry URL: ' + entryURL + '\n')
-
-		# write date of entries
+		# check time_stamp of the entry before proceeding
+		#   to avoid processing something we will trash!
 		# convert Universal Feed Parser generated time (tuple) into UNIX time
-
 		UNIX_time = 0
 		if myfeed.entries[count].has_key('date_parsed'):
 			date_parsed = myfeed.entries[count].date_parsed
 			UNIX_time = int(time.mktime(date_parsed))
-			if (debug):
-				f.write('Time Stamp: ' + str(UNIX_time) + '\n')
-				f.write('Time Stamp GMT DEBUG: ' + str(date_parsed[0]) + '/' + str(date_parsed[1]) + '/' + \
-				str(date_parsed[2]) + ' ' + str(date_parsed[3]) + ':' + str(date_parsed[4]) + '\n\n')
 		elif myfeed.feed.has_key('date'):
 			date_parsed = myfeed.feed.date_parsed
 			UNIX_time = int(time.mktime(date_parsed))
+
+		if ((UNIX_time == 0) or (UNIX_time > latest_ts)):
+			if (debug):
+				f.write('Entry ' + str(count+1) + ' Information:\n')
+				f.write('Feed Title: ' + feedtitle + '\n')
+			# get entry title
+			entrytitle = 'Undefined'
+			if myfeed.entries[count].has_key('title'):
+				entrytitle = myfeed.entries[count].title
+				if (debug):
+					f.write('Entry Title: '+ entrytitle + '\n')
+			else:
+				if (debug):
+					f.write('Entry Title: Undefined' + '\n')
+				log.write('Entry ' + str(count+1) + ' error: Entry title = Undefined\n')
+
+			# process content info (clear out HTML codes)
+			content = myfeed.entries[count].description
+
+			content = _ContentCutter(content)
+			if (debug):
+				f.write('Content: ' + content + '\n')
+
+			# get entry URL
+			entryURL = ''
+			if (myfeed.entries[count].has_key('link') and (len(myfeed.entries[count].link) != 0)):
+				entryURL = myfeed.entries[count].link
+			elif (myfeed.entries[count].has_key('id') and (len(myfeed.entries[count].id) != 0)):
+				entryURL = myfeed.entries[count].id
+			else:
+				entryURL = 'localhost'
+				log.write('Entry ' + str(count+1) + ' error: entryURL = localhost\n')
+
+			if (debug):
+				f.write('Entry URL: ' + entryURL + '\n')
+
+			# write date of entries
+
 			if (debug):
 				f.write('Time Stamp: ' + str(UNIX_time) + '\n')
-				f.write('Time Stamp GMT DEBUG: ' + str(date_parsed[0]) + '/' + str(date_parsed[1]) + '/' + \
-				str(date_parsed[2]) + ' ' + str(date_parsed[3]) + ':' + str(date_parsed[4]) + '\n\n')
-		else:
-			if (debug):
-				f.write('Time Stamp: 0\n\n')
-			log.write('Entry ' + str(count+1) + ' error: Time Stamp = 0\n')
+				if (UNIX_time != 0):
+					f.write('Time Stamp GMT DEBUG: ' + str(date_parsed[0]) + '/' + str(date_parsed[1]) + '/' + \
+					str(date_parsed[2]) + ' ' + str(date_parsed[3]) + ':' + str(date_parsed[4]) + '\n\n')
+				else:
+					f.write('Time Stamp: 0\n\n')
+			if (UNIX_time == 0):
+				log.write('Entry ' + str(count+1) + ' error: Time Stamp = 0\n')
 
-		# make a story from above parsed content
-		# story is [Feed Title, Entry Title, Entry Content, Entry Category, Entry URL, Entry Timestamp]
-		if content == '':
-			content = 'Undefined'
-		story = [feedtitle, entrytitle, content, 'Undefined', entryURL, UNIX_time]
-		stories.append(story)
+			# make a story from above parsed content
+			# story is [Feed Title, Entry Title, Entry Content, Entry Category, Entry URL, Entry Timestamp]
+			if content == '':
+				content = 'Undefined'
+			story = [feedtitle, entrytitle, content, 'Undefined', entryURL, UNIX_time]
+			stories.append(story)
 
 	return stories
 
 
-def _ATOM(f, log, myfeed, debug):
+def _ATOM(f, log, myfeed, latest_ts, debug):
 	# intialize the story list, note, for each entry, it is a list, and append
 	#   the list into "stories"
 	# story is [Feed Title, Entry Title, Entry Content, Entry Category, Entry URL, Entry Timestamp]
@@ -466,67 +555,10 @@ def _ATOM(f, log, myfeed, debug):
 
 	# write all entries parsed on local file
 	for count in range(n_entries):
-		if (debug):
-			f.write('Entry ' + str(count+1) + ' Information:\n')
-			f.write('Feed Title: ' + feedtitle + '\n')
-		# get entry title
-		entrytitle = 'Undefined'
-		if myfeed.entries[count].has_key('title'):
-			entrytitle = myfeed.entries[count].title
-			if (debug):
-				f.write('Entry Title: '+ entrytitle + '\n')
-		else:
-			if (debug):
-				f.write('Entry Title: Undefined' + '\n')
-			log.write('Entry ' + str(count+1) + ' error: Entry title = Undefined\n')
-
-
-		#  ----------  Retrieve content info  ------------
-		pos = 0
-		# intialize content variable to empty string (very useful)
-		content = ''
-
-		# get content from description field first, if possible
-		content = myfeed.entries[count].description
-
-		# if the content is empty, try to get in content field (atom specific)
-		if content == '':
-			# when entries[count] has content, get the content out
-			if myfeed.entries[count].has_key('content'):
-				for content_index in range(len(myfeed.entries[count].content)):
-					content = myfeed.entries[count].content[content_index].value
-					if len(content) != 0:
-						break
-
-		# when content field also empty string, we cannot do anything more
-		if content == '':
-			log.write('Entry ' + str(count+1) + ' error: Content is empty\n')
-		else:
-			# ---------- Process content (clear out HTML codes) ---------------
-			content = _ContentCutter(content)
-
-		if (debug):
-			f.write('Content: ' + content + '\n')
-
-		# get entry URL (ID first, before LINK)
-		#   this order seems more correct in ATOM feeds
-		entryURL = ''
-		if (myfeed.entries[count].has_key('id') and (len(myfeed.entries[count].id) != 0)):
-			entryURL = myfeed.entries[count].id
-		elif (myfeed.entries[count].has_key('link') and (len(myfeed.entries[count].link) != 0)):
-			entryURL = myfeed.entries[count].link
-		else:
-			entryURL = 'localhost'
-			log.write('Entry ' + str(count+1) + ' error: entryURL = localhost\n')
-
-		if (debug):
-			f.write('Entry URL: ' + entryURL + '\n')
-
-		# write date of entries
+		# check time_stamp of the entry before proceeding
+		#   to avoid processing something we will trash!
 		# convert Universal Feed Parser generated time (tuple) into UNIX time
-
 		UNIX_time = 0
-		
 		if (myfeed.entries[count].has_key('updated') or  myfeed.entries[count].has_key('published')):
 			if myfeed.entries[count].has_key('updated'):
 				date_parsed = myfeed.entries[count].updated_parsed
@@ -534,45 +566,112 @@ def _ATOM(f, log, myfeed, debug):
 				date_parsed = myfeed.entries[count].published_parsed
 
 			UNIX_time = int(time.mktime(date_parsed))
+
+		if ((UNIX_time == 0) or (UNIX_time > latest_ts)):
+			if (debug):
+				f.write('Entry ' + str(count+1) + ' Information:\n')
+				f.write('Feed Title: ' + feedtitle + '\n')
+			# get entry title
+			entrytitle = 'Undefined'
+			if myfeed.entries[count].has_key('title'):
+				entrytitle = myfeed.entries[count].title
+				if (debug):
+					f.write('Entry Title: '+ entrytitle + '\n')
+			else:
+				if (debug):
+					f.write('Entry Title: Undefined' + '\n')
+				log.write('Entry ' + str(count+1) + ' error: Entry title = Undefined\n')
+
+
+			#  ----------  Retrieve content info  ------------
+			pos = 0
+			# intialize content variable to empty string (very useful)
+			content = ''
+
+			# get content from description field first, if possible
+			content = myfeed.entries[count].description
+
+			# if the content is empty, try to get in content field (atom specific)
+			if content == '':
+				# when entries[count] has content, get the content out
+				if myfeed.entries[count].has_key('content'):
+					for content_index in range(len(myfeed.entries[count].content)):
+						content = myfeed.entries[count].content[content_index].value
+						if len(content) != 0:
+							break
+
+			# when content field also empty string, we cannot do anything more
+			if content == '':
+				log.write('Entry ' + str(count+1) + ' error: Content is empty\n')
+			else:
+				# ---------- Process content (clear out HTML codes) ---------------
+				content = _ContentCutter(content) # this is original required
+
+			if (debug):
+				f.write('Content: ' + content + '\n')
+
+			# get entry URL (ID first, before LINK)
+			#   this order seems more correct in ATOM feeds
+			entryURL = ''
+			if (myfeed.entries[count].has_key('id') and (len(myfeed.entries[count].id) != 0)):
+				entryURL = myfeed.entries[count].id
+			elif (myfeed.entries[count].has_key('link') and (len(myfeed.entries[count].link) != 0)):
+				entryURL = myfeed.entries[count].link
+			else:
+				entryURL = 'localhost'
+				log.write('Entry ' + str(count+1) + ' error: entryURL = localhost\n')
+
+			if (debug):
+				f.write('Entry URL: ' + entryURL + '\n')
+
+			# write date of entries
 			if (debug):
 				f.write('Time Stamp: ' + str(UNIX_time) + '\n')
 				f.write('Time Stamp GMT DEBUG: ' + str(date_parsed[0]) + '/' + str(date_parsed[1]) + '/' + \
 				str(date_parsed[2]) + ' ' + str(date_parsed[3]) + ':' + str(date_parsed[4]) + '\n\n')
-		else:
-			if (debug):
-				f.write('Time Stamp: 0\n\n')
-			log.write('Entry ' + str(count+1) + ' error: Time Stamp = 0\n')
 
-		# make a story from above parsed content
-		# story is [Feed Title, Entry Title, Entry Content, Entry Category, Entry URL, Entry Timestamp]
-		if content == '':
-			content = 'Undefined'
-		story = [feedtitle, entrytitle, content, 'Undefined', entryURL, UNIX_time]
-		stories.append(story)
+			if (UNIX_time == 0):
+				if (debug):
+					f.write('Time Stamp: 0\n\n')
+				log.write('Entry ' + str(count+1) + ' error: Time Stamp = 0\n')
+
+			# make a story from above parsed content
+			# story is [Feed Title, Entry Title, Entry Content, Entry Category, Entry URL, Entry Timestamp]
+			if content == '':
+				content = 'Undefined'
+			story = [feedtitle, entrytitle, content, 'Undefined', entryURL, UNIX_time]
+			stories.append(story)
 
 	return stories
 
 
 # This is deprecated UpdateFeed, only useful to test output of ONE URL
 # THIS IS LOCAL TEST, NO modification to database is performed
-def UpdateFeed_deprecated():
+def UpdateFeed_tester():
 	# create object myfeed, which stores information of parsed CNN top stories RSS
 	# WORKING Flawlessly:
 	# nicely regular RSS feed, easy to process HTML codes (5.3 Verified)
-	# myfeed = feedparser.parse('http://rss.cnn.com/rss/cnn_topstories.rss')
-	# myfeed = feedparser.parse('http://rss.cnn.com/rss/cnn_world.rss')
-	# myfeed = feedparser.parse('http://feeds.foxnews.com/foxnews/world')
-	# myfeed = feedparser.parse('http://sports-ak.espn.go.com/espn/rss/news')
+	myfeed_all = []
+	myfeed = feedparser.parse('cnn_topstories.rss')
+	myfeed_all.append(myfeed)
+	myfeed = feedparser.parse('cnn_world.rss')
+	myfeed_all.append(myfeed)
+	myfeed = feedparser.parse('ESPN_com.xml')
+	myfeed_all.append(myfeed)
+	myfeed = feedparser.parse('world.xml')
+	myfeed_all.append(myfeed)
 	# myfeed = feedparser.parse('http://sports.espn.go.com/espn/rss/news')
 
 	# atom feed, strangely formatted, but it is working (5.3 Verified)
-	# myfeed = feedparser.parse('http://feeds.nytimes.com/nyt/rss/HomePage')
+	myfeed = feedparser.parse('NYT_Home_Page.xml')
+	myfeed_all.append(myfeed)
 
 	# WORKING MOSTLY
 	# Resolved those crappy HTML codes which was flying around
 	# The ADs problem can be solved by removing blank content entries
 	# But we cannot do it now as it may hide bugs (RSS feeds) (5.3 Verified)
-	# myfeed = feedparser.parse('http://feeds.pheedo.com/toms_hardware_headlines')
+	myfeed = feedparser.parse('News_Toms_Hardware_US.xml')
+	myfeed_all.append(myfeed)
 
 	# Most entries "work" in these, some "not work" is basically something we cannot do.
 	# The ads contain legal ending syntax that we cannot differentiate them
@@ -590,7 +689,7 @@ def UpdateFeed_deprecated():
 	# Possibility of performance issue, used 2 sec to process (over 300 entries)
 	# some hyperlink ads remaining. We cannot do anything as those are "near content"
 	# ads. We human are smart enough to comprehend the semantics!
-	# some HTML code remains: &nbsp
+	# some HTML code remains: &nbsp;
 	# plan to remove it in the future
 	# myfeed = feedparser.parse('http://www.rss-specifications.com/blog-feed.xml')
 
@@ -599,35 +698,39 @@ def UpdateFeed_deprecated():
 	# myfeed = feedparser.parse('http://feedparser.org/docs/examples/rss20.xml')
 	# myfeed = feedparser.parse('http://feeds.feedburner.com/SlickdealsnetFP')
 	# myfeed = feedparser.parse('http://rssfeeds.s3.amazonaws.com/goldbox')
-	myfeed = feedparser.parse('http://www.census.gov/mp/www/cpu/index.xml')
+	# myfeed = feedparser.parse('http://www.census.gov/mp/www/cpu/index.xml')
 
 	# create a local temp file that store all parsed content for demostration purpose
 	# firstly, check for feeds encoding and synchronize this information
-	# f = open("feeds.txt", "w")
-	myfeed_encoding = myfeed.encoding
-	f = codecs.open('feeds_test1.txt', encoding=myfeed_encoding, mode='w')
+	filename_counter = 1
+	latest_ts = 1
+	for onefeed in myfeed_all:
+		filename = 'feed_test' + str(filename_counter) + '.txt'
+		f = codecs.open(filename, encoding=onefeed.encoding, mode='w')
 
-	# create a local log for indicating error
-	errlog = open("ERRORLOG_test1.txt", mode ='w')
+		# create a local log for indicating error
+		errlog = open("ERRORLOG_testall.txt", mode ='a')
 
-	# display global feed information that shared across all entries
-	print 'Feed Encoding: ', myfeed_encoding
-	print 'Feed version (type): ', myfeed.version
+		# display global feed information that shared across all entries
+		print 'Feed Encoding: ', onefeed.encoding
+		print 'Feed version (type): ', onefeed.version
 
-	# run specified parser corresponding to type of feeds (RSS,atom,others)
-	debug = True
-	if (myfeed.version[:3] == "rss"):
-		print 'VERBOSE: RSS feed detected!'
-		stories = _RSS(f, errlog, myfeed, debug)
-	elif (myfeed.version[:4] == "atom"):
-		print 'VERBOSE: ATOM feed detected!'
-		stories = _ATOM(f, errlog, myfeed, debug)
-	else:
-		stories = []
-		print 'UNKNOWN feed type!'
+		# run specified parser corresponding to type of feeds (RSS,atom,others)
+		debug = True
+		if (onefeed.version[:3] == "rss"):
+			print 'VERBOSE: RSS feed detected!'
+			stories = _RSS(f, errlog, onefeed, latest_ts, debug)
+		elif (onefeed.version[:4] == "atom"):
+			print 'VERBOSE: ATOM feed detected!'
+			stories = _ATOM(f, errlog, onefeed, latest_ts, debug)
+		else:
+			stories = []
+			print 'UNKNOWN feed type!'
+		filename_counter = filename_counter + 1
 
 	f.close()
-	return stories
+	# print stories
+	# return stories
 
 def UpdateFeed():
 	# DEBUG FLAG, LC DEBUG
@@ -660,11 +763,8 @@ def UpdateFeed():
 		latest_ts_tuple = timestamp_list[0]
 		latest_ts = latest_ts_tuple[1]
 	else:
-		print ('INVALID TIMESTAMP LIST, refer to log file!')
-		errlog.write ('INVALID TIMESTAMP LIST: LENGTH 0\n')
-		cursor.close ()
-		conn.close ()
-		return []
+		print ('TimeStamp POS Trapped 1, potential bug!')
+		latest_ts = 1
 
 	cursor.close ()
 
@@ -748,11 +848,11 @@ def UpdateFeed():
 		if (myfeed.version[:3] == "rss"):
 			if (debug):
 				print 'VERBOSE: RSS feed detected!'
-			stories = _RSS(f, errlog, myfeed, debug)
+			stories = _RSS(f, errlog, myfeed, latest_ts, debug)
 		elif (myfeed.version[:4] == "atom"):
 			if (debug):
 				print 'VERBOSE: ATOM feed detected!'
-			stories = _ATOM(f, errlog, myfeed, debug)
+			stories = _ATOM(f, errlog, myfeed, latest_ts, debug)
 		else:
 			if (debug):
 				print 'UNKNOWN feed type!'
@@ -769,12 +869,13 @@ def UpdateFeed():
 	# Process the List List:
 	# 	Comparing the time stamp of each story with "newest" time stamp obtained
 	# 	remove all old story
-	processed_stories = []
+	processed_stories = all_stories
+	"""
 	for r_story in all_stories:
 		r_story_ts = r_story[5]
 		if (r_story_ts > latest_ts):
 			processed_stories.append(r_story)
-
+	"""
 	# now I have a processed list of stories as processed_stories
 	# get list of IDs... sources_id_list
 	cursor2 = conn.cursor ()
