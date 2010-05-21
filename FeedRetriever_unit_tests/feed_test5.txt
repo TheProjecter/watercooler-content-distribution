@@ -33,7 +33,7 @@ Time Stamp GMT DEBUG: 2010/5/20 18:18
 Entry 5 Information:
 Feed Title: NYT > Home Page
 Entry Title: Swinger Tests China’s Sex Morals
-Content: Ma Yaohai, who arranged group sex encounters in chat rooms, was sentenced to prison for “crowd licentiousness.
+Content: Ma Yaohai, who arranged group sex encounters in chat rooms, was sentenced to prison for “crowd licentiousness.”
 Entry URL: http://www.nytimes.com/2010/05/21/world/asia/21china.html
 Time Stamp: 1274405450
 Time Stamp GMT DEBUG: 2010/5/20 17:30
@@ -89,7 +89,7 @@ Time Stamp GMT DEBUG: 2010/5/20 18:53
 Entry 12 Information:
 Feed Title: NYT > Home Page
 Entry Title: Pakistan Widens Online Ban to Include YouTube
-Content: The government said it had blocked access to the video-sharing Web site because of “growing sacrilegious content.
+Content: The government said it had blocked access to the video-sharing Web site because of “growing sacrilegious content.”
 Entry URL: http://www.nytimes.com/2010/05/21/world/asia/21pstan.html
 Time Stamp: 1274402915
 Time Stamp GMT DEBUG: 2010/5/20 16:48
