@@ -137,6 +137,17 @@ Corrected some more stupid serious bugs (ContentCutter)
 6.3 Test
 Add another Filter to filter away difficult-to-remove advertisements
 	currently, most advertisements are deleted, all unit test case give "perfect" result
+
+6.3.1 Test
+Defaultly converted to non unicode before storing to database for united format
+
+6.3.2 Test
+Further added more unicode conversion functions
+
+6.3.3 Test
+Modified CutterHTML to handle wierd case (mismatching number of < >)
+reverted 6.3.1 change, as it may cause faulting error (crashes)
+
 ------ CODE FREEZE UNTIL BUGS FOUND -------
 ------ USE 6.1.4 TO TEST! -----------------
 
@@ -204,6 +215,15 @@ def __ProHTMLUnicodeDash(content):
 		ending = index+7
 		if (content[index:ending] == '&mdash;'):
 			newcontent = content[:index] + '--' + content[ending:]
+			return __ProHTMLUnicodeDash(newcontent)
+		if (content[index:ending] == '&#8217;'):
+			newcontent = content[:index] + '\'' + content[ending:]
+			return __ProHTMLUnicodeDash(newcontent)
+		if (content[index:ending] == '&#8211;'):
+			newcontent = content[:index] + '-' + content[ending:]
+			return __ProHTMLUnicodeDash(newcontent)
+		if ((content[index:ending] == '&#8221;') or (content[index:ending] == '&#8220;')):
+			newcontent = content[:index] + '"' + content[ending:]
 			return __ProHTMLUnicodeDash(newcontent)
 	return content
 
@@ -346,11 +366,15 @@ def __CutterHTML(content):
 			start_pos = index
 			flag = 1
 		if (content[index] == '>'):
-			end_pos = index
-			break
+			if (flag == 0):
+				newcontent = content[:index] + ' ' + content[index+1:]
+				return __CutterHTML(newcontent)
+			else:
+				end_pos = index
+				break
 
 	if (flag == 1): 		
-		new_content = content[:start_pos] + content[end_pos+1:]
+		new_content = content[:start_pos] + ' ' + content[end_pos+1:]
 		return __CutterHTML(new_content)
 	else:
 		return content
@@ -371,41 +395,88 @@ def _ContentCutter(content):
 
 def _ContentCutterD(content):
 	# a debugging content cutter to print intermediate value
-	print '000000'
-	print content
-	print '000000'
+	"""
+	debuglc = codecs.open('debuglc.txt', encoding='utf-8', mode='w')
+	debuglc.write('------\n')
+	debuglc.write(content + '\n')
+	debuglc.write('------\n')
 	mycontent0 = __PreHTMLUnicode(content)
-	print '111111'
-	print mycontent0
-	print '111111'
+	debuglc.write('000000\n')
+	debuglc.write(mycontent0 + '\n')
+	debuglc.write('000000\n')
 	mycontent1 = __CutterHTML(mycontent0)
-	print '222222'
-	print mycontent1
-	print '222222'
+	debuglc.write('111111\n')
+	debuglc.write(mycontent1 + '\n')
+	debuglc.write('111111\n')
 	mycontent2 = __AdsFilter(mycontent1)
-	print '333333'
-	print mycontent2
-	print '333333'
-	mycontent3 = __DuplicateSpace(mycontent2)
-	print '444444'
-	print mycontent3
-	print '444444'
+	debuglc.write('222222\n')
+	debuglc.write(mycontent2 + '\n')
+	debuglc.write('222222\n')
+	mycontent2n = __AdvAdsFilter(mycontent2)
+	debuglc.write('2n2n2n\n')
+	debuglc.write(mycontent2n + '\n')
+	debuglc.write('2n2n2n\n')
+	mycontent3 = __DuplicateSpace(mycontent2n)
+	debuglc.write('333333\n')
+	debuglc.write(mycontent3 + '\n')
+	debuglc.write('333333\n')
 	mycontent4 = __TrailingSpace(mycontent3)
-	print '555555'
-	print mycontent4
-	print '555555'
+	debuglc.write('444444\n')
+	debuglc.write(mycontent4 + '\n')
+	debuglc.write('444444\n')
 	mycontent5 = __ProHTMLUnicodeSpace(mycontent4)
-	print '666666'
-	print mycontent5
-	print '666666'
+	debuglc.write('555555\n')
+	debuglc.write(mycontent5 + '\n')
+	debuglc.write('555555\n')
 	mycontent6 = __ProHTMLUnicodeDash(mycontent5)
-	print '777777'
-	print mycontent6
-	print '777777'
+	debuglc.write('666666\n')
+	debuglc.write(mycontent6 + '\n')
+	debuglc.write('666666\n')
 	mycontent7 = __LeadingSpace(mycontent6)
-	print '888888'
+	debuglc.write('777777\n')
+	debuglc.write(mycontent7 + '\n')
+	debuglc.write('777777\n')
+	"""
+	print '------'
+	print content
+	print '------'
+	mycontent0 = __PreHTMLUnicode(content)
+	print '000000'
+	print mycontent0
+	print '000000'
+	mycontent1 = __CutterHTML(mycontent0)
+	print '111111'
+	print mycontent1
+	print '111111'
+	mycontent2 = __AdsFilter(mycontent1)
+	print '222222'
+	print mycontent2
+	print '222222'
+	mycontent2n = __AdvAdsFilter(mycontent2)
+	print '2n2n2n'
+	print mycontent2n
+	print '2n2n2n'
+	mycontent3 = __DuplicateSpace(mycontent2n)
+	print '333333'
+	print mycontent3
+	print '333333'
+	mycontent4 = __TrailingSpace(mycontent3)
+	print '444444'
+	print mycontent4
+	print '444444'
+	mycontent5 = __ProHTMLUnicodeSpace(mycontent4)
+	print '555555'
+	print mycontent5
+	print '555555'
+	mycontent6 = __ProHTMLUnicodeDash(mycontent5)
+	print '666666'
+	print mycontent6
+	print '666666'
+	mycontent7 = __LeadingSpace(mycontent6)
+	print '777777'
 	print mycontent7
-	print '888888'
+	print '777777'
+	
 	return mycontent7
 
 # a helper function to display global feed information
@@ -461,6 +532,7 @@ def _RSS(f, log, myfeed, latest_ts, debug):
 	# get feed title
 	feedtitle = 'Undefined'
 	if myfeed.feed.has_key('title'):
+		#feedtitle_uni = myfeed.feed.title
 		feedtitle = myfeed.feed.title
 	print 'Feed Title:' , feedtitle
 
@@ -484,6 +556,7 @@ def _RSS(f, log, myfeed, latest_ts, debug):
 			# get entry title
 			entrytitle = 'Undefined'
 			if myfeed.entries[count].has_key('title'):
+				#entrytitle_uni = myfeed.entries[count].title
 				entrytitle = myfeed.entries[count].title
 				if (debug):
 					f.write('Entry Title: '+ entrytitle + '\n')
@@ -496,6 +569,7 @@ def _RSS(f, log, myfeed, latest_ts, debug):
 			content = myfeed.entries[count].description
 
 			content = _ContentCutter(content)
+			#content = str(content)
 			if (debug):
 				f.write('Content: ' + content + '\n')
 
@@ -509,6 +583,7 @@ def _RSS(f, log, myfeed, latest_ts, debug):
 				entryURL = 'localhost'
 				log.write('Entry ' + str(count+1) + ' error: entryURL = localhost\n')
 
+			#entryURL = str(entryURL)
 			if (debug):
 				f.write('Entry URL: ' + entryURL + '\n')
 
@@ -551,6 +626,7 @@ def _ATOM(f, log, myfeed, latest_ts, debug):
 	feedtitle = 'Undefined'
 	if myfeed.feed.has_key('title'):
 		feedtitle = myfeed.feed.title
+		#feedtitle = str(feedtitle)
 	print 'Feed Title:' , feedtitle
 
 	# write all entries parsed on local file
@@ -575,6 +651,7 @@ def _ATOM(f, log, myfeed, latest_ts, debug):
 			entrytitle = 'Undefined'
 			if myfeed.entries[count].has_key('title'):
 				entrytitle = myfeed.entries[count].title
+				#entrytitle = str(entrytitle)
 				if (debug):
 					f.write('Entry Title: '+ entrytitle + '\n')
 			else:
@@ -605,10 +682,15 @@ def _ATOM(f, log, myfeed, latest_ts, debug):
 				log.write('Entry ' + str(count+1) + ' error: Content is empty\n')
 			else:
 				# ---------- Process content (clear out HTML codes) ---------------
-				content = _ContentCutter(content) # this is original required
+				if (False):
+					content = _ContentCutterD(content)
+				else:
+					content = _ContentCutter(content) # this is original required
 
 			if (debug):
 				f.write('Content: ' + content + '\n')
+
+			#content = str(content)
 
 			# get entry URL (ID first, before LINK)
 			#   this order seems more correct in ATOM feeds
@@ -623,6 +705,8 @@ def _ATOM(f, log, myfeed, latest_ts, debug):
 
 			if (debug):
 				f.write('Entry URL: ' + entryURL + '\n')
+
+			#entryURL = str(entryURL)
 
 			# write date of entries
 			if (debug):
@@ -666,23 +750,17 @@ def UpdateFeed_tester():
 	myfeed = feedparser.parse('NYT_Home_Page.xml')
 	myfeed_all.append(myfeed)
 
-	# WORKING MOSTLY
-	# Resolved those crappy HTML codes which was flying around
-	# The ADs problem can be solved by removing blank content entries
-	# But we cannot do it now as it may hide bugs (RSS feeds) (5.3 Verified)
+	# RSS feed, contain empty entry, but it is required to retain them (it shows in real feed!)
 	myfeed = feedparser.parse('News_Toms_Hardware_US.xml')
 	myfeed_all.append(myfeed)
 
-	# Most entries "work" in these, some "not work" is basically something we cannot do.
-	# The ads contain legal ending syntax that we cannot differentiate them
-	# consider email SPAM filtering. We are very conservative, ensuring correctness.
-	# Possibility of performance issue, used 1 sec to process
-	# if you want "more working" version, we can implement more aggressive filter
-	# techniques, such as, disgard all information afterwards which is seperated by 
-	# 2 \n in a row, regardless of whats the characters in front
-	#   NOTE THIS AGGRESSIVE METHOD WILL BREAK RSS WITH FORMATS, since they
-	#   appear to have many \n after parsed and removed HTMLs
-	# myfeed = feedparser.parse('http://feeds.feedburner.com/caranddriver/blog')
+	# RSS feed, working, but contain some styles that may crash email server
+	myfeed = feedparser.parse('cnn_topstories_bug.rss')
+	myfeed_all.append(myfeed)
+
+	# HTML style formats are lost. Things are not pretty after first 100 chars (main content)
+	myfeed = feedparser.parse('cardriver_blog.xml')
+	myfeed_all.append(myfeed)
 
 	# NOT WORKING:
 
@@ -802,7 +880,8 @@ def UpdateFeed():
 		# we first get feed sid by URL, then update the title with sid
 		source_feed_title = 'Undefined'
 		if myfeed.feed.has_key('title'):
-			source_feed_title = myfeed.feed.title
+			source_feed_title_uni = myfeed.feed.title
+			source_feed_title = str(source_feed_title_uni)
 			if (len(source_feed_title) > 0):
 				cursor_title = conn.cursor ()
 				cursor_title.execute ("""
@@ -929,6 +1008,8 @@ def UpdateFeed():
 	conn.close ()
 		
 	# return processed stories list
+	# LC DEBUG
+	# print processed_stories
 	return processed_stories
 
 if __name__ == "__main__":
