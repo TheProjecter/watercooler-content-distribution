@@ -148,12 +148,20 @@ Further added more unicode conversion functions
 Modified CutterHTML to handle wierd case (mismatching number of < >)
 reverted 6.3.1 change, as it may cause faulting error (crashes)
 
+6.3.4 Test
+Researched unicode again, trying another method to robustly convert
+all unicode to ascii for database "insert" and email servers, to avoid crashing
+basically, its "ignoring" unconvertible char, rather than raising exception
+
+6.3.5 Test
+Verified stories output identical to 6.1.4
+Optimized the logic of __AdsFilter and __AdvAdsFilter
+This is used for performance test
+
 ------ CODE FREEZE UNTIL BUGS FOUND -------
 ------ USE 6.1.4 TO TEST! -----------------
 
 Future:
-add more test cases to test for any bugs
-Optimize code to process content more efficiently (by the suggestions made by CMS team)
 add threads to parallelize processing data when a list of URL is obtained
 
 """
@@ -277,10 +285,11 @@ def __AdsFilter(content):
 	# last_legal_pos if == 0, means cant remove anything
 	if (last_legal_pos != 0):
 		endpos = 0
-		end = len(content)-1
+		end = len(content)
 		current = last_legal_pos+1
 		newcurr = 0
 		# detect non-space position, from legal_ending_position to end
+		# checking this: is it all space?
 		for index in range(current, end):
 			if content[index] != ' ':
 				newcurr = index
@@ -290,25 +299,32 @@ def __AdsFilter(content):
 		if (newcurr == 0):
 			return content[:current]
 
-		# reaching here means found non-space chars, so we must ensure that we preserve anything
-		#	before newcurr position
-		current = newcurr
+		# reaching here means found non-space chars (potentially trash)
+		# setup the "range" properly..., start from last_legal_pos + 1
+		newcurr = current
 		# extra code to proceed some special scenario (eg H.264) (basically preserve more characters)
 		# effect: stop at the position when it can no longer find chars or digits after '.' eg
 		for index in range (newcurr, end):
 			if  (not (bool(CHARS_SET.search(content[index])))):
 				current = index
 				break
+		# now skip some space if there is any, set "current" to pos of "first non-space"
+		newcurr = current
+		for index in range (newcurr, end):
+			if content[index] != ' ':
+				current = index
+				break
 
 		# check if multiple \n following, only seperated by spaces if there is any
 		#   then we conclude anything afterwards are trash (likely ADs)
 		#   lemma: There is no useful information after this syntax: 'legal_ending' [space]* \n [space]* \n
-		if ((content[current] == '\n') or (content[current] == '\r\n')):
+		if (content[current] == '\n'):
+			current = current + 1
 			for index in range(current, end):
-				if ((content[index+1] == '\n') or (content[index+1] == '\r\n')):
+				if (content[index] == '\n'):
 					endpos = index + 1
 					break
-				if ((content[index+1] != ' ') and (content[index+1] != '\n') and (content[index+1] != '\r\n')):
+				if ((content[index] != ' ') and (content[index] != '\n')):
 					endpos = 0
 					break
 	# do we really able to kill crap things? (checking endpos)
@@ -324,8 +340,6 @@ def __AdsFilter(content):
 #        and, the previous one is immediately seperated by following syntax:
 #        '2nd last legal ending' [space]* \n [space]* \n [space]* \n [space]* \n
 def __AdvAdsFilter(content):
-	# define CHARS_SET
-	CHARS_SET = re.compile(r'[a-zA-Z0-9]')
 	legal_pos = 0
 	previous_legal_pos = 0
 	nl_count = 0
@@ -340,13 +354,13 @@ def __AdvAdsFilter(content):
 	# legal_pos if == 0 or previous_legal_pos == 0, means cant remove anything
 	if ((previous_legal_pos != 0) and (legal_pos != 0)):
 		# check previous_legal_pos follows by the defined lemma condtions....
-		end = len(content)-1
+		end = len(content)
 		current = previous_legal_pos+1
-
-		for index in range(current, end):
-			if ((content[index] == '\n') or (content[index] == '\r\n')):
+		newcurr = current
+		for index in range(newcurr, end):
+			if (content[index] == '\n'):
 				nl_count = nl_count + 1
-			if ((content[index] != '\n') and (content[index] != '\r\n') and (content[index] != ' ')):
+			if ((content[index] != '\n') and (content[index] != ' ')):
 				break
 			if (nl_count == 4):
 				endpos = current + 1
@@ -532,8 +546,9 @@ def _RSS(f, log, myfeed, latest_ts, debug):
 	# get feed title
 	feedtitle = 'Undefined'
 	if myfeed.feed.has_key('title'):
-		#feedtitle_uni = myfeed.feed.title
 		feedtitle = myfeed.feed.title
+		feedtitle = unicodedata.normalize('NFKD', feedtitle).encode('ascii','ignore')
+
 	print 'Feed Title:' , feedtitle
 
 	# write all entries parsed on local file
@@ -556,8 +571,9 @@ def _RSS(f, log, myfeed, latest_ts, debug):
 			# get entry title
 			entrytitle = 'Undefined'
 			if myfeed.entries[count].has_key('title'):
-				#entrytitle_uni = myfeed.entries[count].title
 				entrytitle = myfeed.entries[count].title
+				entrytitle = unicodedata.normalize('NFKD', entrytitle).encode('ascii','ignore')
+
 				if (debug):
 					f.write('Entry Title: '+ entrytitle + '\n')
 			else:
@@ -569,7 +585,7 @@ def _RSS(f, log, myfeed, latest_ts, debug):
 			content = myfeed.entries[count].description
 
 			content = _ContentCutter(content)
-			#content = str(content)
+			content = unicodedata.normalize('NFKD', content).encode('ascii','ignore')
 			if (debug):
 				f.write('Content: ' + content + '\n')
 
@@ -577,18 +593,18 @@ def _RSS(f, log, myfeed, latest_ts, debug):
 			entryURL = ''
 			if (myfeed.entries[count].has_key('link') and (len(myfeed.entries[count].link) != 0)):
 				entryURL = myfeed.entries[count].link
+				entryURL = unicodedata.normalize('NFKD', entryURL).encode('ascii','ignore')
 			elif (myfeed.entries[count].has_key('id') and (len(myfeed.entries[count].id) != 0)):
 				entryURL = myfeed.entries[count].id
+				entryURL = unicodedata.normalize('NFKD', entryURL).encode('ascii','ignore')
 			else:
 				entryURL = 'localhost'
 				log.write('Entry ' + str(count+1) + ' error: entryURL = localhost\n')
 
-			#entryURL = str(entryURL)
 			if (debug):
 				f.write('Entry URL: ' + entryURL + '\n')
 
 			# write date of entries
-
 			if (debug):
 				f.write('Time Stamp: ' + str(UNIX_time) + '\n')
 				if (UNIX_time != 0):
@@ -611,8 +627,7 @@ def _RSS(f, log, myfeed, latest_ts, debug):
 
 def _ATOM(f, log, myfeed, latest_ts, debug):
 	# intialize the story list, note, for each entry, it is a list, and append
-	#   the list into "stories"
-	# story is [Feed Title, Entry Title, Entry Content, Entry Category, Entry URL, Entry Timestamp]
+	#   the list into "stories" [Feed Title, Entry Title, Entry Content, Entry Category, Entry URL, Entry Timestamp]
 	stories = []
 
 	# calculate how many "entries" in the feed
@@ -626,7 +641,7 @@ def _ATOM(f, log, myfeed, latest_ts, debug):
 	feedtitle = 'Undefined'
 	if myfeed.feed.has_key('title'):
 		feedtitle = myfeed.feed.title
-		#feedtitle = str(feedtitle)
+		feedtitle = unicodedata.normalize('NFKD', feedtitle).encode('ascii','ignore')
 	print 'Feed Title:' , feedtitle
 
 	# write all entries parsed on local file
@@ -635,13 +650,13 @@ def _ATOM(f, log, myfeed, latest_ts, debug):
 		#   to avoid processing something we will trash!
 		# convert Universal Feed Parser generated time (tuple) into UNIX time
 		UNIX_time = 0
-		if (myfeed.entries[count].has_key('updated') or  myfeed.entries[count].has_key('published')):
-			if myfeed.entries[count].has_key('updated'):
-				date_parsed = myfeed.entries[count].updated_parsed
-			else:
-				date_parsed = myfeed.entries[count].published_parsed
-
+		if myfeed.entries[count].has_key('updated'):
+			date_parsed = myfeed.entries[count].updated_parsed
 			UNIX_time = int(time.mktime(date_parsed))
+		elif myfeed.entries[count].has_key('published'):
+			date_parsed = myfeed.entries[count].published_parsed
+			UNIX_time = int(time.mktime(date_parsed))
+
 
 		if ((UNIX_time == 0) or (UNIX_time > latest_ts)):
 			if (debug):
@@ -651,7 +666,7 @@ def _ATOM(f, log, myfeed, latest_ts, debug):
 			entrytitle = 'Undefined'
 			if myfeed.entries[count].has_key('title'):
 				entrytitle = myfeed.entries[count].title
-				#entrytitle = str(entrytitle)
+				entrytitle = unicodedata.normalize('NFKD', entrytitle).encode('ascii','ignore')
 				if (debug):
 					f.write('Entry Title: '+ entrytitle + '\n')
 			else:
@@ -687,18 +702,20 @@ def _ATOM(f, log, myfeed, latest_ts, debug):
 				else:
 					content = _ContentCutter(content) # this is original required
 
+			content = unicodedata.normalize('NFKD', content).encode('ascii','ignore')
 			if (debug):
 				f.write('Content: ' + content + '\n')
 
-			#content = str(content)
 
 			# get entry URL (ID first, before LINK)
 			#   this order seems more correct in ATOM feeds
 			entryURL = ''
 			if (myfeed.entries[count].has_key('id') and (len(myfeed.entries[count].id) != 0)):
 				entryURL = myfeed.entries[count].id
+				entryURL = unicodedata.normalize('NFKD', entryURL).encode('ascii','ignore')
 			elif (myfeed.entries[count].has_key('link') and (len(myfeed.entries[count].link) != 0)):
 				entryURL = myfeed.entries[count].link
+				entryURL = unicodedata.normalize('NFKD', entryURL).encode('ascii','ignore')
 			else:
 				entryURL = 'localhost'
 				log.write('Entry ' + str(count+1) + ' error: entryURL = localhost\n')
@@ -706,7 +723,6 @@ def _ATOM(f, log, myfeed, latest_ts, debug):
 			if (debug):
 				f.write('Entry URL: ' + entryURL + '\n')
 
-			#entryURL = str(entryURL)
 
 			# write date of entries
 			if (debug):
@@ -758,7 +774,15 @@ def UpdateFeed_tester():
 	myfeed = feedparser.parse('cnn_topstories_bug.rss')
 	myfeed_all.append(myfeed)
 
-	# HTML style formats are lost. Things are not pretty after first 100 chars (main content)
+	# Most entries "work" in these, some "not work" is basically something we cannot do.
+	# The ads contain legal ending syntax that we cannot differentiate them
+	# consider email SPAM filtering. We are very conservative, ensuring correctness.
+	# Possibility of performance issue, used 1 sec to process
+	# if you want "more working" version, we can implement more aggressive filter
+	# techniques, such as, disgard all information afterwards which is seperated by 
+	# 2 \n in a row, regardless of whats the characters in front
+	#   NOTE THIS AGGRESSIVE METHOD WILL BREAK RSS WITH FORMATS, since they
+	#   appear to have many \n after parsed and removed HTMLs
 	myfeed = feedparser.parse('cardriver_blog.xml')
 	myfeed_all.append(myfeed)
 
@@ -809,6 +833,7 @@ def UpdateFeed_tester():
 	f.close()
 	# print stories
 	# return stories
+
 
 def UpdateFeed():
 	# DEBUG FLAG, LC DEBUG
