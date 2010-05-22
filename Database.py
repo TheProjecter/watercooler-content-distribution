@@ -12,24 +12,27 @@ import MySQLdb
 # carrior: (string): AT&T, Verizon, T-Mobile, Sprint
 # method: (string): email, sms_text, sms_link
 def getUsersByStory ( my_feed_url ):
+    
     conn = MySQLdb.connect (host = "localhost",
                         user = "root",
                         passwd = "adminsql",
                         db = "watercooler")
-
+    
     cursor = conn.cursor ()
     cursor.execute ("""
                     SELECT username, email, phone_number, carrior_name, method_type
-                    FROM users, favorites, feed_sources, feed_stories, carriors, reception_methods
+                    FROM users, favorites, feed_sources, feed_stories, carriors, receptions, reception_methods
                     WHERE users.uid = favorites.uid
                     AND users.cid = carriors.cid
-                    AND users.rid = reception_methods.rid
+                    AND users.uid = receptions.uid
+                    AND receptions.rid = reception_methods.rid
                     AND feed_sources.sid = favorites.sid
                     AND feed_stories.sid = feed_sources.sid
                     AND feed_stories.url = %s
                     """, my_feed_url)
-
-    retVal = cursor.fetchall () 
+    retVal = cursor.fetchall ()
     cursor.close ()
     conn.close ()
+    
     return retVal
+

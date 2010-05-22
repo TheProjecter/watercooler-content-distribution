@@ -21,15 +21,11 @@ def runBashPipe(frontPipe, backPipe):
     command as input.
     """
 
-    # DEBUG
-    print "frontPipe:", frontPipe
-    print "backPipe:", backPipe
-
     # Split the bash commands into python lists
     frontPipe = shlex.split(frontPipe)
     backPipe = shlex.split(backPipe)
 
-    # Execute the bash commands using subprocess TODO:Uncomment
+    # Execute the bash commands using subprocess 
     p1 = subprocess.Popen(frontPipe, stdout=subprocess.PIPE)
     p2 = subprocess.Popen(backPipe, stdin=p1.stdout, stdout=subprocess.PIPE)
     output = p2.communicate()[0]    
@@ -88,10 +84,13 @@ def sendStories(listOfStoriesURL):
     
         # Remove all special characters with \char
         # TODO: This is a temp fix for double quotes
-        #       We need a more robust 
+        #       We need a more robust fix
         for specialChar in SPECIAL_CHARS:
             storyTitle = storyTitle.replace(specialChar, "")
             storyContent = storyContent.replace(specialChar, "")
+
+        #DEBUG:
+        #print "storyURL:", storyURL
 
         listOfUsers = Database.getUsersByStory(storyURL)
         
@@ -108,22 +107,22 @@ def sendStories(listOfStoriesURL):
             
             # Send
             if userMethod == "email":
-                print "sendAsEmail"
-                print "mail:", userEmail
+                print "Send mail to:", userEmail
                 print "title:", storyTitle
-                print "storyContent:", storyContent
+                print "\n"
+                #print "storyContent:", storyContent
                 sendAsEmail(userEmail, storyTitle, storyContent)
             elif userMethod == "sms_text":
-                print "sendAsText"
-                print "phone:", userPhone
-                print "carrier:", userCarrier
+                print "Send text (without link) to phone#:", userPhone
+                #print "carrier:", userCarrier
                 print "title:", storyTitle
-                print "storyContent:", storyContent
+                print "\n"
+                #print "storyContent:", storyContent
                 sendAsText(userPhone, userCarrier, storyTitle, storyContent)
             elif userMethod == "sms_link":
-                print "sendAsText"
-                print "phone:", userPhone
-                print "carrier:", userCarrier
+                print "Send text (with link) to phone:", userPhone
+                #print "carrier:", userCarrier
                 print "title:", storyTitle
-                print "storyURL:", storyURL
+                print "\n"
+                #print "storyURL:", storyURL
                 sendAsText(userPhone, userCarrier, storyTitle, storyURL)
