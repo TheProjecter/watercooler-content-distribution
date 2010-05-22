@@ -1,0 +1,48 @@
+Entry 1 Information:
+Feed Title: CNN.com
+Entry Title: BP to try pumping fluid into well to stop Gulf oil gusher
+Content: The "top kill" method intended to stop the runaway flow of oil spewing into the Gulf of Mexico probably will be tried early next week, BP's chief operating officer said.
+Entry URL: http://rss.cnn.com/~r/rss/cnn_topstories/~3/hNQvqhHbckc/index.html
+Time Stamp: 1274500951
+Time Stamp GMT DEBUG: 2010/5/21 20:2
+
+Entry 2 Information:
+Feed Title: CNN.com
+Entry Title: Doctors find hole in Bret Michaels' heart
+Content: Rock singer Bret Michaels had another health setback this week when doctors found a hole in his heart that they think caused him to suffer a warning stroke, his publicist said.
+Entry URL: http://rss.cnn.com/~r/rss/cnn_topstories/~3/w_nEpYX80Jc/index.html
+Time Stamp: 1274498577
+Time Stamp GMT DEBUG: 2010/5/21 19:22
+
+Entry 3 Information:
+Feed Title: CNN.com
+Entry Title: Elizabeth Smart kidnapper gets 15 years
+Content: A woman who pleaded guilty to kidnapping Utah teenager Elizabeth Smart in 2002 -- and attempting to kidnap Smart's cousin a month later -- will be sentenced later today for both offenses.
+Entry URL: http://rss.cnn.com/~r/rss/cnn_topstories/~3/7cAAFkp_yrc/index.html
+Time Stamp: 1274496395
+Time Stamp GMT DEBUG: 2010/5/21 18:46
+
+Entry 4 Information:
+Feed Title: CNN.com
+Entry Title: Two detained Iranians freed in Iraq
+Content: Two Iranians detained for years in Iraq by U.S. troops have been freed and are headed home, officials at the Iranian Embassy in Baghdad told CNN on Friday.
+Entry URL: http://rss.cnn.com/~r/rss/cnn_topstories/~3/29z6Oiz8-Oc/index.html
+Time Stamp: 1274503212
+Time Stamp GMT DEBUG: 2010/5/21 20:40
+
+Entry 5 Information:
+Feed Title: CNN.com
+Entry Title: Intelligence adviser had rocky ride
+Content: Dennis Blair, the president's top intelligence adviser, announced his resignation after 16 months of power struggles, politics and personality clashes.
+Entry URL: http://rss.cnn.com/~r/rss/cnn_topstories/~3/8Y6pNTJbiqk/index.html
+Time Stamp: 1274489224
+Time Stamp GMT DEBUG: 2010/5/21 16:47
+
+Entry 6 Information:
+Feed Title: CNN.com
+Entry Title: U2's Bono has emergency back surgery
+Content: Bono has roadies to do his heavy lifting, but the U2 lead singer somehow suffered a serious back injury while preparing for his upcoming U.S. tour, according to the rock band's website.
+Entry URL: http://rss.cnn.com/~r/rss/cnn_topstories/~3/TyueaqYvUe8/index.html
+Time Stamp: 1274495825
+Time Stamp GMT DEBUG: 2010/5/21 18:37
+
