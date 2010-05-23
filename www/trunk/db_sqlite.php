@@ -1,5 +1,8 @@
 <?php
 
+// for debugging
+//include('db.php');
+
 /* class SQLiteDBObject provides a base class for all classes which
    represent objects in a SQLite database
 */
@@ -345,6 +348,4 @@ filename=test/SQLiteTest.db
   }
 }
 
-// for debugging
-// include('db.php');
 //SQLiteTest::testAll();
