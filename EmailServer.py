@@ -9,7 +9,7 @@ HOST = {'AT&T':'txt.att.net',
         'Verizon':'vtext.com',
         'SprinT':'messaging.sprintpcs.com'}
 
-SPECIAL_CHARS = ['"', "\""]
+SPECIAL_CHARS = ['"', "\"", "'", '$', '%', '^', '*', '@', '!', "\\", '~', '`', '#']
 
 def runBashPipe(frontPipe, backPipe):
     """Run the two inputs as commands joined by a pipe
