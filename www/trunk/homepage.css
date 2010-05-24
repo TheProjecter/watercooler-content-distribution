@@ -9,11 +9,11 @@ background:white;
 
 #wrap 
 {
-width:60em;
+width:61em;
 margin:0 auto;
+margin-top: 2em;
 background:white;
-border-style:solid;
-border-width:0.1em;
+border: 0.1em groove navy;
 padding:1em;
 }
 
@@ -29,9 +29,11 @@ color:navy;
 
 #nav
 {
+border: .1em solid navy;
 border-style:solid;
 border-width:.1em;
 padding:1em;
+background-color:#ffa20f;
 }
 
 #nav ul
@@ -50,10 +52,24 @@ padding:0;
 
 #feedreader
 {
-width: 60em;
+height: 27.4em;
+width: 27.5em;
 margin: 1em auto;
-border: 3px solid navy;
+border: .1em groove navy;
+padding: 1em;
 float:  left;
+background-color:#ffa20f;
+}
+
+#userspace
+{
+height: 27.5em;
+width: 28em;
+margin: 1em auto;
+border: .1em groove navy;
+padding: 1em;
+float:  right;
+background-color:#ffa20f;
 }
 
 #main
@@ -62,7 +78,9 @@ float:left;
 width:7em;
 padding:1em;
 height:25em;
-border: 1px solid navy;
+border: .1em solid navy;
+margin-right: 1em;
+background-color: white;
 }
 
 #sidebar
@@ -71,28 +89,36 @@ float:left;
 width:15em;
 padding:1em;
 height:25em;
-border: 1px solid navy;
+border: .1em solid navy;
+border-style: groove;
+background-color: white;
 }
 
 #footer
 {
+border: .1em solid navy;
 clear:both;
-background:#cc9;
-border-style:solid;
-border-width:0.1em;
-padding:.5em;
+padding: 1em;
+height:2.2em;
+background-color:#ffa20f;
 }
 
 #footerLeft
 {
 float:left;
 text-align:left;
+background-color: white;
+padding: 0.5em;
+border: .1em groove navy;
 }
 
 #footerRight
 {
 float:right;
 text-align:right;
+background-color: white;
+padding: 0.5em;
+border: .1em groove navy;
 }
 
 .validated

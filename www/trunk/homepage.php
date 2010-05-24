@@ -15,7 +15,9 @@
       <div id="title">
 	<p><?php print($_SESSION['userName']); ?>'s Latest News</p>
       </div>
-      <div id="nav">
+      <div id="outline">
+	<div id="nav">
+	</div>
       </div>
       <div id="feedreader">
 	<div id="main">
@@ -25,7 +27,6 @@
 	    <li>Feed 3</li> <!--TODO: Replace Feed 3 with info from DB.  Add onclick to paragraph tag-->
 	  </ul>
 	</div>
-	<div id="main"></div>
 	<div id="sidebar">
 	  <ul>
 	    <li>This is a long and interesting story that relates to the content in feed 1.</li>
@@ -33,13 +34,11 @@
 	  </ul>
 	</div>
       </div>
+      <div id="userspace">
+      </div>
       <div id="footer">
-	<div id="footerLeft">
-	  <a href="settings.php">Settings</a>
-	</div>
-	<div id="footerRight">
-	  <a href="unsubscribe.php">Unsubscribe</a>
-	</div>
+	<a href="settings.php" id="footerLeft">Settings</a>
+	<a href="unsubscribe.php" id="footerRight">Unsubscribe</a>
       </div>
     </div>
     <div class="validated">
