@@ -191,15 +191,38 @@ class SQLiteUsers extends SQLiteDBObject implements iUsers {
     return self::__search($userinfo, 'AND', $db);
   }
 
+/* SQLiteUsers::searchAny implements iUsers::searchAny (see corresponding
+   documentation). This function is safe to SQL injection.
+*/
   public static function searchAny($userinfo, $db = NULL) {
     if ($db === NULL)
       $db = self::$site_db;
     return self::__searchAny($userinfo, $db);
   }
+  /* SQLiteUsers::__searchAny is a helper function to SQLiteUsers::searchAny 
+     which performs the actual search operation. This function was added in
+     order to use typehinting on parameter $db.
+  */
   private static function __searchAny($userinfo, SQLiteDB $db) {
     return self::__search($userinfo, 'OR', $db);
   }
-  public function merge($users) {}
+
+/* SQLiteUsers::merge implements iUsers::merge (see corresponding 
+   documentation).
+*/
+  public function merge($users) {
+    return self::__merge($users);
+  }
+  /* SQLiteUsers::__merge is a helper function to SQLiteUsers::merge which
+     performs the actual merge operation. This function was added in order to
+     use typehinting on parameter $users.
+  */
+  public function __merge(SQLiteUsers $users) {
+    if ($this->db !== $users->db)
+      throw new InvalidArgumentException('$db must match between objects');
+    $c = __CLASS__;
+    return new $c(array_merge($this->users, $users->users), $this->db);
+  }
 }
 
 /* class SQLiteUser implements iUser on SQLite databases (see corresponding 
@@ -538,13 +561,31 @@ filename=test/SQLiteTest.db
     if ($search_users === NULL || count($search_users->users) !== 2)
       throw new Exception('SQLiteUsers::searchAll test failed');
 
-    // SQLiteUsers::searchAny test
+    // SQLiteUsers::searchAny username test
     $search_users = 
       SQLiteUsers::searchAny(array('username'=>
 				   array($userinfo['username'],
 					 $userinfo_2['username'])), $db);
     if ($search_users === NULL || count($search_users->users) !== 2)
-      throw new Exception('SQLiteUsers::searchAny test failed');
+      throw new Exception('SQLiteUsers::searchAny username test failed');
+
+    // SQLiteUsers::searchAll match-one test
+    $search_users = 
+      SQLiteUsers::searchAll(array_diff($userinfo, $userinfo_2), $db);
+    if ($search_users === NULL || count($search_users->users) !== 1)
+      throw new Exception('SQLiteUsers::searchAll match-one test failed');
+
+    // SQLiteUsers::searchAny match-one test
+    $search_users_2 = 
+      SQLiteUsers::searchAny(array('username'=>$userinfo_2['username']), $db);
+    if ($search_users_2 === NULL || count($search_users_2->users) !== 1)
+      throw new Exception('SQLiteUsers::searchAny username match-one test '.
+			  'failed');
+
+    // SQLiteUsers::merge test
+    $merge_users = $search_users->merge($search_users_2);
+    if ($merge_users === NULL || count($merge_users->users) !== 2)
+      throw new Exception('SQLiteUsers::merge test failed');
   }
 }
 
