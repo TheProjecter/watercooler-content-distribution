@@ -19,29 +19,29 @@ session_start();
       <fieldset>
 	<legend>Personal Information</legend>
 	<p><label for="name">Username</label>
-	  <input id="name" type="text" name="userName" maxlength="25"/></p>
+	  <input id="name" type="text" name="userName" maxlength="25" value="<?php echo $_REQUEST['userName']; ?>"/></p>
 	<p><label for="pass">Password</label>
-	  <input id="pass" type="password" name="userPassword" maxlength="10" /></p>
+	  <input id="pass" type="password" name="userPassword" maxlength="10" value="<?php echo $_REQUEST['userPassword']; ?>"/></p>
 	<p><label for="repeatPass">Repeat Password</label>
-   <input id="repeatPass"type="password" name="userRepeatPass" maxlength="10"/></p>
+   <input id="repeatPass"type="password" name="userRepeatPass" maxlength="10" /></p>
 	<p><label for="email">Email</label>
-	  <input id="email" type="text" name="userEmail" maxlength="50"/></p>
+	  <input id="email" type="text" name="userEmail" maxlength="50"/ value="<?php echo $_REQUEST['userEmail'];  ?>"></p>
 	<p><label for="cell">Cell Phone #</label>
-   <input id="cell" type="text" name="userCell" maxlength="10"/></p>
+   <input id="cell" type="text" name="userCell" maxlength="10" value="<?php echo $_REQUEST['userCell']; ?>"/></p>
 	<p><label for="carrier">Carrier</label>
 	  <select id="carrier" name="userCarrier">
 	    <option value="att">AT&#38;T</option>
-	    <option value="verizon">Verizon</option>
+	    <option <?php if($_REQUEST['userCarrier'] == 'verizon') echo 'selected'; ?> value="verizon">Verizon</option>
 	</select></p>
 	<p><label for="reception">Default Methods of Reception</label>
-	  <object class="multifield"><input type="checkbox" name="receive_email" value="yes" />Email<br />
-	    <input type="checkbox" name="receive_sms_text" value="yes" />SMS (Text)<br />
-	    <input type="checkbox" name="receive_sms_link" value="yes" />SMS (Link)<br /></object></p>
+	  <object class="multifield"><input type="checkbox" name="receive_email" value="yes" <?php if($_REQUEST['receive_email'] == 'yes') echo 'checked'; ?>/>Email<br />
+	    <input type="checkbox" name="receive_sms_text" value="yes" <?php if($_REQUEST['receive_sms_text'] == 'yes') echo 'checked'; ?>/>SMS (Text)<br />
+	    <input type="checkbox" name="receive_sms_link" value="yes" <?php if($_REQUEST['receive_sms_link'] == 'yes') echo 'checked'; ?>/>SMS (Link)<br /></object></p>
 	<p><label for="feeds">Feeds</label> <br />
 	  <object class="multifield">
-	    <input type="text" name="feed1" maxlength="500"/><br />
-	    <input type="text" name="feed2" maxlength="500"/><br />
-	    <input type="text" name="feed3" maxlength="500"/><br />
+	    <input type="text" name="feed1" maxlength="500" value="<?php echo $_REQUEST['feed1']; ?>"/><Br />
+	    <input type="text" name="feed2" maxlength="500" value="<?php echo $_REQUEST['feed2']; ?>"/><br />
+	    <input type="text" name="feed3" maxlength="500" value="<?php echo $_REQUEST['feed3']; ?>"/><br />
 	    <a href="#">Add More Feeds</a>
 	  </object>
 	</p>
