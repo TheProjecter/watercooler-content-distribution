@@ -265,7 +265,6 @@ class SQLiteUser extends SQLiteDBObject implements iUser {
       throw new Exception('PDOStatement::fetch failed');
     return $get_result;
   }
-  public function validatePassword($password) {}
 
 /* SQLiteUser::create implements iUser::create (see corresponding 
    documentation)

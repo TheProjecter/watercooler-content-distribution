@@ -145,7 +145,8 @@ interface iUser {
    $userinfo: (array) the user information to set, encoded in the following 
               key-value pairs
 	        'username': (string) the desired username
-		'password': (string) the desired password, in plaintext
+		'password': (string) the desired password, in plaintext or as a
+		            hash
 		'email': (string) the user's email
 		'phone_number': (string) the user's cell phone number, with
 		  no spaces or dashes, optionally with a '+' as the first
@@ -171,6 +172,7 @@ interface iUser {
 	       following list of key-value pairs returned by this function
 	         'uid': (integer) the user's id number
 	         'username': (string) the user's username
+		 'password': (string) the user's password (or hash of password)
 	 	 'email': (string) the user's email
 		 'phone_number': (string) the user's cell phone number
 		 'carrier': (string) the user's cell phone carrier
@@ -188,15 +190,6 @@ interface iUser {
       $userattrs parameter
 */
   public function get($userattrs);
-
-/* function iUser::validatePassword checks if $password matches the user's
-   password in the database.
-
-   $password: (string) the password to validate, in plaintext
-
-   returns TRUE if $password matches the user's password in the database
-*/
-  public function validatePassword($password);
 
 /* function iUser::create registers a new user in the database using 
    information from $userinfo
