@@ -257,7 +257,6 @@ if(checkSet() != FALSE)
 	print(" added to the database.  ");
 	print('<a href="index.php">Here is your homepage!</a>');
 	print('</br></br>');
-	var_dump($userInfo);
       }
   }
   else
