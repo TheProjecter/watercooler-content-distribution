@@ -1,7 +1,5 @@
 <?php
-
-// for debugging
-//include('db.php');
+require_once('db.php');
 
 /* class SQLiteDBObject provides a base class for all classes which
    represent objects in a SQLite database
