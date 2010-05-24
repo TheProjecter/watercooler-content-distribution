@@ -14,7 +14,7 @@ if (!isset($_SESSION['userName'])) {
   </head>
   <body>
     <h1>Welcome to the Watercooler!</h1>
-    <div class="outerbody"><div class="google">
+    <div class="outerbody">
 	<form action="login.php" method="post">
           <fieldset>
             <legend>TODO</legend>
@@ -28,7 +28,7 @@ if (!isset($_SESSION['userName'])) {
 	</form>
 	<p>Need an account?<br />
 	  <a href="signup.php">Sign up!</a></p>
-    </div></div>
+    </div>
     <div class="validated">
       <a href="http://validator.w3.org/check?uri=referer"><img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0 Strict" /></a></div>
   </body>

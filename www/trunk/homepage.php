@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="template.css" title="template" />
   </head>
   <body>
-    <div id="wrap" class="outerbody">
+    <div id="wrap">
       <div id="header">
 	<a href="logout.php">logout</a>
       </div>
@@ -18,7 +18,7 @@
       <div id="nav">
       </div>
       <div id="feedreader">
-	<div class="google" id="main">
+	<div id="main">
 	  <ul>
 	    <li>Feed 1</li> <!--TODO: Replace Feed 1 with info from DB.  Add onclick to paragraph tag-->
 	    <li>Feed 2</li> <!--TODO: Replace Feed 2 with info from DB.  Add onclick to paragraph tag-->
@@ -26,7 +26,7 @@
 	  </ul>
 	</div>
 	<div id="main"></div>
-	<div class="google" id="sidebar">
+	<div id="sidebar">
 	  <ul>
 	    <li>This is a long and interesting story that relates to the content in feed 1.</li>
 	    <li>Why does this one keep repeating itself?  Why does this one keep repeating itself? Why does this one keep repeating itself?</li>

@@ -7,12 +7,6 @@ color:black;
 background:white;
 }
 
-.navyorange
-{
-border: 1px solid navy;
-background: #ffa20c;
-}
-
 #wrap 
 {
 width:60em;
@@ -21,11 +15,6 @@ background:white;
 border-style:solid;
 border-width:0.1em;
 padding:1em;
-}
-
-#header
-{
-
 }
 
 #title
@@ -41,7 +30,7 @@ color:navy;
 #nav
 {
 border-style:solid;
-border-width:0.1em;
+border-width:.1em;
 padding:1em;
 }
 
@@ -55,36 +44,34 @@ list-style:none;
 #nav li
 {
 display:inline;
-margin:0;
+margin-bottom:0;
 padding:0;
 }
 
 #feedreader
 {
-float:left;
+width: 60em;
+margin: 1em auto;
+border: 3px solid navy;
+float:  left;
 }
 
 #main
 {
 float:left;
 width:7em;
-border-style:solid;
-border-width:2px;
-border-right:none;
 padding:1em;
 height:25em;
+border: 1px solid navy;
 }
 
 #sidebar
 {
 float:left;
 width:15em;
-height:25em;
-border-style:solid;
-border-width:0.1em;
-border-left:none;
 padding:1em;
-border:2px solid navy;
+height:25em;
+border: 1px solid navy;
 }
 
 #footer
