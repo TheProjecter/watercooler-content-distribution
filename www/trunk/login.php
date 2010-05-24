@@ -13,7 +13,7 @@ if(isset($_REQUEST['userName']) && isset($_REQUEST['userPassword']))
 	exit();
       }
     $sessionPass = $sessionUser->get(array('password'));
-    if($sessionPass['password'] == $_REQUEST['userPassword'])
+    if($sessionPass['password'] == md5($_REQUEST['userPassword']))
       {
 	$_SESSION['userName'] = $_REQUEST['userName'];
 

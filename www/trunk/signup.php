@@ -242,7 +242,7 @@ if(checkSet() != FALSE)
 	exit();
       }
 
-    $userInfo = array('username'=>$userName, 'password'=>$userPassword, 'email'=>$userEmail, 'phone_number'=>$userCell, 'carrier'=>$_REQUEST['userCarrier'], 'send_email'=>$_REQUEST['receive_email'], 'send_sms_text'=>$_REQUEST['receive_sms_text'], 'send_sms_link'=>$_REQUEST['receive_sms_link']);
+    $userInfo = array('username'=>$userName, 'password'=>md5($userPassword), 'email'=>$userEmail, 'phone_number'=>$userCell, 'carrier'=>$_REQUEST['userCarrier'], 'send_email'=>$_REQUEST['receive_email'], 'send_sms_text'=>$_REQUEST['receive_sms_text'], 'send_sms_link'=>$_REQUEST['receive_sms_link']);
     
     if (User::create($userInfo) == NULL)
       {
