@@ -20,8 +20,8 @@ if (!isset($_SESSION['userName'])) {
             <legend>TODO</legend>
 	    <p><label for="userName">username</label>
               <input type="text" name="userName" /></p>
-	    <p><label for="password">password</label>
-              <input type="password" name="password" /><br /></p>
+	    <p><label for="userPassword">password</label>
+              <input type="password" name="userPassword" /><br /></p>
 	    <p class="submit"><input type="submit" value="Login" 
 				     name="submit" /></p>
           </fieldset>

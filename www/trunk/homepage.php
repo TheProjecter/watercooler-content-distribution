@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="template.css" title="template" />
   </head>
   <body>
-    <div id="wrap">
+    <div id="wrap" class="outerbody">
       <div id="header">
 	<a href="logout.php">logout</a>
       </div>
