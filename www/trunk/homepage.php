@@ -32,6 +32,12 @@
 	</div>
       </div>
       <div id="footer">
+	<div id="footerLeft">
+	  <a href="settings.php">Settings</a>
+	</div>
+	<div id="footerRight">
+	  <a href="unsubscribe.php">Unsubscribe</a>
+	</div>
       </div>
     </div>
     <div class="validated">

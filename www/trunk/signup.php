@@ -114,6 +114,7 @@ if(checkSet() != FALSE)
     else
       {
         echo 'Username is not set';
+	$_REQUEST['userName'] = '';
         exit();
       }
 
@@ -127,6 +128,7 @@ if(checkSet() != FALSE)
 	if (strlen($_REQUEST['userPassword']) < 6)
 	  {
 	    echo 'Please choose a password of at least 6 characters';
+	    $_REQUEST['userPassword'] = '';
 	    exit();
 	  }
 	else
@@ -137,6 +139,7 @@ if(checkSet() != FALSE)
     else
       {
         echo 'Please enter a valid Password';
+	$_REQUEST['userPassword'] = 'matt';
         exit();
       }
 
@@ -162,6 +165,7 @@ if(checkSet() != FALSE)
 	if (checkEmail($_REQUEST['userEmail']) == FALSE)
 	  {
 	    echo 'Please enter a valid email address.';
+	    $_REQUEST['userEmail'] = '';
 	    exit();
 	  }
 	  else
@@ -183,6 +187,7 @@ if(checkSet() != FALSE)
 	    if (strlen($_REQUEST['userCell']) != 10)
 	      {
 		echo 'A valid cell phone number must be exactly ten digits long';
+		$_REQUEST['userCell'] = '';
 		exit();
 	      }
 	    else
@@ -193,6 +198,7 @@ if(checkSet() != FALSE)
 	else
 	  {
 	    echo 'Please enter a valid cell phone number (only numeric characters).';
+	    $_REQUEST['userCell'] = '';
 	    exit();
 	  }
       }
