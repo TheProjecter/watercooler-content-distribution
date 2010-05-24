@@ -158,8 +158,19 @@ Verified stories output identical to 6.1.4
 Optimized the logic of __AdsFilter and __AdvAdsFilter
 This is used for performance test
 
+6.3.6 Test
+Added missing thing (from local version)
+Adding additional checks to avoid crashing due to these URLS
+	- Valid URL but not a feed ('www.yahoo.com')
+	- Invalid URL ('iaminvalid')
+	- empty URL ('')
+
+6.4 Beta
+Tested with Tim's Email server and totally 46 emails and texts sent
+All received as intended
+
 ------ CODE FREEZE UNTIL BUGS FOUND -------
------- USE 6.1.4 TO TEST! -----------------
+------ USE 6.4 TO TEST! -----------------
 
 Future:
 add threads to parallelize processing data when a list of URL is obtained
@@ -178,6 +189,7 @@ import feedparser
 
 # handle unicode
 import codecs
+import unicodedata
 
 # handle database
 import sys
@@ -536,6 +548,9 @@ def _RSS(f, log, myfeed, latest_ts, debug):
 	# story is [Feed Title, Entry Title, Entry Content, Entry Category, Entry URL, Entry Timestamp]
 	stories = []
 
+	if ((myfeed is None) or (myfeed.feed is None)):
+		return stories
+
 	# calculate how many "entries" in the feed
 	n_entries = len(myfeed['entries'])
 
@@ -629,6 +644,9 @@ def _ATOM(f, log, myfeed, latest_ts, debug):
 	# intialize the story list, note, for each entry, it is a list, and append
 	#   the list into "stories" [Feed Title, Entry Title, Entry Content, Entry Category, Entry URL, Entry Timestamp]
 	stories = []
+
+	if ((myfeed is None) or (myfeed.feed is None)):
+		return stories
 
 	# calculate how many "entries" in the feed
 	n_entries = len(myfeed['entries'])
@@ -785,6 +803,15 @@ def UpdateFeed_tester():
 	#   appear to have many \n after parsed and removed HTMLs
 	myfeed = feedparser.parse('cardriver_blog.xml')
 	myfeed_all.append(myfeed)
+	
+	myfeed = feedparser.parse('invalidurl')
+	myfeed_all.append(myfeed)
+
+	myfeed = feedparser.parse('www.yahoo.com')
+	myfeed_all.append(myfeed)
+
+	myfeed = feedparser.parse('')
+	myfeed_all.append(myfeed)
 
 	# NOT WORKING:
 
@@ -805,7 +832,10 @@ def UpdateFeed_tester():
 	# create a local temp file that store all parsed content for demostration purpose
 	# firstly, check for feeds encoding and synchronize this information
 	filename_counter = 1
-	latest_ts = 1
+	#latest_ts = 1
+	# May 21, 00:00 GMT
+	latest_ts = 1274400000
+	total_stories = 0
 	for onefeed in myfeed_all:
 		filename = 'feed_test' + str(filename_counter) + '.txt'
 		f = codecs.open(filename, encoding=onefeed.encoding, mode='w')
@@ -819,21 +849,26 @@ def UpdateFeed_tester():
 
 		# run specified parser corresponding to type of feeds (RSS,atom,others)
 		debug = True
-		if (onefeed.version[:3] == "rss"):
+		#print '-----', type(onefeed.version)
+		#if (onefeed.version is None):
+		#	print 'LC CHECK DEBUG'
+		if ((onefeed.version is not None) and (onefeed.has_key('version')) and (onefeed.version[:3] == "rss")):
 			print 'VERBOSE: RSS feed detected!'
 			stories = _RSS(f, errlog, onefeed, latest_ts, debug)
-		elif (onefeed.version[:4] == "atom"):
+		elif ((onefeed.version is not None) and (onefeed.has_key('version')) and (onefeed.version[:4] == "atom")):
 			print 'VERBOSE: ATOM feed detected!'
 			stories = _ATOM(f, errlog, onefeed, latest_ts, debug)
 		else:
 			stories = []
-			print 'UNKNOWN feed type!'
+			print 'UNKNOWN feed type! Probably invalid URL'
 		filename_counter = filename_counter + 1
+		total_stories = total_stories + len(stories)
 
 	f.close()
 	# print stories
 	# return stories
-
+	print 'Processed ', total_stories, ' stories!'
+	return
 
 def UpdateFeed():
 	# DEBUG FLAG, LC DEBUG
@@ -904,7 +939,7 @@ def UpdateFeed():
 		# get feed title and update feed title to database, if not null
 		# we first get feed sid by URL, then update the title with sid
 		source_feed_title = 'Undefined'
-		if myfeed.feed.has_key('title'):
+		if ((myfeed is not None) and (myfeed.feed is not None) and (myfeed.feed.has_key('title'))):
 			source_feed_title_uni = myfeed.feed.title
 			source_feed_title = str(source_feed_title_uni)
 			if (len(source_feed_title) > 0):
@@ -949,17 +984,17 @@ def UpdateFeed():
 			print 'Feed version (type): ', myfeed.version
 
 		# run specified parser corresponding to type of feeds (RSS,atom,others)
-		if (myfeed.version[:3] == "rss"):
+		if ((myfeed.version is not None) and (myfeed.has_key('version')) and (myfeed.version[:3] == "rss")):
 			if (debug):
 				print 'VERBOSE: RSS feed detected!'
 			stories = _RSS(f, errlog, myfeed, latest_ts, debug)
-		elif (myfeed.version[:4] == "atom"):
+		elif ((myfeed.version is not None) and (myfeed.has_key('version')) and (myfeed.version[:4] == "atom")):
 			if (debug):
 				print 'VERBOSE: ATOM feed detected!'
 			stories = _ATOM(f, errlog, myfeed, latest_ts, debug)
 		else:
 			if (debug):
-				print 'UNKNOWN feed type!'
+				print 'UNKNOWN feed type! Probably invalid URL'
 			stories = []
 
 		f.close()
