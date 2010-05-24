@@ -21,7 +21,7 @@ session_start();
 	<p><label for="name">Username</label>
 	  <input id="name" type="text" name="userName" maxlength="25" value="<?php echo $_REQUEST['userName']; ?>"/></p>
 	<p><label for="pass">Password</label>
-	  <input id="pass" type="password" name="userPassword" maxlength="10" value="<?php echo $_REQUEST['userPassword']; ?>"/></p>
+	  <input id="pass" type="password" name="userPassword" maxlength="10" /></p>
 	<p><label for="repeatPass">Repeat Password</label>
    <input id="repeatPass"type="password" name="userRepeatPass" maxlength="10" /></p>
 	<p><label for="email">Email</label>
@@ -180,7 +180,7 @@ if(checkSet() != FALSE)
       {
 	if (sanityCheck($_REQUEST['userCell'],'numeric', 10) != FALSE)
 	  {
-	    if (strlen($_REQUEST['userCell']) < 9)
+	    if (strlen($_REQUEST['userCell']) != 10)
 	      {
 		echo 'A valid cell phone number must be exactly ten digits long';
 		exit();
