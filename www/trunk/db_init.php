@@ -1,7 +1,6 @@
 <?php
-
-include('db.php');
-include('db_sqlite.php');
+require_once('db.php');
+require_once('db_sqlite.php');
 
 $db_file = 'test/watercooler.db';
 $db_sql = 'SQLiteDB.sql';
