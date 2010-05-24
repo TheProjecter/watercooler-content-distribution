@@ -33,12 +33,9 @@ favorites_table = [(1, 1, 1),
                    (3, 3, 3)]
 
 sources_table = [("cnn", "http://rss.cnn.com/rss/cnn_topstories.rss"),
-		 ("yahoo", "http://rss.news.yahoo.com/rss/topstories"),
-		 ("espn", "http://sports.espn.go.com/espn/rss/news")]
+				("espn", "http://sports.espn.go.com/espn/rss/news")]
 
-feeds_table = [
-("Obama: Afghan war will worsen before it improves", "AP - The war in Afghanistan will get worse before it gets better, President Barack Obama warned on Wednesday, but he declared his plan to begin withdrawing U.S. forces next year remains on track.", "http://news.yahoo.com/s/ap/20100513/ap_on_go_pr_wh/us_us_afghanistan", 1273685400, 2, 1),
-("Obama proposes larger oil cleanup fund", "BP is lowering a second oil containment box called top hat to plug an oil leak in the Gulf of Mexico.", "http://www.cnn.com/2010/US/05/12/oil.spill.main/index.html?eref=rss_topstories&utm_source=feedburner&utm_medium=feed&utm_campaign=Feed%3A+rss%2Fcnn_topstories+%28RSS%3A+Top+Stories%29", 1273686600, 1, 2),
+feeds_table = [("Obama proposes larger oil cleanup fund", "BP is lowering a second oil containment box called top hat to plug an oil leak in the Gulf of Mexico.", "http://www.cnn.com/2010/US/05/12/oil.spill.main/index.html?eref=rss_topstories&utm_source=feedburner&utm_medium=feed&utm_campaign=Feed%3A+rss%2Fcnn_topstories+%28RSS%3A+Top+Stories%29", 1273686600, 1, 2),
 ("2010 NBA Playoffs: LeBron James confident Cleveland Cavaliers can come back against Boston Celtics", "LeBron James isn't listening to the nationwide criticism of his listless Game 5 performance against Boston.", "http://sports.espn.go.com/nba/playoffs/2010/news/story?id=5183847&campaign=rss&source=ESPNHeadlines", 1273684800, 3, 3)
 ]
 
