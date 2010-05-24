@@ -18,7 +18,7 @@ if (!isset($_SESSION['userName'])) {
 	<form action="login.php" method="post">
           <fieldset>
             <legend>TODO</legend>
-	    <p><label for="userName">userName</label>
+	    <p><label for="userName">username</label>
               <input type="text" name="userName" /></p>
 	    <p><label for="password">password</label>
               <input type="password" name="password" /><br /></p>
