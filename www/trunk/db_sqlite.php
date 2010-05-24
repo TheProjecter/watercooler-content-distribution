@@ -189,7 +189,47 @@ class SQLiteUser extends SQLiteDBObject implements iUser {
     return $find_result !== FALSE ? $find_result : NULL;
   }
 
-  public function set($userinfo) {}
+/* SQLiteUser::set implements iUser::set (see corresponding documentation).
+   This function IS vulnerable to SQL injection in keys to array parameter 
+   $userinfo.
+*/
+  public function set($userinfo) {
+    // parse $userinfo into a format able to be fed straight into the database
+    $db_userinfo = self::parseUserInfo($userinfo, $this->db);
+
+    // carrier requires cid to be looked up in database
+    static $carrier_col = 'cid';
+    static $carrier_sql =
+      '(SELECT cid FROM carriors WHERE carrior_name=:carrior_name)';
+    $carrier_bind = array();
+    if (isset($userinfo['carrier']))
+      $carrier_bind['carrior_name'] = $userinfo['carrier'];
+
+    // build the SQL query to use to update the user
+    $update_sql = 'UPDATE users SET ';
+    // add column names and values
+    foreach ($db_userinfo as $col=>$value)
+      $update_sql .= $col.'=:'.$col.', ';
+    // add carrier name and value
+    if (isset($userinfo['carrier']))
+      $update_sql .= $carrier_col.'='.$carrier_sql.', ';
+    // remove trailing comma and space
+    $update_sql = substr($update_sql, 0, -2);
+    // add rest of UPDATE statment
+    $update_sql .= ' WHERE uid=:uid;';
+
+    // prepare the SQL statement
+    $update_stmt = $this->db->pdo->prepare($update_sql);
+
+    // bind column values
+    foreach (array_merge($db_userinfo, $carrier_bind) as $col=>$value)
+      $update_stmt->bindValue(':'.$col, $value);
+    // bind uid
+    $update_stmt->bindParam(':uid', $this->uid);
+    
+    // execute the SQL statement
+    $update_stmt->execute();
+  }
 
 /* SQLiteUser::get implements iUser::get (see corresponding documentation).
    This function IS vulnerable to SQL injection in parameter $userattr.
@@ -390,6 +430,13 @@ filename=test/SQLiteTest.db
     $set_userinfo = $user->get(array_keys($userinfo_2));
     if ($set_userinfo != $userinfo_2)
       throw new Exception('SQLiteUser::set test failed');
+
+    // SQLiteUser::set no-carrier-as-attr test
+    $userinfo_2_nocarrier = $userinfo_2;
+    unset($userinfo_2_nocarrier['carrier']);
+    $get_userinfo_2_nocarrier = $user->get(array_keys($userinfo_2_nocarrier));
+    if ($get_userinfo_2_nocarrier != $userinfo_2_nocarrier)
+      throw new Exception('SQLiteUser::set no-carrier-as-attr test failed');
   }
 }
 
