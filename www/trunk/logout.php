@@ -1,4 +1,7 @@
 <?php
+
+include('common.php');
+
 session_start();
 
 if (ini_get("session.use_cookies")) {
@@ -10,5 +13,4 @@ if (ini_get("session.use_cookies")) {
 
 session_destroy();
 
-print($_SESSION['userName'].' logged out<br/>');
-print('<a href="index.php">home</a>');
+header("Location: $page_uri_base");
