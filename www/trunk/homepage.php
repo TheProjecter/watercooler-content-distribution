@@ -3,7 +3,7 @@
 <html lang="EN" dir="ltr" xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="content-type" content="text/xml; charset=utf-8" />
-    <title><?php print($_SESSION['userName']); ?>'s homepage</title>
+    <title><?php echo $user->username; ?>'s homepage</title>
     <link rel="stylesheet" href="homepage.css" title="signup" />
     <link rel="stylesheet" href="template.css" title="template" />
   </head>
@@ -13,7 +13,7 @@
 	<a href="logout.php">logout</a>
       </div>
       <div id="title">
-	<p><?php print($_SESSION['userName']); ?>'s Latest News</p>
+	<p><?php echo $user->username; ?>'s Latest News</p>
       </div>
       <div id="outline">
 	<div id="nav">
