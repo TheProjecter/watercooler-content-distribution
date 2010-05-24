@@ -133,6 +133,48 @@ class SQLiteUsers extends SQLiteDBObject implements iUsers {
     $this->db = $db;
   }
 
+  private static function __search($userinfo, $op, SQLiteDB $db) {
+    static $carrier_attr = 'carrier';
+
+    // build SQL query to use to search for users
+    $search_sql = 'SELECT uid FROM users WHERE ';
+    foreach ($userinfo as $attr=>$values) {
+      foreach ((array) $values as $key=>$value) {
+	if (isset(self::$userattrs_to_cols[$attr]))
+	  $search_sql .= 
+	    self::$userattrs_to_cols[$attr]."=? $op ";
+	elseif($attr === $carrier_attr)
+	  $search_sql .= 
+	  "cid=(SELECT cid FROM carriors WHERE carrior_name=?) $op ";
+      }
+    }
+    // remove trailing op and spaces
+    $search_sql = substr($search_sql, 0, -(strlen($op) + 2));
+    // add rest of SQL query
+    $search_sql .= ';';
+
+    // prepare SQL statement
+    $search_stmt = $db->pdo->prepare($search_sql);
+
+    // create array of column value bindings
+    foreach ($userinfo as $attr=>$values)
+      foreach ((array) $values as $key=>$value)
+	if (isset(self::$userattrs_to_cols[$attr]) || $attr === $carrier_attr)
+	  $search_binds[] = $value;
+
+    $search_stmt->execute($search_binds);
+    // set fetch mode to create instances of SQLiteUser
+    $search_stmt->setFetchMode(PDO::FETCH_CLASS, 'SQLiteUser', array($db));
+
+    // fetch the result and create a new instance of this class
+    $search_result = $search_stmt->fetchAll();
+    if ($search_result !== FALSE) {
+      $c = __CLASS__;
+      return new $c($search_result, $db);
+    } else
+      return NULL;
+  }
+
 /* SQLiteUsers::searchAll implements iUsers::searchAll (see corresponding
    documentation). This function is safe to SQL injection.
 */
@@ -146,54 +188,17 @@ class SQLiteUsers extends SQLiteDBObject implements iUsers {
      order to use typehinting on parameter $db.
   */
   private static function __searchAll($userinfo, SQLiteDB $db) {
-    static $carrier_attr = 'carrier';
-    static $carrier_sql = 
-      'cid=(SELECT cid FROM carriors WHERE carrior_name=:carrior_name) AND ';
-    // build SQL query to use to search for users
-    $search_sql = 'SELECT uid FROM users WHERE ';
-    foreach ($userinfo as $attr=>$value) {
-      if (isset(self::$userattrs_to_cols[$attr]))
-	$search_sql .= 
-	  self::$userattrs_to_cols[$attr].'=:'.
-	  self::$userattrs_to_cols[$attr].' AND ';
-      elseif($attr === $carrier_attr)
-	$search_sql .= $carrier_sql;
-    }
-    // remove trailing AND and spaces
-    $search_sql = substr($search_sql, 0, -5);
-    // add rest of SQL query
-    $search_sql .= ';';
-
-    // prepare SQL statement
-    $search_stmt = $db->pdo->prepare($search_sql);
-
-    // bind column values
-    foreach ($userinfo as $attr=>$value) {
-      if (isset(self::$userattrs_to_cols[$attr]))
-	$search_stmt->bindValue(':'.self::$userattrs_to_cols[$attr], $value);
-      elseif ($attr === $carrier_attr)
-	$search_stmt->bindValue(':carrior_name', $value);
-    }
-
-    $search_stmt->execute();
-    // set fetch mode to create instances of SQLiteUser
-    $search_stmt->setFetchMode(PDO::FETCH_CLASS, 'SQLiteUser', array($db));
-
-    // fetch the result and create a new instance of this class
-    $search_result = $search_stmt->fetchAll();
-    if ($search_result !== FALSE) {
-      $c = __CLASS__;
-      return new $c($search_result, $db);
-    } else
-      return NULL;
+    return self::__search($userinfo, 'AND', $db);
   }
 
   public static function searchAny($userinfo, $db = NULL) {
     if ($db === NULL)
       $db = self::$site_db;
-    return self::__searchAny($attr, $value, $db);
+    return self::__searchAny($userinfo, $db);
   }
-  private static function __searchAny($userinfo, SQLiteDB $db) {}
+  private static function __searchAny($userinfo, SQLiteDB $db) {
+    return self::__search($userinfo, 'OR', $db);
+  }
   public function merge($users) {}
 }
 
@@ -525,14 +530,21 @@ filename=test/SQLiteTest.db
 			       'phone_number'=>'testphone2',
 			       'carrier'=>'testcarrier');
 
-    // SQLiteUser::find test
+    // SQLiteUsers::searchAll test
     $user = SQLiteUser::create($userinfo, $db);
     $user_2 = SQLiteUser::create($userinfo_2, $db);
     $search_users = 
       SQLiteUsers::searchAll(array_intersect($userinfo, $userinfo_2), $db);
-    var_dump($search_users);
-    if ($search_users === NULL)
-      throw new Exception('SQLiteUser::search test failed');
+    if ($search_users === NULL || count($search_users->users) !== 2)
+      throw new Exception('SQLiteUsers::searchAll test failed');
+
+    // SQLiteUsers::searchAny test
+    $search_users = 
+      SQLiteUsers::searchAny(array('username'=>
+				   array($userinfo['username'],
+					 $userinfo_2['username'])), $db);
+    if ($search_users === NULL || count($search_users->users) !== 2)
+      throw new Exception('SQLiteUsers::searchAny test failed');
   }
 }
 
