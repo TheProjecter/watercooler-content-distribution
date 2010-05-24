@@ -3,8 +3,9 @@
 <html lang="EN" dir="ltr" xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="content-type" content="text/xml; charset=utf-8" />
-    <title><?php print($_SESSION['username']); ?>'s homepage</title>
+    <title><?php print($_SESSION['userName']); ?>'s homepage</title>
     <link rel="stylesheet" href="homepage.css" title="signup" />
+    <link rel="stylesheet" href="template.css" title="template" />
   </head>
   <body>
     <div id="wrap">
@@ -17,14 +18,15 @@
       <div id="nav">
       </div>
       <div id="feedreader">
-	<div class="navyorange" id="main">
+	<div class="google" id="main">
 	  <ul>
 	    <li>Feed 1</li> <!--TODO: Replace Feed 1 with info from DB.  Add onclick to paragraph tag-->
 	    <li>Feed 2</li> <!--TODO: Replace Feed 2 with info from DB.  Add onclick to paragraph tag-->
 	    <li>Feed 3</li> <!--TODO: Replace Feed 3 with info from DB.  Add onclick to paragraph tag-->
 	  </ul>
 	</div>
-	<div class="navyorange" id="sidebar">
+	<div id="main"></div>
+	<div class="google" id="sidebar">
 	  <ul>
 	    <li>This is a long and interesting story that relates to the content in feed 1.</li>
 	    <li>Why does this one keep repeating itself?  Why does this one keep repeating itself? Why does this one keep repeating itself?</li>

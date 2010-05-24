@@ -1,4 +1,10 @@
 <?php
+//include databse functions and objects
+//include('db.php');
+//include('db_sqlite.php');
+include('db_init.php');
+
+//start user session
 session_start();
 ?>
 
@@ -109,7 +115,15 @@ if(checkSet() != FALSE)
 
     if(empty($_REQUEST['userName'])==FALSE && sanityCheck($_REQUEST['userName'], 'string', 25) != FALSE)
       {
-        $userName = $_REQUEST['userName'];
+	if(User::find('username',$_REQUEST['userName']) != NULL)
+	  {
+	    echo 'Username is already in use.  Please try another username.';
+	    exit();
+	  }
+	else
+	  {
+	    $userName = $_REQUEST['userName'];
+	  }
       }
     else
       {
@@ -139,7 +153,7 @@ if(checkSet() != FALSE)
     else
       {
         echo 'Please enter a valid Password';
-	$_REQUEST['userPassword'] = 'matt';
+	$_REQUEST['userPassword'] = '';
         exit();
       }
 
@@ -170,7 +184,15 @@ if(checkSet() != FALSE)
 	  }
 	  else
 	    {
-	      $userEmail = $_REQUEST['userEmail'];
+	      if(User::find('email',$_REQUEST['userEmail']) != NULL)
+		{
+		  echo 'This email is already in use. TODO:  We will add a feature to allow users to fix this problem.';
+		  exit();
+		}
+	      else
+		{
+		  $userEmail = $_REQUEST['userEmail'];
+		}
 	    }
       }
     else
@@ -192,6 +214,14 @@ if(checkSet() != FALSE)
 	      }
 	    else
 	      {
+		if(($this_user_object = User::find('phone_number',$_REQUEST['userCell'])) != NULL)
+		  {
+		    echo 'There is already an account associated with this cell phone number.  If you do not have an account with username ';
+		    $this_user_array  = $this_user_object->get((array)'username');
+		    echo $this_user_array['username'];
+		    echo ', email our customer service rep in Banglapore.';
+		    exit();
+		  }
 		$userCell = $_REQUEST['userCell'];
 	      }
 	  }
@@ -212,8 +242,23 @@ if(checkSet() != FALSE)
 	exit();
       }
 
-    print("Registration Successful!  ");
-    print('<a href="index.php">Here is your homepage!</a>');
+    $userInfo = array('username'=>$userName, 'password'=>$userPassword, 'email'=>$userEmail, 'phone_number'=>$userCell, 'carrier'=>$_REQUEST['userCarrier'], 'send_email'=>$_REQUEST['receive_email'], 'send_sms_text'=>$_REQUEST['receive_sms_text'], 'send_sms_link'=>$_REQUEST['receive_sms_link']);
+    
+    if (User::create($userInfo) == NULL)
+      {
+	echo 'User registration failed.  You are fucked.';
+	exit();
+      }
+
+    else
+      {
+	print("Registration Successful!  User ");
+	print($_REQUEST['userName']);
+	print(" added to the database.  ");
+	print('<a href="index.php">Here is your homepage!</a>');
+	print('</br></br>');
+	var_dump($userInfo);
+      }
   }
   else
     {
