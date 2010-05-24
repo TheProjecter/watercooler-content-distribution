@@ -10,6 +10,18 @@ class SQLiteDBObject extends DatabaseObject {
   /* $pdo is defined here so sibling classes to SQLiteDB can access its
      PDO and thus perform low-level operations on a given SQLite database */
   protected $pdo;
+
+  /* $userattrs_to_cols is an associative array mapping attribute names given 
+     as a parameter to methods in classes derived from this one to column
+     names in the SQLite database. Note that the following attributes are 
+     missing and require special handling
+       'carrier': column 'cid' needs to be looked up in 'carriors' table by
+         'carrior_name' and entered in user table under column 'cid' */
+  protected static $userattrs_to_cols = 
+    array('username'=>'username',
+	  'email'=>'email',
+	  'password'=>'password',
+	  'phone_number'=>'phone_number');
 }
 
 /* class SQLiteDB implements iDatabase on SQLite databases (see
@@ -109,14 +121,73 @@ class SQLiteDB extends SQLiteDBObject implements iDatabase {
   }
 }
 
-// XXX implement and document this
+/* class SQLiteUsers implements iUsers on SQLite databases (see corresponding 
+   documentation)
+*/
 class SQLiteUsers extends SQLiteDBObject implements iUsers {
+  private $db;
+  public $users;
+
+  private function __construct(array $users, SQLiteDB $db) {
+    $this->users = $users;
+    $this->db = $db;
+  }
+
+/* SQLiteUsers::searchAll implements iUsers::searchAll (see corresponding
+   documentation). This function is safe to SQL injection.
+*/
   public static function searchAll($userinfo, $db = NULL) {
     if ($db === NULL)
       $db = self::$site_db;
-    return self::__searchAll($attr, $value, $db);
+    return self::__searchAll($userinfo, $db);
   }
-  private static function __searchAll($userinfo, SQLiteDB $db) {}
+  /* SQLiteUsers::__searchAll is a helper function to SQLiteUsers::searchAll 
+     which performs the actual search operation. This function was added in
+     order to use typehinting on parameter $db.
+  */
+  private static function __searchAll($userinfo, SQLiteDB $db) {
+    static $carrier_attr = 'carrier';
+    static $carrier_sql = 
+      'cid=(SELECT cid FROM carriors WHERE carrior_name=:carrior_name) AND ';
+    // build SQL query to use to search for users
+    $search_sql = 'SELECT uid FROM users WHERE ';
+    foreach ($userinfo as $attr=>$value) {
+      if (isset(self::$userattrs_to_cols[$attr]))
+	$search_sql .= 
+	  self::$userattrs_to_cols[$attr].'=:'.
+	  self::$userattrs_to_cols[$attr].' AND ';
+      elseif($attr === $carrier_attr)
+	$search_sql .= $carrier_sql;
+    }
+    // remove trailing AND and spaces
+    $search_sql = substr($search_sql, 0, -5);
+    // add rest of SQL query
+    $search_sql .= ';';
+
+    // prepare SQL statement
+    $search_stmt = $db->pdo->prepare($search_sql);
+
+    // bind column values
+    foreach ($userinfo as $attr=>$value) {
+      if (isset(self::$userattrs_to_cols[$attr]))
+	$search_stmt->bindValue(':'.self::$userattrs_to_cols[$attr], $value);
+      elseif ($attr === $carrier_attr)
+	$search_stmt->bindValue(':carrior_name', $value);
+    }
+
+    $search_stmt->execute();
+    // set fetch mode to create instances of SQLiteUser
+    $search_stmt->setFetchMode(PDO::FETCH_CLASS, 'SQLiteUser', array($db));
+
+    // fetch the result and create a new instance of this class
+    $search_result = $search_stmt->fetchAll();
+    if ($search_result !== FALSE) {
+      $c = __CLASS__;
+      return new $c($search_result, $db);
+    } else
+      return NULL;
+  }
+
   public static function searchAny($userinfo, $db = NULL) {
     if ($db === NULL)
       $db = self::$site_db;
@@ -235,18 +306,19 @@ class SQLiteUser extends SQLiteDBObject implements iUser {
    This function IS vulnerable to SQL injection in parameter $userattr.
 */
   public function get($userattrs) {
-    static $userattrs_to_cols = 
-      array('username'=>'username', 'email'=>'email', 'password'=>'password',
-	    'phone_number'=>'phone_number',
-	    'carrier'=>' (SELECT carrior_name FROM carriors WHERE
-                         cid=(SELECT cid FROM users WHERE uid=:uid2))');
+    static $carrier_attr = 'carrier';
+    static $carrier_sql = '(SELECT carrior_name FROM carriors WHERE
+                           cid=(SELECT cid FROM users WHERE uid=:uid2))';
 
     // build SQL query to use to get user attributes
     $get_sql = 'SELECT ';
     // add column names
-    foreach ($userattrs as $key=>$attr)
-      if (isset($userattrs_to_cols[$attr]))
-	$get_sql .= $userattrs_to_cols[$attr].' AS '.$attr.', ';
+    foreach ($userattrs as $key=>$attr) {
+      if (isset(self::$userattrs_to_cols[$attr]))
+	$get_sql .= self::$userattrs_to_cols[$attr]." AS $attr, ";
+      elseif ($attr === $carrier_attr)
+	$get_sql .= "$carrier_sql AS $attr, ";
+    }
     // remove trailing comma and space
     $get_sql = substr($get_sql, 0, -2);
     // add rest of SQL query
@@ -346,6 +418,7 @@ class SQLiteTest {
   public static function testAll() {
     $db = self::testDB();
     self::testUser($db);
+    self::testUsers($db);
   }
 
 /* function SQLiteTest::testDB tests the semantics of operations in class 
@@ -436,6 +509,30 @@ filename=test/SQLiteTest.db
     $get_userinfo_2_nocarrier = $user->get(array_keys($userinfo_2_nocarrier));
     if ($get_userinfo_2_nocarrier != $userinfo_2_nocarrier)
       throw new Exception('SQLiteUser::set no-carrier-as-attr test failed');
+
+    $user->delete();
+  }
+
+  public static function testUsers(SQLiteDB $db) {
+    static $userinfo = array('username'=>'testuser',
+			     'password'=>'testpassword',
+			     'email'=>'testemail',
+			     'phone_number'=>'testphone',
+			     'carrier'=>'testcarrier');
+    static $userinfo_2 = array('username'=>'testuser2',
+			       'password'=>'testpassword',
+			       'email'=>'testemail2',
+			       'phone_number'=>'testphone2',
+			       'carrier'=>'testcarrier');
+
+    // SQLiteUser::find test
+    $user = SQLiteUser::create($userinfo, $db);
+    $user_2 = SQLiteUser::create($userinfo_2, $db);
+    $search_users = 
+      SQLiteUsers::searchAll(array_intersect($userinfo, $userinfo_2), $db);
+    var_dump($search_users);
+    if ($search_users === NULL)
+      throw new Exception('SQLiteUser::search test failed');
   }
 }
 
