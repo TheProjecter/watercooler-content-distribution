@@ -211,6 +211,7 @@ class SQLiteUser extends SQLiteDBObject implements iUser {
 
     $get_stmt = $this->db->pdo->prepare($get_sql);
     $get_stmt->bindParam(':uid', $this->uid);
+    $get_stmt->bindParam(':uid2', $this->uid);
     $get_stmt->execute();
     $get_result = $get_stmt->fetch(PDO::FETCH_ASSOC);
     if ($get_result === FALSE)
