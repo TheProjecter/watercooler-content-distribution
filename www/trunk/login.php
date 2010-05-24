@@ -17,7 +17,7 @@ if(isset($_REQUEST['userName']) && isset($_REQUEST['userPassword']))
       {
 	$_SESSION['userName'] = $_REQUEST['userName'];
 
-	header('Location:'.$page_uri_base);
+	header("Location: $page_uri_base");
       }
     else
       {
