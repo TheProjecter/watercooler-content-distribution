@@ -242,6 +242,20 @@ class SQLiteUser extends SQLiteDBObject implements iUser {
     $this->db = $db;
   }
 
+  /* function SQLiteDB::__get is the PHP magic 'get' function for the class */
+  public function __get($name) {
+    $ret = $this->get(array($name));
+    if ($ret === NULL || !isset($ret[$name]))
+      return NULL;
+    else
+      return $ret[$name];
+  }
+
+  /* function SQLiteDB::__set is the PHP magic 'set' function for the class */
+  public function __set($name, $value) {
+    $this->set(array($name=>$value));
+  }
+
   /* parseUserInfo transforms a $userinfo array, in the format taken by many
      iUser functions, into an associative array with keys as database column
      names
@@ -535,6 +549,16 @@ filename=test/SQLiteTest.db
     $get_userinfo_2_nocarrier = $user->get(array_keys($userinfo_2_nocarrier));
     if ($get_userinfo_2_nocarrier != $userinfo_2_nocarrier)
       throw new Exception('SQLiteUser::set no-carrier-as-attr test failed');
+
+    // SQLiteUser::__get test
+    $get_username = $user->get(array('username'));
+    if ($user->username !== $get_username['username'])
+      throw new Exception('SQLiteUser::__get test failed');
+
+    // SQLiteUser::__set test
+    $user->username = 'newusername';
+    if ($user->username !== 'newusername')
+      throw new Exception('SQLiteUser::__set test failed');
 
     $user->delete();
   }
