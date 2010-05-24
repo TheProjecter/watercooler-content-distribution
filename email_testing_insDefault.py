@@ -9,15 +9,9 @@ conn = MySQLdb.connect (host = "localhost",
                         db = "watercooler")
 cursor = conn.cursor ()
 
-users_table =  [("timhsieh", "TIM", "tim", "hsieh", "909-802-8597", "timpeihunghsieh@gmail.com", 1, 1),
-		("timm", "TIMMM", "timmm", "hsieh", "650-804-0502", "thsieh0606@yahoo.com", 1, 1),
-		("simon", "LAMP", "lc", "tang", "650-804-0503", "lampcover@gmail.com", 1, 1),
-		("simonn", "LAMPP", "lcc", "tangg", "650-804-0504", "simonsiumantang@yahoo.com.hk", 1, 1)]
+users_table =  [("simon", "LAMP", "lc", "tang", "650-804-0503", "lampcover@gmail.com", 1, 1)]
 
-receptions_table = [(1, 1),
-		    (2, 1),
-			(3, 1),
-			(4, 1)]
+receptions_table = [(1, 1)]
 
 reception_table = [("email"),
 		   ("sms_text"),

@@ -5,48 +5,65 @@ Version LOG
 1.0:
 Just a basic version including feed retriever
 
+2.0:
+A Looping functional driver 
+
 """
 global debug
 debug = False
 import FeedRetriever
 import EmailServer
+import time
 
 def Driver():
-	stories = FeedRetriever.UpdateFeed()
+	# a loopto call all backend functions
+	while (True):
+		# gather new feeds entries
+		stories = FeedRetriever.UpdateFeed()
 
-	if (debug):
-		# current debug/testing purpose
-		print 'story is [Feed Title, Entry Title, Entry Content, Entry Category, Entry URL, Entry Timestamp]'
-		for index, story in enumerate(stories):
-			print 'Story', index, ':'
-			for item in range(len(story)):
-				if (item <= 4):
-					if ((item == 2) and (len(story[item]) > 100)):
-						print 'Item', item , ':', story[item][:100], '...'
+		if (debug):
+			# current debug/testing purpose
+			print 'story is [Feed Title, Entry Title, Entry Content, Entry Category, Entry URL, Entry Timestamp]'
+			for index, story in enumerate(stories):
+				print 'Story', index, ':'
+				for item in range(len(story)):
+					if (item <= 4):
+						if ((item == 2) and (len(story[item]) > 100)):
+							print 'Item', item , ':', story[item][:100], '...'
+						else:
+							print 'Item', item , ':', story[item]
 					else:
 						print 'Item', item , ':', story[item]
-				else:
-					print 'Item', item , ':', story[item]
-			print ''
+				print ''
 
-	# for testing, only get first four stories, and trim the 
-	cutted_stories = []
-	limiter = 0
-	for story in stories:
-		if limiter < 60:
-			if limiter >= 35:
+		# for testing, only get first four stories, and trim the 
+		cutted_stories = []
+		limiter = 0
+		for story in stories:
+			if limiter < 1000:
 				cutted_story = []
 				cutted_story.append(str(story[4]))
 				cutted_story.append(str(story[1]))
 				cutted_story.append(str(story[2]))
 				cutted_stories.append(cutted_story)
-			limiter = limiter + 1
+				limiter = limiter + 1
+			if ((limiter % 10) == 0):
+				# call tim's function
+				# special code to delay Tim's code to avoid bombing, to facilitate testing
+				print ' -------------------------------------- '
+				print 'Here is 10 story passed to email server'
+				print ' -------------------------------------- '
+				EmailServer.sendStories(cutted_stories)
+				time.sleep(60)
+				cutted_stories = []
+		print ' ------------------------------------------ '
+		print 'Here is remaining ', str(limiter % 10), ' story passed to email server'
+		print ' ------------------------------------------ '
+		EmailServer.sendStories(cutted_stories)
+		time.sleep(60)
+		cutted_stories = []
+		# print cutted_stories
 
-	print 'Here is ', str(limiter), ' story passed to tim'
-	print cutted_stories
-
-	# call tim's function
-	EmailServer.sendStories(cutted_stories)
 	return
 
 if __name__ == "__main__":
