@@ -1,6 +1,6 @@
 <?php
-include('common.php');
-include('db_init.php');
+require_once('common.php');
+require_once('db_init.php');
 
 session_start();
 
