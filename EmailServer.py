@@ -1,6 +1,9 @@
 #!/usr/bin/python2.6
 
-import subprocess, shlex
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+
 import sys
 import Database
 
@@ -9,26 +12,7 @@ HOST = {'AT&T':'txt.att.net',
         'Verizon':'vtext.com',
         'SprinT':'messaging.sprintpcs.com'}
 
-SPECIAL_CHARS = ['"', "\"", "'", '$', '%', '^', '*', '@', '!', "\\", '~', '`', '#']
-
-def runBashPipe(frontPipe, backPipe):
-    """Run the two inputs as commands joined by a pipe
-    
-    This function is used as an internal function to help
-    implementing sendAsEmail and sendAsText. It takes two
-    lists and treat them as bash commands. The first
-    command is executed and its output is sent to second
-    command as input.
-    """
-
-    # Split the bash commands into python lists
-    frontPipe = shlex.split(frontPipe)
-    backPipe = shlex.split(backPipe)
-
-    # Execute the bash commands using subprocess 
-    p1 = subprocess.Popen(frontPipe, stdout=subprocess.PIPE)
-    p2 = subprocess.Popen(backPipe, stdin=p1.stdout, stdout=subprocess.PIPE)
-    output = p2.communicate()[0]    
+SENDER = 'Sender@watercooler.geogriffin.info'
 
 def sendAsEmail(emailAddr, subject, body):
     """Use program mail to send mail to specified emailadddr
@@ -37,12 +21,23 @@ def sendAsEmail(emailAddr, subject, body):
     and whatever MTA mail is using to send mail. All inputs
     must be strings.
     """
-    # Set the bash commands to be executed
-    frontPipe = 'echo "' + body + '"'
-    backPipe = 'mail -s "' + subject + '" ' + emailAddr
 
-    # Execute the command
-    runBashPipe(frontPipe, backPipe)
+    # Construct the message body
+    message = MIMEMultipart()
+    message['Subject'] = subject
+    message['From'] = SENDER
+    message['To'] = emailAddr
+    message.attach(MIMEText(body, 'plain'))
+
+    # Create a SMTP connection. It is assumed that a
+    # MTA is set up locally.
+    smtpObj = smtplib.SMTP('localhost')
+
+    sendlist = []
+    sendlist.append(emailAddr)
+
+    # TODO: Catch the exceptions.
+    smtpObj.sendmail(SENDER, sendlist, message.as_string())
 
 def sendAsText(phoneNum, provider, subject, body):
     """Use program mail to send text.
@@ -51,19 +46,30 @@ def sendAsText(phoneNum, provider, subject, body):
     are strings. Input provider must be found in HOST as defined
     on the top of this script.    
     """
+    # Create a SMTP connection. It is assumed that a
+    # MTA is set up locally.
+    smtpObj = smtplib.SMTP('localhost')
+
     # Check that provider provided is one of the hosts we support
     if provider not in HOST:
         print "We do not support " + provider + "."
-        sys.exit(1)
+        return
 
     # Set Email Address
     emailAddr = phoneNum + "@" + HOST[provider] 
 
-    # Set the bash commands to be executed
-    frontPipe = 'echo "' + body + '"'
-    backPipe = 'mail -s "' + subject + '" ' + emailAddr
+    # Construct the message body
+    message = MIMEMultipart()
+    message['Subject'] = subject
+    message['From'] = SENDER
+    message['To'] = emailAddr
+    message.attach(MIMEText(body, 'plain'))
 
-    runBashPipe(frontPipe, backPipe)
+    sendlist = []
+    sendlist.append(emailAddr)
+
+    # TODO: Catch the exceptions.
+    smtpObj.sendmail(SENDER, sendlist, message.as_string())    
 
 def sendStories(listOfStoriesURL):
     """Send the given list of stories to users who subscribe to them
@@ -82,16 +88,6 @@ def sendStories(listOfStoriesURL):
         storyTitle = story[1]
         storyContent = story[2]
     
-        # Remove all special characters with \char
-        # TODO: This is a temp fix for double quotes
-        #       We need a more robust fix
-        for specialChar in SPECIAL_CHARS:
-            storyTitle = storyTitle.replace(specialChar, "")
-            storyContent = storyContent.replace(specialChar, "")
-
-        #DEBUG:
-        #print "storyURL:", storyURL
-
         listOfUsers = Database.getUsersByStory(storyURL)
         
         for user in listOfUsers:
