@@ -63,6 +63,9 @@ class SQLiteDB extends SQLiteDBObject implements iDatabase {
     // create PDO object
     $pdo = new PDO($dsn, NULL, NULL, $cfg_vars['opts']);
 
+    // set PDO error mode so that we get exceptions instead of PHP errors
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
     $c = __CLASS__;
     $db = new $c($pdo);
 
