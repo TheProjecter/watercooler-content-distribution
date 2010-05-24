@@ -1,5 +1,5 @@
 <?php
-
+include('common.php');
 include('db_init.php');
 
 session_start();
@@ -17,8 +17,7 @@ if(isset($_REQUEST['userName']) && isset($_REQUEST['userPassword']))
       {
 	$_SESSION['userName'] = $_REQUEST['userName'];
 
-	//NOTE THIS WILL TO BE UPDATED CONSTANTLY UNTIL THE URL IS ESTABLISHED
-	header( 'Location:http://www.geogriffin.info/watercooler/matt/watercooler-content-distribution/index.php');
+	header('Location:'.$page_uri_base);
       }
     else
       {
