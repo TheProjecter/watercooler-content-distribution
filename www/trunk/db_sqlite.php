@@ -211,7 +211,11 @@ class SQLiteUser extends SQLiteDBObject implements iUser {
 
     $get_stmt = $this->db->pdo->prepare($get_sql);
     $get_stmt->bindParam(':uid', $this->uid);
-    $get_stmt->bindParam(':uid2', $this->uid);
+
+    // bind carrier specific column values
+    if (in_array('carrier', $userattrs))
+      $get_stmt->bindParam(':uid2', $this->uid);
+    
     $get_stmt->execute();
     $get_result = $get_stmt->fetch(PDO::FETCH_ASSOC);
     if ($get_result === FALSE)
@@ -370,6 +374,14 @@ filename=test/SQLiteTest.db
     $get_userinfo = $user->get(array_keys($userinfo));
     if ($get_userinfo != $userinfo)
       throw new Exception('SQLiteUser::get test failed');
+
+    // SQLiteUser::get no-carrier-as-attr test
+    $user = SQLiteUser::create($userinfo, $db);
+    $userinfo_nocarrier = $userinfo;
+    unset($userinfo_nocarrier['carrier']);
+    $get_userinfo_nocarrier = $user->get(array_keys($userinfo_nocarrier));
+    if ($get_userinfo_nocarrier != $userinfo_nocarrier)
+      throw new Exception('SQLiteUser::get no-carrier-as-attr test failed');
 
     // SQLiteUser::set test
     $user->set($userinfo_2);
