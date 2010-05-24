@@ -54,8 +54,8 @@ class SQLiteDB extends SQLiteDBObject implements iDatabase {
 */
   public static function connect(array $cfg_vars) {
     if (!isset($cfg_vars['filename']))
-	throw InvalidArgumentException('filename is a required key-value '.
-				       'pair in parameter $cfg_vars');
+	throw new InvalidArgumentException('filename is a required key-value '.
+					   'pair in parameter $cfg_vars');
 
     // construct dsn string
     $dsn = 'sqlite:'.$cfg_vars['filename'];
@@ -180,13 +180,43 @@ class SQLiteUser extends SQLiteDBObject implements iUser {
     $find_stmt = $db->pdo->prepare($find_sql);
     $find_stmt->bindParam(':value', $value);
     $find_stmt->execute();
+    // set fetch mode to create an instance of this class
     $find_stmt->setFetchMode(PDO::FETCH_CLASS, __CLASS__, array('db'=>$db));
     $find_result = $find_stmt->fetch();
     return $find_result !== FALSE ? $find_result : NULL;
   }
 
   public function set($userinfo) {}
-  public function get($userattrs) {}
+
+/* SQLiteUser::get implements iUser::get (see corresponding documentation).
+   This function IS vulnerable to SQL injection in parameter $userattr.
+*/
+  public function get($userattrs) {
+    static $userattrs_to_cols = 
+      array('username'=>'username', 'email'=>'email', 'password'=>'password',
+	    'phone_number'=>'phone_number',
+	    'carrier'=>' (SELECT carrior_name FROM carriors WHERE
+                         cid=(SELECT cid FROM users WHERE uid=:uid2))');
+
+    // build SQL query to use to get user attributes
+    $get_sql = 'SELECT ';
+    // add column names
+    foreach ($userattrs as $key=>$attr)
+      if (isset($userattrs_to_cols[$attr]))
+	$get_sql .= $userattrs_to_cols[$attr].' AS '.$attr.', ';
+    // remove trailing comma and space
+    $get_sql = substr($get_sql, 0, -2);
+    // add rest of SQL query
+    $get_sql .= ' FROM users WHERE uid=:uid;';
+
+    $get_stmt = $this->db->pdo->prepare($get_sql);
+    $get_stmt->bindParam(':uid', $this->uid);
+    $get_stmt->execute();
+    $get_result = $get_stmt->fetch(PDO::FETCH_ASSOC);
+    if ($get_result === FALSE)
+      throw new Exception('PDOStatement::fetch failed');
+    return $get_result;
+  }
   public function validatePassword($password) {}
 
 /* SQLiteUser::create implements iUser::create (see corresponding 
