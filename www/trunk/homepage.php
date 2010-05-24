@@ -12,7 +12,7 @@
 	<a href="logout.php">logout</a>
       </div>
       <div id="title">
-	<p><?php print($_SESSION['username']); ?>'s Latest News</p>
+	<p><?php print($_SESSION['userName']); ?>'s Latest News</p>
       </div>
       <div id="nav">
       </div>

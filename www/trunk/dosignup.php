@@ -8,4 +8,6 @@ if (isset($_REQUEST['submit'])) {
        print("<br />\n".$_SESSION['username'].' logged in<br/>');
        print('<a href="index.php">home</a>');
    }
+
 }
+?>

@@ -10,5 +10,5 @@ if (ini_get("session.use_cookies")) {
 
 session_destroy();
 
-print($_SESSION['username'].' logged out<br/>');
+print($_SESSION['userName'].' logged out<br/>');
 print('<a href="index.php">home</a>');

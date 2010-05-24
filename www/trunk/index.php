@@ -1,11 +1,12 @@
 <?php
 session_start();
-if (!isset($_SESSION['username'])) {
+if (!isset($_SESSION['userName'])) {
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html lang="EN" dir="ltr" xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <link rel="SHORTCUT ICON" href="http://geogriffin.mine.nu/watercooler/matt/watercooler-content-distribution/favicon.ico" />
     <meta http-equiv="content-type" content="text/xml; charset=utf-8" />
     <title>Welcome to the Watercooler!</title>
     <link rel="stylesheet" title="template" href="template.css" type="text/css"/>
@@ -17,8 +18,8 @@ if (!isset($_SESSION['username'])) {
 	<form action="login.php" method="post">
           <fieldset>
             <legend>TODO</legend>
-	    <p><label for="username">username</label>
-              <input type="text" name="username" /></p>
+	    <p><label for="userName">userName</label>
+              <input type="text" name="userName" /></p>
 	    <p><label for="password">password</label>
               <input type="password" name="password" /><br /></p>
 	    <p class="submit"><input type="submit" value="Login" 
