@@ -1,5 +1,8 @@
 <?php
 
+include('db.php');
+include('db_sqlite.php');
+
 $db_file = 'test/watercooler.db';
 $db_sql = 'SQLiteDB.sql';
 $sqlite3_prog = 'sqlite3';
@@ -10,3 +13,7 @@ if (!file_exists($db_file))
 $db = SQLiteDB::connect(array('filename'=>$db_file));
 if (!($db instanceof SQLiteDB))
   throw new Exception('SQLiteDB::connect failed');
+$db->setAsSiteDefault();
+
+class User extends SQLiteUser {}
+class Users extends SQLiteUsers {}
