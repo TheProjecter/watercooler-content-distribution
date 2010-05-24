@@ -379,7 +379,6 @@ filename=test/SQLiteTest.db
       throw new Exception('SQLiteUser::get test failed');
 
     // SQLiteUser::get no-carrier-as-attr test
-    $user = SQLiteUser::create($userinfo, $db);
     $userinfo_nocarrier = $userinfo;
     unset($userinfo_nocarrier['carrier']);
     $get_userinfo_nocarrier = $user->get(array_keys($userinfo_nocarrier));
