@@ -8,14 +8,21 @@ Just a basic version including feed retriever
 2.0:
 A Looping functional driver 
 
+2.1:
+Adding driver log to facilitate debug
+
 """
 global debug
 debug = False
+logs = True
 import FeedRetriever
 import EmailServer
 import time
 
 def Driver():
+	# a driver to debug
+	if (logs):
+		driverlog = open("DRIVERLOG.txt", mode ='w')
 	# a loopto call all backend functions
 	while (True):
 		# gather new feeds entries
@@ -53,16 +60,33 @@ def Driver():
 				print ' -------------------------------------- '
 				print 'Here is 10 story passed to email server'
 				print ' -------------------------------------- '
+				if (logs):
+					driverlog.write('--------------------------------------\n')
+					driverlog.write('Here is 10 story passed to email server\n')
+					driverlog.write('--------------------------------------\n')
+					driverlog.write(str(cutted_stories))
+					driverlog.write('\n')
+					driverlog.flush()
+
 				EmailServer.sendStories(cutted_stories)
 				time.sleep(60)
 				cutted_stories = []
 		print ' ------------------------------------------ '
 		print 'Here is remaining ', str(limiter % 10), ' story passed to email server'
 		print ' ------------------------------------------ '
+		if (logs):
+				driverlog.write('--------------------------------------\n')
+				driverlog.write('Here is remaining ' + str(limiter % 10) + ' story passed to email server\n')
+				driverlog.write('--------------------------------------\n')
+				driverlog.write(str(cutted_stories))
+				driverlog.write('\n')
+				driverlog.flush()
 		EmailServer.sendStories(cutted_stories)
 		time.sleep(60)
 		cutted_stories = []
 		# print cutted_stories
+	if (logs):
+		driverlog.close()
 
 	return
 
