@@ -1,4 +1,4 @@
-<?php
+M`8;M <3<?php
 require_once('db.php');
 
 /* class MySQLDBObject provides a base class for all classes which
@@ -67,8 +67,8 @@ class MySQLDB extends MySQLDBObject implements iDatabase {
    returns a MySQLDB object connected to the database
 */
   public static function connect(array $cfg_vars) {
-    if (!isset($cfg_vars['filename']))
-	throw new InvalidArgumentException('filename is a required key-value '.
+    if (!isset($cfg_vars['dbname']))
+	throw new InvalidArgumentException('dbname is a required key-value '.
 					   'pair in parameter $cfg_vars');
 
     // construct dsn string
