@@ -34,14 +34,14 @@ interface iDatabase {
   public function setAsSiteDefault();
 }
 
-/* interface iFeeds represents a group of feeds, and handles all operations
-   involving multiple feeds
+/* interface iFeeds represents a group of feed sources, and handles all
+   operations involving multiple feed sources
 */
 interface iFeeds {
   // XXX fill this in
 }
 
-/* interface iFeed handles all operations involving a single feed
+/* interface iFeed handles all operations involving a single feed source
 */
 interface iFeed {
   // XXX fill this in
