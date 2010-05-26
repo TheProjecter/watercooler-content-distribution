@@ -38,3 +38,6 @@ carrior_name TEXT NOT NULL
 
 INSERT INTO carriors (carrior_name) VALUES ('testcarrier');
 INSERT INTO carriors (carrior_name) VALUES ('testcarrier2');
+
+INSERT INTO carriors (carrior_name) VALUES ('att');
+INSERT INTO carriors (carrior_name) VALUES ('verizon');
