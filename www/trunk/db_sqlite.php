@@ -271,7 +271,7 @@ class SQLiteUser extends SQLiteDBObject implements iUser {
 	$db_userinfo[$userinfo_to_cols[$key]] = $value;
 
     // XXX fake unused database fields for now
-    $db_userinfo['status'] = 666;
+    $db_userinfo['status'] = 1;
 
     return $db_userinfo;
   }
