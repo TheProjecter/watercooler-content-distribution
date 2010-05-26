@@ -36,6 +36,45 @@ cid INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,
 carrior_name TEXT NOT NULL
 );
 
+DROP TABLE IF EXISTS favorites;
+CREATE TABLE favorites
+(
+uid INTEGER NOT NULL,
+sid INTEGER NOT NULL,
+priority INTEGER NOT NULL,
+FOREIGN KEY (uid) REFERENCES users,
+FOREIGN KEY (sid) REFERENCES feed_sources
+);
+
+DROP TABLE IF EXISTS feed_sources;
+CREATE TABLE feed_sources
+(
+sid INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,
+source_name TEXT NOT NULL,
+source_url TEXT NOT NULL
+);
+
+DROP TABLE IF EXISTS feed_stories;
+CREATE TABLE feed_stories
+(
+fid INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,
+title TEXT NOT NULL,
+content TEXT NOT NULL,
+url TEXT NOT NULL,
+time_stamp INTEGER NOT NULL,
+sid INTEGER NOT NULL,
+gid INTEGER NOT NULL,
+FOREIGN KEY (sid) REFERENCES feed_sources,
+FOREIGN KEY (gid) REFERENCES feed_categories
+);
+
+DROP TABLE IF EXISTS feed_categories;
+CREATE TABLE feed_categories
+(
+gid INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,
+category TEXT NOT NULL
+);
+
 INSERT INTO carriors (carrior_name) VALUES ('testcarrier');
 INSERT INTO carriors (carrior_name) VALUES ('testcarrier2');
 
