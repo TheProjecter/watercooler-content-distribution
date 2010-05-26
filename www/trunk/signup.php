@@ -36,8 +36,10 @@ session_start();
    <input id="cell" type="text" name="userCell" maxlength="10" value="<?php echo $_REQUEST['userCell']; ?>"/></p>
 	<p><label for="carrier">Carrier</label>
 	  <select id="carrier" name="userCarrier">
-	    <option value="att">AT&#38;T</option>
-	    <option <?php if($_REQUEST['userCarrier'] == 'verizon') echo 'selected'; ?> value="verizon">Verizon</option>
+	    <option value="AT&T">AT&#38;T</option>
+	    <option <?php if($_REQUEST['userCarrier'] == 'Verizon') echo 'selected'; ?> value="Verizon">Verizon</option>
+	    <option <?php if($_REQUEST['userCarrier'] == 'T-Mobile') echo 'selected'; ?> value="T-Mobile">T-Mobile</option>
+	    <option <?php if($_REQUEST['userCarrier'] == 'Sprint') echo 'selected'; ?> value="Sprint">Sprint</option>
 	</select></p>
 	<p><label for="reception">Default Methods of Reception</label>
 	  <object class="multifield"><input type="checkbox" name="receive_email" value="yes" <?php if($_REQUEST['receive_email'] == 'yes') echo 'checked'; ?>/>Email<br />

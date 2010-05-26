@@ -75,8 +75,10 @@ gid INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,
 category TEXT NOT NULL
 );
 
+INSERT INTO carriors (carrior_name) VALUES ('AT&T');
+INSERT INTO carriors (carrior_name) VALUES ('T-Mobile');
+INSERT INTO carriors (carrior_name) VALUES ('Verizon');
+INSERT INTO carriors (carrior_name) VALUES ('Sprint');
+
 INSERT INTO carriors (carrior_name) VALUES ('testcarrier');
 INSERT INTO carriors (carrior_name) VALUES ('testcarrier2');
-
-INSERT INTO carriors (carrior_name) VALUES ('att');
-INSERT INTO carriors (carrior_name) VALUES ('verizon');
