@@ -1,4 +1,4 @@
-M`8;M <3<?php
+<?php
 require_once('db.php');
 
 /* class MySQLDBObject provides a base class for all classes which
