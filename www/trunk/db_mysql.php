@@ -1,22 +1,35 @@
 <?php
+require_once('db.php');
 
-/* class MySQLDatabaseObject provides a base class for all classes which
+/* class MySQLDBObject provides a base class for all classes which
    represent objects in a MySQL database
 */
-class MySQLDatabaseObject extends DatabaseObject {
-  /* $pdo is defined here so sibling classes to MySQLDatabase can access its
+class MySQLDBObject extends DatabaseObject {
+  /* $pdo is defined here so sibling classes to MySQLDB can access its
      PDO and thus perform low-level operations on a given MySQL database */
   protected $pdo;
+
+  /* $userattrs_to_cols is an associative array mapping attribute names given 
+     as a parameter to methods in classes derived from this one to column
+     names in the MySQL database. Note that the following attributes are 
+     missing and require special handling
+       'carrier': column 'cid' needs to be looked up in 'carriors' table by
+         'carrior_name' and entered in user table under column 'cid' */
+  protected static $userattrs_to_cols = 
+    array('username'=>'username',
+	  'email'=>'email',
+	  'password'=>'password',
+	  'phone_number'=>'phone_number');
 }
 
-/* class MySQLDatabase implements iDatabase on MySQL databases (see
+/* class MySQLDB implements iDatabase on MySQL databases (see
    corresponding documentation)
 */
-class MySQLDatabase extends MySQLDatabaseObject implements iDatabase {
-/* string MySQLDatabase::cfg_ini_main_section is the name of the section in the
-   ini config files passed to MySQLDatabase::connectFromIni containing the main
-   connection parameters. This is also the base prefix for the opts ini section
-   which is named MySQLDatabase::cfg_file_main_section.' opts'.
+class MySQLDB extends MySQLDBObject implements iDatabase {
+/* string MySQLDB::cfg_ini_main_section is the name of the section in 
+   the ini config files passed to MySQLDB::connectFromIni containing the
+   main connection parameters. This is also the base prefix for the opts ini 
+   section which is named MySQLDB::cfg_ini_main_section.' opts'.
 */
   const cfg_ini_main_section = __CLASS__;
 
@@ -24,46 +37,39 @@ class MySQLDatabase extends MySQLDatabaseObject implements iDatabase {
      dsn (the first argument to the PDO constructor) should be constructed */
   private static $dsn_cfg_vars = array('host', 'port', 'dbname');
 
-/* function MySQLDatabase::__construct is the constructor for the class
+/* function MySQLDB::__construct is the constructor for the class
 
-   $pdo: (PDO object) a valid PDO object connected to the MySQL database to use
+   $pdo: (PDO object) a valid PDO object connected to the MySQL database to 
+         use
 */
   private function __construct(PDO $pdo) {
     $this->pdo = $pdo;
   }
 
-/* function MySQLDatabase::setAsSiteDefault implements 
+/* function MySQLDB::setAsSiteDefault implements 
    iDatabase::setAsSiteDefault (see corresponding documentation)
 */
   public function setAsSiteDefault() {
     self::$site_db = $this;
   }
 
-/* function MySQLDatabase::connect implements iDatabase::connect (see 
+/* function MySQLDB::connect implements iDatabase::connect (see 
    corresponding documentation)
 
    $cfg_vars: (array) the configuration variables for the database connection,
               encoded in the following key-value pairs:
-	      'username': (string) the username to use to connect to the MySQL
-	        server
-	      'password': (string) the password to use to connect to the MySQL
-	        server
-	      'host': (string) the hostname or ip address of the mysql server,
-	        or NULL to use the PHP default
-	      'port': (integer) the port on which to connect, or NULL to use
-	        the PHP default
-	      'dbname': (string) the name of the database to use on the MySQL
-	        server (required)
+	      'filename': (string) the absolute path to the file which contains
+	        the MySQL database (required)
 	      'opts': (array) an associative array of PDO connection options,
 	        or NULL for PHP defaults (see PHP Manual documentation for PDO
 		and the PDO MySQL driver)
 
-   returns a MySQLDatabase object connected to the database
+   returns a MySQLDB object connected to the database
 */
   public static function connect(array $cfg_vars) {
-    if (!isset($cfg_vars['dbname']))
-	throw InvalidArgumentException('dbname is a required key-value pair '.
-				       'in parameter $cfg_vars');
+    if (!isset($cfg_vars['filename']))
+	throw new InvalidArgumentException('filename is a required key-value '.
+					   'pair in parameter $cfg_vars');
 
     // construct dsn string
     $dsn = 'mysql:';
@@ -75,21 +81,24 @@ class MySQLDatabase extends MySQLDatabaseObject implements iDatabase {
     $pdo = new PDO($dsn, $cfg_vars['username'], $cfg_vars['password'], 
 		   $cfg_vars['opts']);
 
+    // set PDO error mode so that we get exceptions instead of PHP errors
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
     $c = __CLASS__;
     $db = new $c($pdo);
 
     return $db;
   }
 
-/* function MySQLDatabase::connectFromIni implements iDatabase::connectFromIni
+/* function MySQLDB::connectFromIni implements iDatabase::connectFromIni
    (see corresponding documentation)
 
    $cfg_file: (string) the ini file to read connection configuration variables
               from, encoded in the var-value pairs listed in the documentation
-	      for MySQLDatabase::connect, split into the following sections:
-	      Section 'MySQLDatabase' contains
+	      for MySQLDB::connect, split into the following sections:
+	      Section 'MySQLDB' contains
 	        'username', 'password', 'host', 'port', 'dbname'
-	      Section 'MySQLDatabase opts' contains
+	      Section 'MySQLDB opts' contains
 	        the PDO connection options, encoded in var-value pairs with the
 		variable names being names of PDO constants, and the values
 		being the desired corresponding values for the options. Note
@@ -97,60 +106,517 @@ class MySQLDatabase extends MySQLDatabaseObject implements iDatabase {
 		interpreted by PHP (see PHP Manual documentation for PDO and
 		the PDO MySQL driver for PDO connection options).
 
-   returns a MySQLDatabase object connected to the database
+   returns a MySQLDB object connected to the database
 */
   public static function connectFromIni($cfg_file) {
-    $cfg = parse_ini_file($cfg_file, TRUE);
+    $cfg = @parse_ini_file($cfg_file, TRUE);
     if ($cfg === FALSE) {
       $e = error_get_last();
       throw new ErrorException($e['message'], 0, $e['type'], 
 			       $e['file'], $e['line']);
     }
 
-    $cfg_vars = $cfg[self::cfg_file_main_section];
+    $cfg_vars = $cfg[self::cfg_ini_main_section];
 
     // parse PDO options
-    if (isset($cfg[self::cfg_file_main_section.' opts']))
-      foreach ($cfg[self::cfg_file_main_section.' opts'] as $key=>$value)
+    if (isset($cfg[self::cfg_ini_main_section.' opts']))
+      foreach ($cfg[self::cfg_ini_main_section.' opts'] as $key=>$value)
 	$cfg_vars['opts'][constant($key)] = $value;
 
     return self::connect($cfg_vars);
   }
 }
 
-// XXX implement and document this
-class MySQLUsers extends MySQLDatabaseObject implements iUsers {
+/* class MySQLUsers implements iUsers on MySQL databases (see corresponding 
+   documentation)
+*/
+class MySQLUsers extends MySQLDBObject implements iUsers {
+  private $db;
+  public $users;
+
+  private function __construct(array $users, MySQLDB $db) {
+    $this->users = $users;
+    $this->db = $db;
+  }
+
+  private static function __search($userinfo, $op, MySQLDB $db) {
+    static $carrier_attr = 'carrier';
+
+    // build SQL query to use to search for users
+    $search_sql = 'SELECT uid FROM users WHERE ';
+    foreach ($userinfo as $attr=>$values) {
+      foreach ((array) $values as $key=>$value) {
+	if (isset(self::$userattrs_to_cols[$attr]))
+	  $search_sql .= 
+	    self::$userattrs_to_cols[$attr]."=? $op ";
+	elseif($attr === $carrier_attr)
+	  $search_sql .= 
+	  "cid=(SELECT cid FROM carriors WHERE carrior_name=?) $op ";
+      }
+    }
+    // remove trailing op and spaces
+    $search_sql = substr($search_sql, 0, -(strlen($op) + 2));
+    // add rest of SQL query
+    $search_sql .= ';';
+
+    // prepare SQL statement
+    $search_stmt = $db->pdo->prepare($search_sql);
+
+    // create array of column value bindings
+    foreach ($userinfo as $attr=>$values)
+      foreach ((array) $values as $key=>$value)
+	if (isset(self::$userattrs_to_cols[$attr]) || $attr === $carrier_attr)
+	  $search_binds[] = $value;
+
+    $search_stmt->execute($search_binds);
+    // set fetch mode to create instances of MySQLUser
+    $search_stmt->setFetchMode(PDO::FETCH_CLASS, 'MySQLUser', array($db));
+
+    // fetch the result and create a new instance of this class
+    $search_result = $search_stmt->fetchAll();
+    if ($search_result !== FALSE) {
+      $c = __CLASS__;
+      return new $c($search_result, $db);
+    } else
+      return NULL;
+  }
+
+/* MySQLUsers::searchAll implements iUsers::searchAll (see corresponding
+   documentation). This function is safe to SQL injection.
+*/
   public static function searchAll($userinfo, $db = NULL) {
     if ($db === NULL)
       $db = self::$site_db;
-    return self::__searchAll($attr, $value, $db);
+    return self::__searchAll($userinfo, $db);
   }
-  private static function __searchAll($userinfo, MySQLDatabase $db) {}
+  /* MySQLUsers::__searchAll is a helper function to MySQLUsers::searchAll 
+     which performs the actual search operation. This function was added in
+     order to use typehinting on parameter $db.
+  */
+  private static function __searchAll($userinfo, MySQLDB $db) {
+    return self::__search($userinfo, 'AND', $db);
+  }
+
+/* MySQLUsers::searchAny implements iUsers::searchAny (see corresponding
+   documentation). This function is safe to SQL injection.
+*/
   public static function searchAny($userinfo, $db = NULL) {
     if ($db === NULL)
       $db = self::$site_db;
-    return self::__searchAny($attr, $value, $db);
+    return self::__searchAny($userinfo, $db);
   }
-  private static function __searchAny($userinfo, MySQLDatabase $db) {}
-  public function merge($users) {}
+  /* MySQLUsers::__searchAny is a helper function to MySQLUsers::searchAny 
+     which performs the actual search operation. This function was added in
+     order to use typehinting on parameter $db.
+  */
+  private static function __searchAny($userinfo, MySQLDB $db) {
+    return self::__search($userinfo, 'OR', $db);
+  }
+
+/* MySQLUsers::merge implements iUsers::merge (see corresponding 
+   documentation).
+*/
+  public function merge($users) {
+    return self::__merge($users);
+  }
+  /* MySQLUsers::__merge is a helper function to MySQLUsers::merge which
+     performs the actual merge operation. This function was added in order to
+     use typehinting on parameter $users.
+  */
+  public function __merge(MySQLUsers $users) {
+    if ($this->db !== $users->db)
+      throw new InvalidArgumentException('$db must match between objects');
+    $c = __CLASS__;
+    return new $c(array_merge($this->users, $users->users), $this->db);
+  }
 }
 
-// XXX implement and document this
-class MySQLUser extends MySQLDatabaseObject implements iUser {
+/* class MySQLUser implements iUser on MySQL databases (see corresponding 
+   documentation)
+*/
+class MySQLUser extends MySQLDBObject implements iUser {
+  /* $db is the database which contains this user */
+  private $db;
+  /* $uid is the unique user identifier which is used to access user 
+     information in the database */
+  private $uid;
+
+  /* function MySQLDB::__construct is the constructor for the class
+
+     $db: (MySQLDB object) a valid MySQLDB object connected to the MySQL
+          database to use
+  */
+  private function __construct(MySQLDB $db) {
+    $this->db = $db;
+  }
+
+  /* function MySQLDB::__get is the PHP magic 'get' function for the class */
+  public function __get($name) {
+    $ret = $this->get(array($name));
+    if ($ret === NULL || !isset($ret[$name]))
+      return NULL;
+    else
+      return $ret[$name];
+  }
+
+  /* function MySQLDB::__set is the PHP magic 'set' function for the class */
+  public function __set($name, $value) {
+    $this->set(array($name=>$value));
+  }
+
+  /* parseUserInfo transforms a $userinfo array, in the format taken by many
+     iUser functions, into an associative array with keys as database column
+     names
+  */
+  private static function parseUserInfo($userinfo, MySQLDB $db) {
+    static $userinfo_to_cols = 
+      array('username'=>'username', 'password'=>'password', 'email'=>'email', 
+	    'phone_number'=>'phone_number');
+
+    // rename the userinfo keys as database column names
+    foreach ($userinfo as $key=>$value)
+      if ($userinfo_to_cols[$key] !== NULL)
+	$db_userinfo[$userinfo_to_cols[$key]] = $value;
+
+    // XXX fake unused database fields for now
+    $db_userinfo['status'] = 1;
+
+    return $db_userinfo;
+  }
+
+/* MySQLUser::find implements iUser::find (see corresponding documentation).
+   This function IS vulnerable to SQL injection in parameter $attr.
+*/
   public static function find($attr, $value, $db = NULL) {
     if ($db === NULL)
       $db = self::$site_db;
     return self::__find($attr, $value, $db);
   }
-  private static function __find($attr, $value, MySQLDatabase $db) {}
-  public function set($userinfo) {}
-  public function get($userattrs) {}
-  public function validatePassword($password) {}
+
+  /* MySQLUser::__find is a helper function to MySQLUser::find which performs
+     the actual find operation. This function was added in order to use
+     typehinting on parameter $db.
+  */
+  private static function __find($attr, $value, MySQLDB $db) {
+    $find_sql = "SELECT uid FROM users WHERE $attr=:value;";
+    $find_stmt = $db->pdo->prepare($find_sql);
+    $find_stmt->bindParam(':value', $value);
+    $find_stmt->execute();
+    // set fetch mode to create an instance of this class
+    $find_stmt->setFetchMode(PDO::FETCH_CLASS, __CLASS__, array('db'=>$db));
+    $find_result = $find_stmt->fetch();
+    return $find_result !== FALSE ? $find_result : NULL;
+  }
+
+/* MySQLUser::set implements iUser::set (see corresponding documentation).
+   This function IS vulnerable to SQL injection in keys to array parameter 
+   $userinfo.
+*/
+  public function set($userinfo) {
+    // parse $userinfo into a format able to be fed straight into the database
+    $db_userinfo = self::parseUserInfo($userinfo, $this->db);
+
+    // carrier requires cid to be looked up in database
+    static $carrier_col = 'cid';
+    static $carrier_sql =
+      '(SELECT cid FROM carriors WHERE carrior_name=:carrior_name)';
+    $carrier_bind = array();
+    if (isset($userinfo['carrier']))
+      $carrier_bind['carrior_name'] = $userinfo['carrier'];
+
+    // build the SQL query to use to update the user
+    $update_sql = 'UPDATE users SET ';
+    // add column names and values
+    foreach ($db_userinfo as $col=>$value)
+      $update_sql .= $col.'=:'.$col.', ';
+    // add carrier name and value
+    if (isset($userinfo['carrier']))
+      $update_sql .= $carrier_col.'='.$carrier_sql.', ';
+    // remove trailing comma and space
+    $update_sql = substr($update_sql, 0, -2);
+    // add rest of UPDATE statment
+    $update_sql .= ' WHERE uid=:uid;';
+
+    // prepare the SQL statement
+    $update_stmt = $this->db->pdo->prepare($update_sql);
+
+    // bind column values
+    foreach (array_merge($db_userinfo, $carrier_bind) as $col=>$value)
+      $update_stmt->bindValue(':'.$col, $value);
+    // bind uid
+    $update_stmt->bindParam(':uid', $this->uid);
+    
+    // execute the SQL statement
+    $update_stmt->execute();
+  }
+
+/* MySQLUser::get implements iUser::get (see corresponding documentation).
+   This function IS vulnerable to SQL injection in parameter $userattr.
+*/
+  public function get($userattrs) {
+    static $carrier_attr = 'carrier';
+    static $carrier_sql = '(SELECT carrior_name FROM carriors WHERE
+                           cid=(SELECT cid FROM users WHERE uid=:uid2))';
+
+    // build SQL query to use to get user attributes
+    $get_sql = 'SELECT ';
+    // add column names
+    foreach ($userattrs as $key=>$attr) {
+      if (isset(self::$userattrs_to_cols[$attr]))
+	$get_sql .= self::$userattrs_to_cols[$attr]." AS $attr, ";
+      elseif ($attr === $carrier_attr)
+	$get_sql .= "$carrier_sql AS $attr, ";
+    }
+    // remove trailing comma and space
+    $get_sql = substr($get_sql, 0, -2);
+    // add rest of SQL query
+    $get_sql .= ' FROM users WHERE uid=:uid;';
+
+    $get_stmt = $this->db->pdo->prepare($get_sql);
+    $get_stmt->bindParam(':uid', $this->uid);
+
+    // bind carrier specific column values
+    if (in_array('carrier', $userattrs))
+      $get_stmt->bindParam(':uid2', $this->uid);
+    
+    $get_stmt->execute();
+    $get_result = $get_stmt->fetch(PDO::FETCH_ASSOC);
+    if ($get_result === FALSE)
+      throw new Exception('PDOStatement::fetch failed');
+    return $get_result;
+  }
+
+/* MySQLUser::create implements iUser::create (see corresponding 
+   documentation)
+*/
   public static function create($userinfo, $db = NULL) {
     if ($db === NULL)
       $db = self::$site_db;
-    return self::__create($attr, $value, $db);
+    return self::__create($userinfo, $db);
   }
-  private static function __create($userinfo, MySQLDatabase $db) {}
-  public function delete() {}
+
+  /* MySQLUser::__create is a helper function to MySQLUser::create which
+     performs the actual create operation. This function was added in order to 
+     use typehinting on parameter $db.
+  */
+  private static function __create($userinfo, MySQLDB $db) {
+    // parse $userinfo into a format able to be fed straight into the database
+    $db_userinfo = self::parseUserInfo($userinfo, $db);
+
+    // carrier requires cid to be looked up in database
+    static $carrier_col = 'cid';
+    static $carrier_sql =
+      '(SELECT cid FROM carriors WHERE carrior_name=:carrior_name)';
+    $carrier_bind = array('carrior_name'=>$userinfo['carrier']);
+
+    // build the SQL query to use to create the user
+    $create_sql = 'INSERT INTO users (';
+    // add column names
+    foreach ($db_userinfo as $col=>$value)
+      $create_sql .= $col.', ';
+    $create_sql .= $carrier_col.', ';
+    // remove trailing comma and space
+    $create_sql = substr($create_sql, 0, -2);
+    // add column values
+    $create_sql .= ') VALUES (';
+    foreach ($db_userinfo as $col=>$value)
+      $create_sql .= ':'.$col.', ';
+    $create_sql .= $carrier_sql.', ';
+    // remove trailing comma and space
+    $create_sql = substr($create_sql, 0, -2);
+    $create_sql .= ');';
+
+    // prepare the SQL statement
+    $create_stmt = $db->pdo->prepare($create_sql);
+
+    // bind column values
+    foreach (array_merge($db_userinfo, $carrier_bind) as $col=>$value)
+      $create_stmt->bindValue(':'.$col, $value);
+    
+    // execute the SQL statement
+    $create_stmt->execute();
+
+    // XXX there is probably a better way to do this
+    return MySQLUser::find('username', $userinfo['username'], $db);
+  }
+
+/* MySQLUser::delete implements iUser::delete (see corresponding 
+   documentation)
+*/
+  public function delete() {
+    // build the SQL query to use to delete the user
+    static $delete_sql = 'DELETE FROM users WHERE uid=:uid;';
+    // prepare the SQL statement
+    $delete_stmt = $this->db->pdo->prepare($delete_sql);
+    // bind column values
+    $delete_stmt->bindValue(':uid', $this->uid);
+    // execute the SQL statement
+    $delete_stmt->execute();
+
+    /* unset $this->uid so that future operations on this MySQLUser object
+       will fail */
+    unset ($this->uid);
+  }
 }
+
+/* class MySQLTest contains functions used for unit testing on MySQLObject
+   derived classes
+*/
+class MySQLTest {
+  public static function testAll() {
+    $db = self::testDB();
+    self::testUser($db);
+    self::testUsers($db);
+  }
+
+/* function MySQLTest::testDB tests the semantics of operations in class 
+   MySQLDB. These tests require a file called 'MySQLDB.sql' containing SQL
+   which initializes a valid watercooler MySQL database and an empty writable
+   directory called 'test'.
+
+   returns an MySQLDB object connected to a test database
+*/
+  public static function testDB() {
+    static $db_file = 'test/MySQLTest.db';
+    static $db_sql = 'MySQLDB.sql';
+    static $sqlite3_prog = 'sqlite3';
+    static $ini_file = 'test/db_def_cfg.ini';
+    static $ini_contents = "\
+[MySQLDB]
+filename=test/MySQLTest.db
+";
+
+    // create test MySQL database
+    unlink($db_file);
+    exec("$sqlite3_prog -init $db_sql $db_file");
+
+    // MySQLDB::connect test
+    $db = MySQLDB::connect(array('filename'=>$db_file));
+    if (!($db instanceof MySQLDB))
+      throw new Exception('MySQLDB::connect test failed');
+
+    // MySQLDB::connectFromIni test
+    file_put_contents($ini_file, $ini_contents);
+    $db = MySQLDB::connectFromIni('test/db_def_cfg.ini');
+    if (!($db instanceof MySQLDB))
+      throw new Exception('MySQLDB::connect test failed');
+
+    return $db;
+  }
+
+  public static function testUser(MySQLDB $db) {
+    static $userinfo = array('username'=>'testuser',
+			     'password'=>'testpassword',
+			     'email'=>'testemail',
+			     'phone_number'=>'testphone',
+			     'carrier'=>'testcarrier');
+    static $userinfo_2 = array('username'=>'testuser2',
+			       'password'=>'testpassword2',
+			       'email'=>'testemail2',
+			       'phone_number'=>'testphone2',
+			       'carrier'=>'testcarrier2');
+
+    // MySQLUser::create test
+    $user = MySQLUser::create($userinfo, $db);
+    if ($user === NULL)
+      throw new Exception('MySQLUser::create test failed');
+
+    // MySQLUser::find test
+    $find_user = MySQLUser::find('username', $userinfo['username'], $db);
+    if ($find_user === NULL)
+      throw new Exception('MySQLUser::find test failed');
+
+    // MySQLUser::delete test
+    $user->delete();
+    $deleted_user = MySQLUser::find('username', $userinfo['username'], $db);
+    if ($deleted_user !== NULL)
+      throw new Exception('MySQLUser::delete test failed');
+
+    // MySQLUser::get test
+    $user = MySQLUser::create($userinfo, $db);
+    $get_userinfo = $user->get(array_keys($userinfo));
+    if ($get_userinfo != $userinfo)
+      throw new Exception('MySQLUser::get test failed');
+
+    // MySQLUser::get no-carrier-as-attr test
+    $userinfo_nocarrier = $userinfo;
+    unset($userinfo_nocarrier['carrier']);
+    $get_userinfo_nocarrier = $user->get(array_keys($userinfo_nocarrier));
+    if ($get_userinfo_nocarrier != $userinfo_nocarrier)
+      throw new Exception('MySQLUser::get no-carrier-as-attr test failed');
+
+    // MySQLUser::set test
+    $user->set($userinfo_2);
+    $set_userinfo = $user->get(array_keys($userinfo_2));
+    if ($set_userinfo != $userinfo_2)
+      throw new Exception('MySQLUser::set test failed');
+
+    // MySQLUser::set no-carrier-as-attr test
+    $userinfo_2_nocarrier = $userinfo_2;
+    unset($userinfo_2_nocarrier['carrier']);
+    $get_userinfo_2_nocarrier = $user->get(array_keys($userinfo_2_nocarrier));
+    if ($get_userinfo_2_nocarrier != $userinfo_2_nocarrier)
+      throw new Exception('MySQLUser::set no-carrier-as-attr test failed');
+
+    // MySQLUser::__get test
+    $get_username = $user->get(array('username'));
+    if ($user->username !== $get_username['username'])
+      throw new Exception('MySQLUser::__get test failed');
+
+    // MySQLUser::__set test
+    $user->username = 'newusername';
+    if ($user->username !== 'newusername')
+      throw new Exception('MySQLUser::__set test failed');
+
+    $user->delete();
+  }
+
+  public static function testUsers(MySQLDB $db) {
+    static $userinfo = array('username'=>'testuser',
+			     'password'=>'testpassword',
+			     'email'=>'testemail',
+			     'phone_number'=>'testphone',
+			     'carrier'=>'testcarrier');
+    static $userinfo_2 = array('username'=>'testuser2',
+			       'password'=>'testpassword',
+			       'email'=>'testemail2',
+			       'phone_number'=>'testphone2',
+			       'carrier'=>'testcarrier');
+
+    // MySQLUsers::searchAll test
+    $user = MySQLUser::create($userinfo, $db);
+    $user_2 = MySQLUser::create($userinfo_2, $db);
+    $search_users = 
+      MySQLUsers::searchAll(array_intersect($userinfo, $userinfo_2), $db);
+    if ($search_users === NULL || count($search_users->users) !== 2)
+      throw new Exception('MySQLUsers::searchAll test failed');
+
+    // MySQLUsers::searchAny username test
+    $search_users = 
+      MySQLUsers::searchAny(array('username'=>
+				   array($userinfo['username'],
+					 $userinfo_2['username'])), $db);
+    if ($search_users === NULL || count($search_users->users) !== 2)
+      throw new Exception('MySQLUsers::searchAny username test failed');
+
+    // MySQLUsers::searchAll match-one test
+    $search_users = 
+      MySQLUsers::searchAll(array_diff($userinfo, $userinfo_2), $db);
+    if ($search_users === NULL || count($search_users->users) !== 1)
+      throw new Exception('MySQLUsers::searchAll match-one test failed');
+
+    // MySQLUsers::searchAny match-one test
+    $search_users_2 = 
+      MySQLUsers::searchAny(array('username'=>$userinfo_2['username']), $db);
+    if ($search_users_2 === NULL || count($search_users_2->users) !== 1)
+      throw new Exception('MySQLUsers::searchAny username match-one test '.
+			  'failed');
+
+    // MySQLUsers::merge test
+    $merge_users = $search_users->merge($search_users_2);
+    if ($merge_users === NULL || count($merge_users->users) !== 2)
+      throw new Exception('MySQLUsers::merge test failed');
+  }
+}
+
+//MySQLTest::testAll();
