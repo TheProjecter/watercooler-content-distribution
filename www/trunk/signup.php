@@ -266,7 +266,8 @@ if(checkSet() != FALSE)
 
     if (isset($_REQUEST['feed'])) {
       foreach ($_REQUEST['feed'] as $index=>$feed)
-	$feedinfos[] = array('name'=>$feed,'url'=>$feed);
+	if ($feed != '')
+	  $feedinfos[] = array('name'=>$feed,'url'=>$feed);
       $feeds = Feeds::create($feedinfos);
     }
 
