@@ -17,7 +17,7 @@ class MySQLFeeds extends MySQLDBObject implements iFeeds {
 /* MySQLFeeds::create implements iFeeds::create (see corresponding 
    documentation)
 */
-  public static function create($feedinfos, $db = NULL) {
+  public static function create(array $feedinfos, iDatabase $db = NULL) {
     if ($db === NULL)
       $db = self::$site_db;
     return self::__create($feedinfos, $db);
@@ -27,7 +27,7 @@ class MySQLFeeds extends MySQLDBObject implements iFeeds {
      performs the actual create operation. This function was added in order to 
      use typehinting on parameter $db.
   */
-  private static function __create($feedinfos, MySQLDB $db) {
+  private static function __create(array $feedinfos, MySQLDB $db) {
     foreach ($feedinfos as $feedinfo)
       $feeds[] = MySQLFeed::create($feedinfo, $db);
     $c = __CLASS__;
@@ -83,7 +83,7 @@ class MySQLFeed extends MySQLDBObject implements iFeed {
      iFeed functions, into an associative array with keys as database column
      names
   */
-  private static function parseFeedInfo($feedinfo, MySQLDB $db) {
+  private static function parseFeedInfo(array $feedinfo, MySQLDB $db) {
     static $feedinfo_to_cols = 
       array('name'=>'source_name', 'url'=>'source_url');
 
@@ -95,10 +95,9 @@ class MySQLFeed extends MySQLDBObject implements iFeed {
     return $db_feedinfo;
   }
 
-/* MySQLFeed::find implements iFeed::find (see corresponding documentation).
-   This function IS vulnerable to SQL injection in parameter $attr.
+/* MySQLFeed::find implements iFeed::find (see corresponding documentation)
 */
-  public static function find($attr, $value, $db = NULL) {
+  public static function find($attr, $value, iDatabase $db = NULL) {
     if ($db === NULL)
       $db = self::$site_db;
     return self::__find($attr, $value, $db);
@@ -130,7 +129,7 @@ class MySQLFeed extends MySQLDBObject implements iFeed {
 
 /* MySQLFeed::create implements iFeed::create (see corresponding documentation)
 */
-  public static function create($feedinfo, $db = NULL) {
+  public static function create(array $feedinfo, iDatabase $db = NULL) {
     if ($db === NULL)
       $db = self::$site_db;
     return self::__create($feedinfo, $db);
@@ -140,7 +139,7 @@ class MySQLFeed extends MySQLDBObject implements iFeed {
      performs the actual create operation. This function was added in order to
      use typehinting on parameter $db.
   */
-  public static function __create($feedinfo, MySQLDB $db) {
+  public static function __create(array $feedinfo, MySQLDB $db) {
     // parse $feedinfo into a format able to be fed straight into database
     $db_feedinfo = self::parseFeedInfo($feedinfo, $db);
     
@@ -174,7 +173,7 @@ class MySQLFeed extends MySQLDBObject implements iFeed {
 
 /* MySQLFeed::get implements iFeed::get (see corresponding documentation)
 */
-  public function get($feedattrs) {
+  public function get(array $feedattrs) {
     $sql_added = FALSE;
 
     // build SQL query to use to get feed attributes

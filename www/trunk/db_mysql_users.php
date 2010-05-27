@@ -39,7 +39,7 @@ class MySQLUsers extends MySQLDBObject implements iUsers {
 
      returns a MySQLUsers object representing the matched group of users
   */
-  private static function __search($userinfo, $op, MySQLDB $db) {
+  private static function __search(array $userinfo, $op, MySQLDB $db) {
     // build SQL query to use to search for users
     $search_sql = 'SELECT uid FROM users WHERE ';
     foreach ($userinfo as $attr=>$values) {
@@ -83,7 +83,7 @@ class MySQLUsers extends MySQLDBObject implements iUsers {
 /* MySQLUsers::searchAll implements iUsers::searchAll (see corresponding
    documentation)
 */
-  public static function searchAll($userinfo, $db = NULL) {
+  public static function searchAll(array $userinfo, iDatabase $db = NULL) {
     if ($db === NULL)
       $db = self::$site_db;
     return self::__searchAll($userinfo, $db);
@@ -92,14 +92,14 @@ class MySQLUsers extends MySQLDBObject implements iUsers {
      which performs the actual search operation. This function was added in
      order to use typehinting on parameter $db.
   */
-  private static function __searchAll($userinfo, MySQLDB $db) {
+  private static function __searchAll(array $userinfo, MySQLDB $db) {
     return self::__search($userinfo, 'AND', $db);
   }
 
 /* MySQLUsers::searchAny implements iUsers::searchAny (see corresponding
    documentation)
 */
-  public static function searchAny($userinfo, $db = NULL) {
+  public static function searchAny(array $userinfo, iDatabase $db = NULL) {
     if ($db === NULL)
       $db = self::$site_db;
     return self::__searchAny($userinfo, $db);
@@ -108,13 +108,13 @@ class MySQLUsers extends MySQLDBObject implements iUsers {
      which performs the actual search operation. This function was added in
      order to use typehinting on parameter $db.
   */
-  private static function __searchAny($userinfo, MySQLDB $db) {
+  private static function __searchAny(array $userinfo, MySQLDB $db) {
     return self::__search($userinfo, 'OR', $db);
   }
 
 /* MySQLUsers::merge implements iUsers::merge (see corresponding documentation)
 */
-  public function merge($users) {
+  public function merge(iUsers $users) {
     return self::__merge($users);
   }
   /* MySQLUsers::__merge is a helper function to MySQLUsers::merge which
@@ -169,7 +169,7 @@ class MySQLUser extends MySQLDBObject implements iUser {
      iUser functions, into an associative array with keys as database column
      names
   */
-  private static function parseUserInfo($userinfo, MySQLDB $db) {
+  private static function parseUserInfo(array $userinfo, MySQLDB $db) {
     static $userinfo_to_cols = 
       array('username'=>'username', 'password'=>'password', 'email'=>'email', 
 	    'phone_number'=>'phone_number');
@@ -188,7 +188,7 @@ class MySQLUser extends MySQLDBObject implements iUser {
 /* MySQLUser::find implements iUser::find (see corresponding documentation).
    This function IS vulnerable to SQL injection in parameter $attr.
 */
-  public static function find($attr, $value, $db = NULL) {
+  public static function find($attr, $value, iDatabase $db = NULL) {
     if ($db === NULL)
       $db = self::$site_db;
     return self::__find($attr, $value, $db);
@@ -211,7 +211,7 @@ class MySQLUser extends MySQLDBObject implements iUser {
 
 /* MySQLUser::set implements iUser::set (see corresponding documentation)
 */
-  public function set($userinfo) {
+  public function set(array $userinfo) {
     // parse $userinfo into a format able to be fed straight into the database
     $db_userinfo = self::parseUserInfo($userinfo, $this->db);
 
@@ -263,7 +263,15 @@ class MySQLUser extends MySQLDBObject implements iUser {
 /* MySQLUser::addFeeds implements iUser::addFeeds (see corresponding 
    documentation)
 */
-  public function addFeeds(MySQLFeeds $feeds) {
+  public function addFeeds(iFeeds $feeds) {
+    return self::__addFeeds($feeds);
+  }
+
+  /* MySQLUser::__addFeeds is a helper function to MySQLUser::addFeeds which
+     performs the actual add operation. This function was added in order to use
+     typehinting on parameter $feeds.
+  */
+  private function __addFeeds(MySQLFeeds $feeds) {
     static $feeds_sql = 
       'INSERT IGNORE INTO favorites (uid, sid, priority)
        VALUES (:uid, :sid, :priority)';
@@ -323,7 +331,7 @@ class MySQLUser extends MySQLDBObject implements iUser {
 
 /* MySQLUser::get implements iUser::get (see corresponding documentation)
 */
-  public function get($userattrs) {
+  public function get(array $userattrs) {
     static $carrier_sql = '(SELECT carrior_name FROM carriors WHERE
                            cid=(SELECT cid FROM users WHERE uid=:uid2))';
 
@@ -370,7 +378,7 @@ class MySQLUser extends MySQLDBObject implements iUser {
 
 /* MySQLUser::create implements iUser::create (see corresponding documentation)
 */
-  public static function create($userinfo, $db = NULL) {
+  public static function create(array $userinfo, iDatabase $db = NULL) {
     if ($db === NULL)
       $db = self::$site_db;
     return self::__create($userinfo, $db);

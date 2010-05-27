@@ -49,16 +49,59 @@ interface iFeeds extends Iterator {
         the database established as the site default. Note that the type of
 	object required for this parameter is implementation-specific
 
-   returns an iFeeds object representing the registered or updated feeds, or
-     NULL if an error occurred
+   returns an iFeeds object representing the registered or updated feeds
 */
-  public static function create($feedinfo, $db = NULL);
+  public static function create(array $feedinfos, iDatabase $db = NULL);
 }
 
 /* interface iFeed handles all operations involving a single feed source
 */
 interface iFeed {
-  // XXX fill this in
+/* function iFeed::find finds a feed by any attribute guaranteed to be unique
+   for each feed
+
+   $attr: (string) an attribute name, selected from the following attribute-
+          value pairs
+	    'sid': (integer) the feeds's id number
+	    'name': (string) the feed's name
+	    'url': (string) the feed's url
+   $value: (mixed) the value associated with the attribute
+   $db: (object) an object representing the database to use, or NULL to use
+        the database established as the site default. Note that the type of
+	object required for this parameter is implementation-specific
+
+   returns an iFeed object representing the matched user, or NULL if none was
+     found
+*/
+  public static function find($attr, $value, iDatabase $db = NULL);
+
+/* function iFeed::create registers a new feed in the database using 
+   information from $feedinfo, or finds one by URL if it already exists
+
+   $feedinfo: (array) initial feed information to set, encoded in key-value
+              pairs as described for the $feedinfo parameter in iFeed::set
+   $db: (object) an object representing the database to use, or NULL to use
+        the database established as the site default. Note that the type of
+	object required for this parameter is implementation-specific
+
+   returns an iFeed object representing the newly created/found feed
+*/
+  public static function create(array $feedinfo, iDatabase $db = NULL);
+
+/* function iFeed::get gets the feed's information from the database
+
+   $feedattrs: (array) an array of strings specifying the desired feed
+               attributes to get, selected from the possible keys in the
+	       following list of key-value pairs returned by this function
+	         'sid': (integer) the feed's id number
+	         'name': (string) the feed's name
+		 'url': (string) the feed's url
+
+    returns an array containing all requested feed information that could be
+      successfully fetched, in the form described in the description of the
+      $feedattrs parameter
+*/
+  public function get(array $feedattrs);
 }
 
 /* interface iUsers represents a group of users, and handles all database
@@ -87,10 +130,9 @@ interface iUsers {
         the database established as the site default. Note that the type of
 	object required for this parameter is implementation-specific
 
-    returns an iUsers object representing the matched users or NULL if an error
-      occurred
+    returns an iUsers object representing the matched users
 */
-  public static function searchAll($userinfo, $db = NULL);
+  public static function searchAll(array $userinfo, iDatabase $db = NULL);
 
 /* function iUsers::searchAny searches for users in the database matching ANY
    of the given user information
@@ -115,10 +157,9 @@ interface iUsers {
         the database established as the site default. Note that the type of
 	object required for this parameter is implementation-specific
 
-    returns an iUsers object representing the matched users or NULL if an error
-      occurred
+    returns an iUsers object representing the matched users
 */
-  public static function searchAny($userinfo, $db = NULL);
+  public static function searchAny(array $userinfo, iDatabase $db = NULL);
 
 /* function iUsers::merge merges this iUsers object with another, creating a
    new iUser object that represents all users in both groups
@@ -127,10 +168,9 @@ interface iUsers {
            two objects to merge must be instances of the same class and objects
 	   from the same database
 
-   returns an iUsers implementing object representing all users in both groups,
-     or NULL if an error occurred
+   returns an iUsers implementing object representing all users in both groups
 */
-  public function merge($users);
+  public function merge(iUsers $users);
 }
 
 /* interface iUser handles all database operations involving a single user
@@ -145,14 +185,15 @@ interface iUser {
             'username': (string) the user's username
 	    'email': (string) the user's email
 	    'phone_number': (string) the user's phone number
+   $value: (mixed) the value associated with the attribute
    $db: (object) an object representing the database to use, or NULL to use
         the database established as the site default. Note that the type of
 	object required for this parameter is implementation-specific
 
-   returns an iUser object representing the matched user, or NULL if an error
-     occurred
+   returns an iUser object representing the matched user, or NULL if none was
+     found
 */
-  public static function find($attr, $value, $db = NULL);
+  public static function find($attr, $value, iDatabase $db = NULL);
 
 /* function iUser::set sets the user's information in the database
 
@@ -174,16 +215,14 @@ interface iUser {
 		  delivery, FALSE otherwise
 		'feeds': (iFeeds) an object representing the user's desired
 		  feed subscriptions
-
-    returns TRUE if the operation succeeded
 */
-  public function set($userinfo);
+  public function set(array $userinfo);
 
 /* function iUser::addFeeds adds feeds to a user's list of subscribed feeds
 
    $feeds: (iFeeds) the set of feeds to add to the user
 */
-  public function addFeeds(MySQLFeeds $feeds);
+  public function addFeeds(iFeeds $feeds);
 
 /* function iUser::get gets the user's information from the database
 
@@ -209,7 +248,7 @@ interface iUser {
       successfully fetched, in the form described in the description of the
       $userattrs parameter
 */
-  public function get($userattrs);
+  public function get(array $userattrs);
 
 /* function iUser::create registers a new user in the database using 
    information from $userinfo
@@ -220,43 +259,15 @@ interface iUser {
         the database established as the site default. Note that the type of
 	object required for this parameter is implementation-specific
 
-   returns an iUser object representing the newly created user, or NULL if
-     an error occurred
+   returns an iUser object representing the newly created user
 */
-  public static function create($userinfo, $db = NULL);
+  public static function create(array $userinfo, iDatabase $db = NULL);
 
 /* function iUser::delete deletes the user and all information associated with
    the user in the database
-
-   returns TRUE if the operation succeded
 */
   public function delete();
 }
-
-// sample use of iUser
-/* PHP 5.3.0 CODE (referencing a class using a variable)
-function test_iUser($user_class) {
-  if (// user creation
-      !($test_user = $user_class::create(array('username'=>'test_iUser')))
-      // duplicate user creation (should fail)
-      || ($user_class::create(array('username'=>'test_iUser')))
-      // second user creation
-      || !($test_user_2 = 
-	   $user_class::create(array('username'=>'test_iUser_2')))
-      // user deletion
-      || !($test_user->delete())
-      // get username
-      || ($test_user_2->get(array('username')) != 'test_iUser_2')
-      // find by username
-      || !($test_user_2_again = $user_class::find('username', 'test_iUser_2'))
-      || ($test_user_2_again->get('username') != $test_user_2->get('username'))
-      // set username
-      || !($test_user_2_again->set(array('username'=>'test_iUser_2_again')))
-      || ($test_user_2_again->get('username') != 'test_iUser_2_again'))
-    return FALSE;
-  return TRUE;
-}
-*/
 
 /* abstract class DatabaseObject should be the base class for all classes
    representing database objects, if its functionality is needed that is
