@@ -561,6 +561,8 @@ class MySQLUser extends MySQLDBObject implements iUser {
     $feeds_stmt = $this->db->pdo->prepare($feeds_sql);
     $feeds_stmt->bindParam(':uid', $this->uid);
     $feeds_stmt->execute();
+    /* XXX creating the objects this way relies on DB consistency (sid is not
+       checked to be existent */
     $feeds_stmt->setFetchMode(PDO::FETCH_CLASS, 'MySQLFeed', 
 			      array('db'=>$this->db));
     $feeds_result = $feeds_stmt->fetchAll();
