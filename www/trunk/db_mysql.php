@@ -20,6 +20,10 @@ class MySQLDBObject extends DatabaseObject {
 	  'email'=>'email',
 	  'password'=>'password',
 	  'phone_number'=>'phone_number');
+
+  protected static $feedattrs_to_cols =
+    array('name'=>'source_name',
+	  'url'=>'source_url');
 }
 
 /* class MySQLDB implements iDatabase on MySQL databases (see
@@ -127,7 +131,7 @@ class MySQLDB extends MySQLDBObject implements iDatabase {
   }
 }
 
-class MySQLFeeds extends MySQLDBObject implements iFeeds {
+class MySQLFeeds extends MySQLDBObject implements iFeeds, Iterator {
   private $db;
   public $feeds;
 
@@ -155,9 +159,26 @@ class MySQLFeeds extends MySQLDBObject implements iFeeds {
     $c = __CLASS__;
     return new $c($feeds, $db);
   }
+
+  // these functions implement Iterator
+  public function rewind() {
+    reset($this->feeds);
+  }
+  public function current() {
+    return current($this->feeds);
+  }
+  public function key() {
+    return key($this->feeds);
+  }
+  public function next() {
+    return next($this->feeds);
+  }
+  public function valid() {
+    return ($this->current() !== FALSE);
+  }
 }
 
-class MySQLFeed extends MySQLDBObject implements iFeed, Iterator {
+class MySQLFeed extends MySQLDBObject implements iFeed {
   private $db;
   /* $sid is the unique feed identifier which is used to access feed
      information in the database */
@@ -170,6 +191,15 @@ class MySQLFeed extends MySQLDBObject implements iFeed, Iterator {
   */
   public function __construct(MySQLDB $db) {
     $this->db = $db;
+  }
+
+  /* function MySQLFeed::__get is the PHP magic 'get' function for the class */
+  public function __get($name) {
+    $ret = $this->get(array($name));
+    if ($ret === NULL || !isset($ret[$name]))
+      return NULL;
+    else
+      return $ret[$name];
   }
 
   /* parseFeedInfo transforms a $feedinfo array, in the format taken by many
@@ -262,21 +292,38 @@ class MySQLFeed extends MySQLDBObject implements iFeed, Iterator {
     return MySQLFeed::find('name', $feedinfo['name'], $db);
   }
 
-  // these functions implement Iterator
-  public function rewind() {
-    reset($this->feeds);
-  }
-  public function current() {
-    return current($this->feeds);
-  }
-  public function key() {
-    return key($this->feeds);
-  }
-  public function next() {
-    return next($this->feeds);
-  }
-  public function valid() {
-    return ($this->current() !== FALSE);
+/* MySQLFeed::get implements iFeed::get (see corresponding documentation).
+   This function IS vulnerable to SQL injection in parameter $userattr.
+*/
+  public function get($feedattrs) {
+    $sql_added = FALSE;
+
+    // build SQL query to use to get user attributes
+    $get_sql = 'SELECT ';
+    // add column names
+    foreach ($feedattrs as $key=>$attr) {
+      if (isset(self::$feedattrs_to_cols[$attr])) {
+	$get_sql .= self::$feedattrs_to_cols[$attr]." AS $attr, ";
+	$sql_added = TRUE;
+      }
+    }
+    // remove trailing comma and space
+    $get_sql = substr($get_sql, 0, -2);
+    // add rest of SQL query
+    $get_sql .= ' FROM feed_sources WHERE sid=:sid;';
+
+    // do not attempt the SELECT if no attrs were added to the select
+    if ($sql_added === TRUE) {
+      $get_stmt = $this->db->pdo->prepare($get_sql);
+      $get_stmt->bindParam(':sid', $this->sid);
+
+      $get_stmt->execute();
+      $get_result = $get_stmt->fetch(PDO::FETCH_ASSOC);
+      if ($get_result === FALSE)
+	throw new Exception('PDOStatement::fetch failed');
+    }
+
+    return $get_result;
   }
 }
 
