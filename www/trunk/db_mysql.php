@@ -182,7 +182,7 @@ class MySQLFeed extends MySQLDBObject implements iFeed {
   private $db;
   /* $sid is the unique feed identifier which is used to access feed
      information in the database */
-  private $sid;
+  public $sid;
 
   /* function MySQLFeed::__construct is the constructor for the class
 
@@ -439,7 +439,7 @@ class MySQLUser extends MySQLDBObject implements iUser {
   private $db;
   /* $uid is the unique user identifier which is used to access user 
      information in the database */
-  private $uid;
+  public $uid;
 
   /* function MySQLuser::__construct is the constructor for the class
 
@@ -550,19 +550,47 @@ class MySQLUser extends MySQLDBObject implements iUser {
     $update_stmt->execute();
   }
 
-  public function setFeeds(MySQLFeeds $feeds) {
+  public function addFeeds(MySQLFeeds $feeds) {
     static $feeds_sql = 
-      'INSERT INTO favorites (uid, sid, priority)
+      'INSERT IGNORE INTO favorites (uid, sid, priority)
        VALUES (:uid, :sid, :priority)';
+
+    // prepare the SQL statement (to be used multiple times)
+    $feeds_stmt = $this->db->pdo->prepare($feeds_sql);
+    // bind the static values
+    $feeds_stmt->bindValue(':uid', $this->uid);
+    // XXX this is a dummy priority value
+    $feeds_stmt->bindValue(':priority', 0);
+    // bind the sid to $sid
+    $feeds_stmt->bindParam(':sid', $sid);
+
+    foreach ($feeds as $feed) {
+      // change the sid to use in the statement
+      $sid = $feed->sid;
+      // execute the statement
+      $feeds_stmt->execute();
+    }
   }
 
-  public function getFeeds() {
+  private function setFeeds(MySQLFeeds $feeds) {
+    static $delete_feeds_sql = 'DELETE FROM favorites WHERE uid=:uid';
+
+    // delete the user's existing feeds
+    $delete_feeds_stmt = $this->db->pdo->prepare($delete_feeds_sql);
+    $delete_feeds_stmt->bindValue(':uid', $this->uid);
+    $delete_feeds_stmt->execute();
+
+    // add the new feeds to the user
+    $this->addFeeds($feeds);
+  }
+
+  private function getFeeds() {
     static $feeds_sql = 'SELECT sid FROM favorites WHERE uid=:uid;';
     $feeds_stmt = $this->db->pdo->prepare($feeds_sql);
     $feeds_stmt->bindParam(':uid', $this->uid);
     $feeds_stmt->execute();
     /* XXX creating the objects this way relies on DB consistency (sid is not
-       checked to be existent */
+       checked to be existent in feed_sources table) */
     $feeds_stmt->setFetchMode(PDO::FETCH_CLASS, 'MySQLFeed', 
 			      array('db'=>$this->db));
     $feeds_result = $feeds_stmt->fetchAll();
