@@ -9,12 +9,15 @@ require_once('db_mysql_users.php');
 class MySQLTest {
     static $userinfo = array('username'=>'MySQLTest_user',
 			     'password'=>'MySQLTest_password',
-			     'email'=>'MySQLTest_email',
+			     'email'=>'MySQLTest_email2@nothing.nothing',
 			     'phone_number'=>'8562447598',
+			     'send_email'=>TRUE,
+			     'send_sms_text'=>FALSE,
 			     'carrier'=>'AT&T');
     static $userinfo_2 = array('username'=>'MySQLTest_user2',
 			       'password'=>'MySQLTest_password',
 			       'email'=>'MySQLTest_email@nothing.nothing',
+			       'send_email'=>TRUE,
 			       'phone_number'=>'9688472548',
 			       'carrier'=>'Verizon');
     static $feedinfo = array('name'=>'MySQLTest_feed',

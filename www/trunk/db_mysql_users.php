@@ -141,6 +141,9 @@ class MySQLUser extends MySQLDBObject implements iUser {
 
   static $carrier_attr = 'carrier';
   static $feeds_attr = 'feeds';
+  static $reception_attrs_to_methods = array('send_email'=>'email',
+					     'send_sms_link'=>'sms_link', 
+					     'send_sms_text'=>'sms_text');
 
   /* function MySQLUser::__construct is the constructor for the class
 
@@ -256,8 +259,98 @@ class MySQLUser extends MySQLDBObject implements iUser {
       // execute the SQL statement
       $update_stmt->execute();
     }
+
+    // deal with setting user reception methods
+    $this->setReceptions($userinfo);
+
+    // set feeds for user if necessary
     if (isset($userinfo[self::$feeds_attr]))
       $this->setFeeds($userinfo[self::$feeds_attr]);
+  }
+
+  /* MySQLUser::setReceptions sets reception methods for a user based on an
+     arbitrary $userinfo array
+
+     $userinfo: (array) user receptions to set, encoded in key-value pairs as
+                described for the $userinfo parameter in MySQLUser::set
+  */
+  private function setReceptions(array $userinfo) {
+    /* receptions require reception_method to be looked up 'reception_methods'
+       and set for the user separately in 'receptions' */
+    static $reception_enable_sql =
+      'INSERT IGNORE INTO receptions (uid, rid) 
+       VALUES (:uid, (SELECT rid FROM reception_methods 
+                      WHERE method_type=:method));';
+    static $reception_disable_sql =
+      'DELETE FROM receptions WHERE uid=:uid AND 
+       rid=(SELECT rid FROM reception_methods WHERE method_type=:method);';
+
+    foreach (self::$reception_attrs_to_methods as $attr=>$method) {
+      if (isset($userinfo[$attr])) {
+	if ($userinfo[$attr] === TRUE) {
+	  // we only need to prepare statement once
+	  if (!isset($reception_enable_stmt)) {
+	    // prepare the enabling statement
+	    $reception_enable_stmt =
+	      $this->db->pdo->prepare($reception_enable_sql);
+	    // bind values and dynamic parameters
+	    $reception_enable_stmt->bindValue(':uid', $this->uid);
+	    $reception_enable_stmt->bindParam(':method', $method);
+	  }
+
+	  // execute the statement
+	  $reception_enable_stmt->execute();
+	} else if ($userinfo[$attr] === FALSE) {
+	  // we only need to prepare statement once
+	  if (!isset($reception_disable_stmt)) {
+	  // prepare the disabling statement
+	    $reception_disable_stmt = 
+	      $this->db->pdo->prepare($reception_disable_sql);
+	    // bind static values and dynamic parameters
+	    $reception_disable_stmt->bindValue(':uid', $this->uid);
+	    $reception_disable_stmt->bindParam(':method', $method);
+	  }
+
+	  // execute the statement
+	  $reception_disable_stmt->execute();
+	}
+      }
+    }
+  }
+
+  /* MySQLUser::getReceptions gets reception method settings for a user based
+     on an arbitrary $userattrs array
+
+     $userattrs: (array) an array of strings specifying the desired user
+                 reception method settings to get, selected from the possible
+		 keys in the list of key-value pairs returned by MySQLUser::get
+
+    returns an array containing all requested user reception method settings
+      that could be successfully fetched, in the form described in the
+      description of the $userattrs parameter
+  */
+  private function getReceptions(array $userattrs) {
+    /* receptions require reception_method to be looked up 'reception_methods'
+       and retrieved for the user separately in 'receptions' */
+    static $reception_sql =
+      'SELECT TRUE FROM receptions WHERE uid=:uid AND 
+       rid=(SELECT rid FROM reception_methods WHERE method_type=:method);';
+
+    $userinfo = array();
+
+    // prepare the enabling statement
+    $reception_stmt = $this->db->pdo->prepare($reception_sql);
+    // bind values and dynamic parameters
+    $reception_stmt->bindValue(':uid', $this->uid);
+    $reception_stmt->bindParam(':method', $method);
+    foreach (self::$reception_attrs_to_methods as $attr=>$method) {
+      if (in_array($attr, $userattrs)) {
+	$reception_stmt->execute();
+	$userinfo[$attr] = ($reception_stmt->fetch() !== FALSE);
+      }
+    }
+
+    return $userinfo;
   }
 
 /* MySQLUser::addFeeds implements iUser::addFeeds (see corresponding 
@@ -336,6 +429,7 @@ class MySQLUser extends MySQLDBObject implements iUser {
                            cid=(SELECT cid FROM users WHERE uid=:uid2))';
 
     $sql_added = FALSE;
+    $get_result = array();
 
     // build SQL query to use to get user attributes
     $get_sql = 'SELECT ';
@@ -368,6 +462,9 @@ class MySQLUser extends MySQLDBObject implements iUser {
       if ($get_result === FALSE)
 	throw new Exception('PDOStatement::fetch failed');
     }
+
+    // get reception method settings if requested
+    $get_result = array_merge($get_result, $this->getReceptions($userattrs));
 
     // get feeds if requested
     if (in_array(self::$feeds_attr, $userattrs))
@@ -430,6 +527,9 @@ class MySQLUser extends MySQLDBObject implements iUser {
     $c = __CLASS__;
     $user = new $c($db);
     $user->uid = $db->pdo->lastInsertId();
+
+    // deal with setting user reception methods
+    $user->setReceptions($userinfo);
 
     // set the user's inital feeds
     if (isset($userinfo[self::$feeds_attr]))

@@ -15,6 +15,9 @@ class MySQLDBObject extends DatabaseObject {
      missing and require special handling
        'carrier': column 'cid' needs to be looked up in 'carriors' table by
          'carrior_name' and entered in user table under column 'cid' 
+       'send_email', 
+       'send_sms_text',
+       'send_sms_link': reception methods need to be set in 'receptions' table
        'feeds': feeds need to be added in the 'favorites' table */
   protected static $userattrs_to_cols = 
     array('username'=>'username',
