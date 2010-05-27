@@ -127,6 +127,71 @@ class MySQLDB extends MySQLDBObject implements iDatabase {
   }
 }
 
+class MySQLFeeds extends MySQLDBObject implements iFeeds {
+
+  /* parseFeedInfo transforms a $userinfo array, in the format taken by many
+     iFeeds functions, into an associative array with keys as database column
+     names
+  */
+  private static function parseFeedInfos($feedinfos, MySQLDB $db) {
+    static $feedinfo_to_cols = 
+      array('name'=>'source_name', 'url'=>'source_url');
+
+    // rename the feedinfo keys as database column names
+    foreach ($feedinfo as $key=>$value)
+      if ($feedinfo_to_cols[$key] !== NULL)
+	$db_feedinfo[$feedinfo_to_cols[$key]] = $value;
+
+    return $db_feedinfo;
+  }
+
+/* MySQLFeeds::create implements iFeed::create (see corresponding 
+   documentation)
+*/
+  public static function create($feedinfos, $db = NULL) {
+    if ($db === NULL)
+      $db = self::$site_db;
+    return self::__create($feedinfo, $db);
+  }
+
+  /* MySQLFeeds::__create is a helper function to MySQLFeeds::create which
+     performs the actual create operation. This function was added in order to 
+     use typehinting on parameter $db.
+  */
+  private static function __create($feedinfos, MySQLDB $db) {
+    foreach ($feedinfos as $feedinfo) {
+      // parse $feedinfo into a format able to be fed straight into database
+      $db_feedinfo = self::parseFeedInfos($feedinfo, $db);
+
+      // build the SQL query to use to replace the feed
+      $create_sql = 'REPLACE feed_sources (';
+      // add column names
+      foreach ($db_feedinfo as $col=>$value)
+	$create_sql .= $col.', ';
+      // remove trailing comma and space
+      $create_sql = substr($create_sql, 0, -2);
+      // add column values
+      $create_sql .= ') VALUES (';
+      foreach ($db_feedinfo as $col=>$value)
+	$create_sql .= ':'.$col.', ';
+      // remove trailing comma and space
+      $create_sql = substr($create_sql, 0, -2);
+      $create_sql .= ');';
+
+      // prepare the SQL statement
+      $create_stmt = $db->pdo->prepare($create_sql);
+
+      // bind column values
+      foreach (array_merge($db_feedinfo, $carrier_bind) as $col=>$value)
+	$create_stmt->bindValue(':'.$col, $value);
+    
+      // execute the SQL statement
+      $create_stmt->execute();
+
+      var_dump($create_stmt->fetch());
+  }
+}
+
 /* class MySQLUsers implements iUsers on MySQL databases (see corresponding 
    documentation)
 */
