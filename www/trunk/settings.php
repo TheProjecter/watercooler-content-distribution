@@ -15,7 +15,7 @@ include_once('auth.php');
     <div class="corner">
       <a href="index.php">home</a>
     </div>
-    <h1><?php echo $user->username; ?>'s Settings</h1>//'
+    <h1><?php echo $user->username; ?>'s Settings</h1><!--'-->
     <form action="<?php echo $_SERVER['PHP_SELF'];?>" method="post">
       <fieldset>
 	<legend>Personal Information</legend>
