@@ -88,7 +88,7 @@ session_start();
  /**
  * This function can be used to check the sanity of variables
  * @param string $type  The type of variable can be bool, float, numeric, string, array, or object
- * @param string $string The variable name you would like to check
+ *| @param string $string The variable name you would like to check
  * @param string $length The maximum length of the variable
  *
  * return bool
@@ -264,12 +264,13 @@ if(checkSet() != FALSE)
 	exit();
       }
 
-    foreach($_REQUEST['feed'] as $index=>$currentFeed)
-      {
-	Feed::create(array('url'=>$currentFeed, 'name'=>'noname'));
-      }
+    if (isset($_REQUEST['feed'])) {
+      foreach ($_REQUEST['feed'] as $index=>$feed)
+	$feedinfos[] = array('name'=>$feed,'url'=>$feed);
+      $feeds = Feeds::create($feedinfos);
+    }
 
-    $userInfo = array('username'=>$userName, 'password'=>md5($userPassword), 'email'=>$userEmail, 'phone_number'=>$userCell, 'carrier'=>$_REQUEST['userCarrier'], 'send_email'=>$_REQUEST['receive_email'], 'send_sms_text'=>$_REQUEST['receive_sms_text'], 'send_sms_link'=>$_REQUEST['receive_sms_link']);
+    $userInfo = array('username'=>$userName, 'password'=>md5($userPassword), 'email'=>$userEmail, 'phone_number'=>$userCell, 'carrier'=>$_REQUEST['userCarrier'], 'send_email'=>$_REQUEST['receive_email'], 'send_sms_text'=>$_REQUEST['receive_sms_text'], 'send_sms_link'=>$_REQUEST['receive_sms_link'], 'feeds'=>$feeds);
     
     if (User::create($userInfo) == NULL)
       {
