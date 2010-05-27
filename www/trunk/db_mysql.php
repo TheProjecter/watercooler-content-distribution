@@ -289,7 +289,7 @@ class MySQLFeed extends MySQLDBObject implements iFeed {
     // execute the SQL statement
     $create_stmt->execute();
 
-    return MySQLFeed::find('name', $feedinfo['name'], $db);
+    return MySQLFeed::find('url', $feedinfo['url'], $db);
   }
 
 /* MySQLFeed::get implements iFeed::get (see corresponding documentation).
