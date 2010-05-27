@@ -157,7 +157,7 @@ class MySQLFeeds extends MySQLDBObject implements iFeeds {
   }
 }
 
-class MySQLFeed extends MySQLDBObject implements iFeed {
+class MySQLFeed extends MySQLDBObject implements iFeed, Iterator {
   private $db;
   /* $sid is the unique feed identifier which is used to access feed
      information in the database */
@@ -260,6 +260,23 @@ class MySQLFeed extends MySQLDBObject implements iFeed {
     $create_stmt->execute();
 
     return MySQLFeed::find('name', $feedinfo['name'], $db);
+  }
+
+  // these functions implement Iterator
+  public function rewind() {
+    reset($this->feeds);
+  }
+  public function current() {
+    return current($this->feeds);
+  }
+  public function key() {
+    return key($this->feeds);
+  }
+  public function next() {
+    return next($this->feeds);
+  }
+  public function valid() {
+    return ($this->current() !== FALSE);
   }
 }
 
@@ -484,6 +501,12 @@ class MySQLUser extends MySQLDBObject implements iUser {
     
     // execute the SQL statement
     $update_stmt->execute();
+  }
+
+  public function setFeeds(MySQLFeeds $feeds) {
+    static $feeds_sql = 
+      'INSERT INTO favorites (uid, sid, priority)
+       VALUES (:uid, :sid, :priority)';
   }
 
   public function getFeeds() {
