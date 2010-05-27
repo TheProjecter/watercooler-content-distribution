@@ -265,13 +265,23 @@ if(checkSet() != FALSE)
       }
 
     if (isset($_REQUEST['feed'])) {
+      $feedinfos = array();
       foreach ($_REQUEST['feed'] as $index=>$feed)
 	if ($feed != '')
 	  $feedinfos[] = array('name'=>$feed,'url'=>$feed);
-      $feeds = Feeds::create($feedinfos);
+      if (count($feedinfos) > 0)
+	$feeds = Feeds::create($feedinfos);
     }
 
-    $userInfo = array('username'=>$userName, 'password'=>md5($userPassword), 'email'=>$userEmail, 'phone_number'=>$userCell, 'carrier'=>$_REQUEST['userCarrier'], 'send_email'=>$_REQUEST['receive_email'], 'send_sms_text'=>$_REQUEST['receive_sms_text'], 'send_sms_link'=>$_REQUEST['receive_sms_link'], 'feeds'=>$feeds);
+    $userInfo = array('username'=>$userName, 
+		      'password'=>md5($userPassword), 
+		      'email'=>$userEmail, 
+		      'phone_number'=>$userCell, 
+		      'carrier'=>$_REQUEST['userCarrier'], 
+		      'send_email'=>$_REQUEST['receive_email'] === 'yes', 
+		      'send_sms_text'=>$_REQUEST['receive_sms_text'] === 'yes',
+		      'send_sms_link'=>$_REQUEST['receive_sms_link'] === 'yes',
+		      'feeds'=>$feeds);
     
     if (User::create($userInfo) == NULL)
       {
