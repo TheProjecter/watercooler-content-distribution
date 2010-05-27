@@ -1,6 +1,8 @@
 <?php
 require_once('db.php');
 require_once('db_mysql.php');
+require_once('db_mysql_users.php');
+require_once('db_mysql_feeds.php');
 
 /*
 $db_file = 'test/watercooler.db';

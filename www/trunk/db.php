@@ -37,7 +37,7 @@ interface iDatabase {
 /* interface iFeeds represents a group of feed sources, and handles all
    operations involving multiple feed sources
 */
-interface iFeeds {
+interface iFeeds extends Iterator {
 /* function iFeeds::create registers multiple feeds in the database using 
    information from $feedinfos or updates their information if they already
    exist
@@ -178,6 +178,12 @@ interface iUser {
     returns TRUE if the operation succeeded
 */
   public function set($userinfo);
+
+/* function iUser::addFeeds adds feeds to a user's list of subscribed feeds
+
+   $feeds: (iFeeds) the set of feeds to add to the user
+*/
+  public function addFeeds(MySQLFeeds $feeds);
 
 /* function iUser::get gets the user's information from the database
 
