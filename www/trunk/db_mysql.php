@@ -334,14 +334,14 @@ class MySQLUsers extends MySQLDBObject implements iUsers {
   private $db;
   public $users;
 
+  static $carrier_attr = 'carrier';
+
   private function __construct(array $users, MySQLDB $db) {
     $this->users = $users;
     $this->db = $db;
   }
 
   private static function __search($userinfo, $op, MySQLDB $db) {
-    static $carrier_attr = 'carrier';
-
     // build SQL query to use to search for users
     $search_sql = 'SELECT uid FROM users WHERE ';
     foreach ($userinfo as $attr=>$values) {
@@ -349,7 +349,7 @@ class MySQLUsers extends MySQLDBObject implements iUsers {
 	if (isset(self::$userattrs_to_cols[$attr]))
 	  $search_sql .= 
 	    self::$userattrs_to_cols[$attr]."=? $op ";
-	elseif($attr === $carrier_attr)
+	elseif($attr === self::$carrier_attr)
 	  $search_sql .= 
 	  "cid=(SELECT cid FROM carriors WHERE carrior_name=?) $op ";
       }
@@ -365,7 +365,8 @@ class MySQLUsers extends MySQLDBObject implements iUsers {
     // create array of column value bindings
     foreach ($userinfo as $attr=>$values)
       foreach ((array) $values as $key=>$value)
-	if (isset(self::$userattrs_to_cols[$attr]) || $attr === $carrier_attr)
+      if (isset(self::$userattrs_to_cols[$attr])
+	  || $attr === self::$carrier_attr)
 	  $search_binds[] = $value;
 
     $search_stmt->execute($search_binds);
@@ -440,6 +441,9 @@ class MySQLUser extends MySQLDBObject implements iUser {
   /* $uid is the unique user identifier which is used to access user 
      information in the database */
   public $uid;
+
+  static $carrier_attr = 'carrier';
+  static $feeds_attr = 'feeds';
 
   /* function MySQLuser::__construct is the constructor for the class
 
@@ -521,8 +525,8 @@ class MySQLUser extends MySQLDBObject implements iUser {
     static $carrier_sql =
       '(SELECT cid FROM carriors WHERE carrior_name=:carrior_name)';
     $carrier_bind = array();
-    if (isset($userinfo['carrier']))
-      $carrier_bind['carrior_name'] = $userinfo['carrier'];
+    if (isset($userinfo[self::$carrier_attr]))
+      $carrier_bind['carrior_name'] = $userinfo[self::$carrier_attr];
 
     // build the SQL query to use to update the user
     $update_sql = 'UPDATE users SET ';
@@ -530,7 +534,7 @@ class MySQLUser extends MySQLDBObject implements iUser {
     foreach ($db_userinfo as $col=>$value)
       $update_sql .= $col.'=:'.$col.', ';
     // add carrier name and value
-    if (isset($userinfo['carrier']))
+    if (isset($userinfo[self::$carrier_attr]))
       $update_sql .= $carrier_col.'='.$carrier_sql.', ';
     // remove trailing comma and space
     $update_sql = substr($update_sql, 0, -2);
@@ -601,10 +605,8 @@ class MySQLUser extends MySQLDBObject implements iUser {
    This function IS vulnerable to SQL injection in parameter $userattr.
 */
   public function get($userattrs) {
-    static $carrier_attr = 'carrier';
     static $carrier_sql = '(SELECT carrior_name FROM carriors WHERE
                            cid=(SELECT cid FROM users WHERE uid=:uid2))';
-    static $feeds_attr = 'feeds';
 
     $sql_added = FALSE;
 
@@ -615,7 +617,7 @@ class MySQLUser extends MySQLDBObject implements iUser {
       if (isset(self::$userattrs_to_cols[$attr])) {
 	$get_sql .= self::$userattrs_to_cols[$attr]." AS $attr, ";
 	$sql_added = TRUE;
-      } elseif ($attr === $carrier_attr) {
+      } elseif ($attr === self::$carrier_attr) {
 	$get_sql .= "$carrier_sql AS $attr, ";
 	$sql_added = TRUE;
       }
@@ -641,8 +643,8 @@ class MySQLUser extends MySQLDBObject implements iUser {
     }
 
     // get feeds if requested
-    if (in_array($feeds_attr, $userattrs))
-      $get_result[$feeds_attr] = $this->getFeeds();
+    if (in_array(self::$feeds_attr, $userattrs))
+      $get_result[self::$feeds_attr] = $this->getFeeds();
 
     return $get_result;
   }
