@@ -129,10 +129,10 @@ class MySQLDB extends MySQLDBObject implements iDatabase {
 
 class MySQLFeeds extends MySQLDBObject implements iFeeds {
   private $db;
-  public $users;
+  public $feeds;
 
-  public function __construct(array $users, MySQLDB $db) {
-    $this->users = $users;
+  public function __construct(array $feeds, MySQLDB $db) {
+    $this->feeds = $feeds;
     $this->db = $db;
   }
 
@@ -493,7 +493,11 @@ class MySQLUser extends MySQLDBObject implements iUser {
     $feeds_stmt->execute();
     $feeds_stmt->setFetchMode(PDO::FETCH_CLASS, 'MySQLFeed', 
 			      array('db'=>$this->db));
-    return new MySQLFeeds($feeds_stmt->fetchAll(), $this->db);
+    $feeds_result = $feeds_stmt->fetchAll();
+    if ($feeds_result !== FALSE && count($feeds_result) > 0)
+      return new MySQLFeeds($feeds_result, $this->db);
+    else
+      return NULL;
   }
 
 /* MySQLUser::get implements iUser::get (see corresponding documentation).
