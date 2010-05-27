@@ -710,10 +710,16 @@ class MySQLUser extends MySQLDBObject implements iUser {
     // execute the SQL statement
     $create_stmt->execute();
 
+    // construct the MySQLUser object
     // XXX check that using PDO::lastInsertId is not a race
     $c = __CLASS__;
     $user = new $c($db);
     $user->uid = $db->pdo->lastInsertId();
+
+    // set the user's inital feeds
+    if (isset($userinfo[self::$feeds_attr]))
+      $user->feeds = $userinfo[self::$feeds_attr];
+
     return $user;
   }
 
