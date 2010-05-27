@@ -38,7 +38,21 @@ interface iDatabase {
    operations involving multiple feed sources
 */
 interface iFeeds {
-  // XXX fill this in
+/* function iFeeds::create registers multiple feeds in the database using 
+   information from $feedinfos or updates their information if they already
+   exist
+
+   $feedinfos: (array) initial feed information to set, encoded in an array of
+               arrays with key-value pairs as described for the $feedinfo
+	       parameter in iFeed::set
+   $db: (object) an object representing the database to use, or NULL to use
+        the database established as the site default. Note that the type of
+	object required for this parameter is implementation-specific
+
+   returns an iFeeds object representing the registered or updated feeds, or
+     NULL if an error occurred
+*/
+  public static function create($feedinfo, $db = NULL);
 }
 
 /* interface iFeed handles all operations involving a single feed source
