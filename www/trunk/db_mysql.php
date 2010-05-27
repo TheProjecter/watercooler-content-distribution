@@ -520,6 +520,8 @@ class MySQLUser extends MySQLDBObject implements iUser {
     // parse $userinfo into a format able to be fed straight into the database
     $db_userinfo = self::parseUserInfo($userinfo, $this->db);
 
+    $sql_added = FALSE;
+
     // carrier requires cid to be looked up in database
     static $carrier_col = 'cid';
     static $carrier_sql =
@@ -531,27 +533,36 @@ class MySQLUser extends MySQLDBObject implements iUser {
     // build the SQL query to use to update the user
     $update_sql = 'UPDATE users SET ';
     // add column names and values
-    foreach ($db_userinfo as $col=>$value)
+    foreach ($db_userinfo as $col=>$value) {
       $update_sql .= $col.'=:'.$col.', ';
+      $sql_added = TRUE;
+    }
     // add carrier name and value
-    if (isset($userinfo[self::$carrier_attr]))
+    if (isset($userinfo[self::$carrier_attr])) {
       $update_sql .= $carrier_col.'='.$carrier_sql.', ';
+      $sql_added = TRUE;
+    }
     // remove trailing comma and space
     $update_sql = substr($update_sql, 0, -2);
     // add rest of UPDATE statment
     $update_sql .= ' WHERE uid=:uid;';
 
-    // prepare the SQL statement
-    $update_stmt = $this->db->pdo->prepare($update_sql);
+    // do not attempt the SELECT if no attrs were added to the select
+    if ($sql_added === TRUE) {
+      // prepare the SQL statement
+      $update_stmt = $this->db->pdo->prepare($update_sql);
 
-    // bind column values
-    foreach (array_merge($db_userinfo, $carrier_bind) as $col=>$value)
-      $update_stmt->bindValue(':'.$col, $value);
-    // bind uid
-    $update_stmt->bindParam(':uid', $this->uid);
+      // bind column values
+      foreach (array_merge($db_userinfo, $carrier_bind) as $col=>$value)
+	$update_stmt->bindValue(':'.$col, $value);
+      // bind uid
+      $update_stmt->bindParam(':uid', $this->uid);
     
-    // execute the SQL statement
-    $update_stmt->execute();
+      // execute the SQL statement
+      $update_stmt->execute();
+    }
+    if (isset($userinfo[self::$feeds_attr]))
+      $this->setFeeds($userinfo[self::$feeds_attr]);
   }
 
   public function addFeeds(MySQLFeeds $feeds) {
