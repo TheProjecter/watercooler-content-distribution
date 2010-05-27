@@ -1,11 +1,6 @@
 <?php
-//include databse functions and objects
-//include('db.php');
-//include('db_sqlite.php');
-include('db_init.php');
-
-//start user session
-session_start();
+include_once('db_init.php');
+include_once('auth.php');
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
@@ -13,45 +8,51 @@ session_start();
 <html lang="EN" dir="ltr" xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="content-type" content="text/xml; charset=utf-8" />
-    <title>Sign up</title>
+    <title>Settings</title>
     <link rel="stylesheet" href="signup.css" title="signup" />
   </head>
   <body>
     <div class="corner">
       <a href="index.php">home</a>
     </div>
-    <h1>Sign up</h1>
+    <h1><?php echo $user->username; ?>'s Settings</h1>//'
     <form action="<?php echo $_SERVER['PHP_SELF'];?>" method="post">
       <fieldset>
 	<legend>Personal Information</legend>
 	<p><label for="name">Username</label>
-	  <input id="name" type="text" name="userName" maxlength="25" value="<?php echo $_REQUEST['userName']; ?>"/></p>
+	  <input id="name" type="text" name="userName" maxlength="25" value="<?php echo $user->username; ?>"/></p>
+	<p><label for="currentPass">New Password</label>
+	  <input id="currentPass" type="password" name="currentPass" maxlength="10" /></p>
 	<p><label for="pass">Password</label>
 	  <input id="pass" type="password" name="userPassword" maxlength="10" /></p>
 	<p><label for="repeatPass">Repeat Password</label>
-   <input id="repeatPass"type="password" name="userRepeatPass" maxlength="10" /></p>
+	  <input id="repeatPass"type="password" name="userRepeatPass" maxlength="10" /></p>
 	<p><label for="email">Email</label>
-	  <input id="email" type="text" name="userEmail" maxlength="50"/ value="<?php echo $_REQUEST['userEmail'];  ?>"></p>
+	  <input id="email" type="text" name="userEmail" maxlength="50"/ value="<?php echo $user->email;  ?>"></p>
 	<p><label for="cell">Cell Phone #</label>
-   <input id="cell" type="text" name="userCell" maxlength="10" value="<?php echo $_REQUEST['userCell']; ?>"/></p>
+	  <input id="cell" type="text" name="userCell" maxlength="10" value="<?php echo $user->phone_number ?>"/></p>
 	<p><label for="carrier">Carrier</label>
 	  <select id="carrier" name="userCarrier">
 	    <option value="AT&T">AT&#38;T</option>
-	    <option <?php if($_REQUEST['userCarrier'] == 'Verizon') echo 'selected'; ?> value="Verizon">Verizon</option>
-	    <option <?php if($_REQUEST['userCarrier'] == 'T-Mobile') echo 'selected'; ?> value="T-Mobile">T-Mobile</option>
-	    <option <?php if($_REQUEST['userCarrier'] == 'Sprint') echo 'selected'; ?> value="Sprint">Sprint</option>
+	    <option <?php if($user->carrier == 'Verizon') echo 'selected'; ?> value="Verizon">Verizon</option>
+	    <option <?php if($user->carrier == 'T-Mobile') echo 'selected'; ?> value="T-Mobile">T-Mobile</option>
+	    <option <?php if($user->carrier == 'Sprint') echo 'selected'; ?> value="Sprint">Sprint</option>
 	</select></p>
 	<p><label for="reception">Default Methods of Reception</label>
-	  <object class="multifield"><input type="checkbox" name="receive_email" value="yes" <?php if($_REQUEST['receive_email'] == 'yes') echo 'checked'; ?>/>Email<br />
-	    <input type="checkbox" name="receive_sms_text" value="yes" <?php if($_REQUEST['receive_sms_text'] == 'yes') echo 'checked'; ?>/>SMS (Text)<br />
-	    <input type="checkbox" name="receive_sms_link" value="yes" <?php if($_REQUEST['receive_sms_link'] == 'yes') echo 'checked'; ?>/>SMS (Link)<br /></object></p>
+	  <object class="multifield"><input type="checkbox" name="receive_email" value="yes" <?php if($user->receive_email == 'yes') echo 'checked'; ?>/>Email<br />
+	    <input type="checkbox" name="receive_sms_text" value="yes" <?php if($user->receive_sms_text == 'yes') echo 'checked'; ?>/>SMS (Text)<br />
+	    <input type="checkbox" name="receive_sms_link" value="yes" <?php if($user->receive_sms_link == 'yes') echo 'checked'; ?>/>SMS (Link)<br /></object></p>
 	<p><label for="feeds">Feeds</label> <br />
-	  <object class="multifield">
-	    <input type="text" name="feed1" maxlength="500" value="<?php echo $_REQUEST['feed1']; ?>"/><Br />
-	    <input type="text" name="feed2" maxlength="500" value="<?php echo $_REQUEST['feed2']; ?>"/><br />
-	    <input type="text" name="feed3" maxlength="500" value="<?php echo $_REQUEST['feed3']; ?>"/><br />
-	    <a href="#">Add More Feeds</a>
+	  <object id="feedFields" class="multifield">
+
+	    <?php  
+              foreach($user->feeds as $currentFeed)
+              {
+                print("<input type=\"text\" name=\"feed[]\" maxlength=\"500\" value=\"{$currentFeed->url}\"/><br />");
+              }
+            ?>
 	  </object>
+	 <div style="float:left;margin-left:11.5em;"> <a onclick="addFeed()">Add More Feeds</a></div>
 	</p>
 	<input class="rightcolumn" type="submit" name="submit" value="Sign Up" />
       </fieldset>
@@ -60,6 +61,15 @@ session_start();
   <div class="validated">
     <a href="http://validator.w3.org/check?uri=referer"><img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0 Strict" /></a>
   </div>
+
+  <script type="text/javascript">
+    function addFeed()
+    {
+      var current = document.getElementById('feedFields').innerHTML;
+      current += '<input type="text" name="feed[]" maxlength="500"/><br />';
+      document.getElementById('feedFields').innerHTML = current;
+    }
+  </script>
 </body>
 </html>
 
@@ -242,6 +252,11 @@ if(checkSet() != FALSE)
       {
 	echo 'Please enter your cell phone number or deselect the SMS(text) and SMS(link) default methods of reception.';
 	exit();
+      }
+
+    foreach($_REQUEST['feed'] as $index=>$currentFeed)
+      {
+	Feed::create(array('url'=>$currentFeed, 'name'=>'noname'));
       }
 
     $userInfo = array('username'=>$userName, 'password'=>md5($userPassword), 'email'=>$userEmail, 'phone_number'=>$userCell, 'carrier'=>$_REQUEST['userCarrier'], 'send_email'=>$_REQUEST['receive_email'], 'send_sms_text'=>$_REQUEST['receive_sms_text'], 'send_sms_link'=>$_REQUEST['receive_sms_link']);

@@ -18,7 +18,7 @@ font-family:sans-serif;
 
 div.outerbody
 {
-text-align:center;
+text-align:left;
 background-color:white;
 padding:1em;
 width:30em;
@@ -27,7 +27,7 @@ margin: 0 auto 0 auto;
 
 label
 {
-width: 8em;
+width: 11em;
 float: left;
 text-align: right;
 margin-right: 0.5em;
@@ -42,12 +42,14 @@ float: left;
 float: left;
 margin-top: 1em;
 margin-left: 10.2em;
+background: #ffa20c;
 }
 
 .submit input
 {
 margin-left: 4.5em;
 } 
+
 input
 {
 color: navy;
@@ -58,20 +60,20 @@ border: 1px solid navy;
 .submit input
 {
 color: #000;
-background: #ffa20f;
+background: #ffa20c;
 border: 2px outset #d7b9c9
 } 
+
 fieldset
 {
 margin: 0 auto;
 border: 1px solid navy;
-width: 20em;
-
+width: 27em;
 }
 
 legend
 {
-color: #navy;
+color: navy;
 background: #ffa20c;
 border: 1px solid navy;
 padding: 2px 6px;

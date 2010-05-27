@@ -22,15 +22,17 @@
       <div id="feedreader">
 	<div id="main">
 	  <ul>
-	    <li>Feed 1</li> <!--TODO: Replace Feed 1 with info from DB.  Add onclick to paragraph tag-->
-	    <li>Feed 2</li> <!--TODO: Replace Feed 2 with info from DB.  Add onclick to paragraph tag-->
-	    <li>Feed 3</li> <!--TODO: Replace Feed 3 with info from DB.  Add onclick to paragraph tag-->
+	    <?php
+            foreach($user->feeds as $currentFeed)
+            {
+              print("<li onclick=\"getStories('{$currentFeed->name}','reader')\">{$currentFeed->name}</li>");//"
+            }
+	    ?>
 	  </ul>
 	</div>
 	<div id="sidebar">
 	  <ul>
-	    <li>This is a long and interesting story that relates to the content in feed 1.</li>
-	    <li>Why does this one keep repeating itself?  Why does this one keep repeating itself? Why does this one keep repeating itself?</li>
+	    <div id="reader"></div>
 	  </ul>
 	</div>
       </div>
@@ -44,5 +46,12 @@
     <div class="validated">
       <a href="http://validator.w3.org/check?uri=referer"><img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0 Strict" /></a>
     </div>
+
+    <script type="text/javascript">
+      function getStories(feedName,id){
+        document.getElementById(id).innerHTML = feedName;
+      }
+    </script>
+    
   </body>
 </html>   

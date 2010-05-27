@@ -9,7 +9,7 @@ background:white;
 
 #wrap 
 {
-width:61em;
+width:81em;
 margin:0 auto;
 margin-top: 2em;
 background:white;
@@ -53,7 +53,7 @@ padding:0;
 #feedreader
 {
 height: 27.4em;
-width: 27.5em;
+width: 47.5em;
 margin: 1em auto;
 border: .1em groove navy;
 padding: 1em;
@@ -75,7 +75,7 @@ background-color:#ffa20f;
 #main
 {
 float:left;
-width:7em;
+width:12em;
 padding:1em;
 height:25em;
 border: .1em solid navy;
@@ -86,7 +86,7 @@ background-color: white;
 #sidebar
 {
 float:left;
-width:15em;
+width:30em;
 padding:1em;
 height:25em;
 border: .1em solid navy;
@@ -128,4 +128,18 @@ width:88px;
 position:absolute;
 bottom:5px;
 right:5px;
+}
+
+li
+{
+list-style: none;
+margin: 0 auto 0 auto;
+padding: 0;
+text-align: left;
+}
+
+ul
+{
+margin: 0;
+padding: 0;
 }

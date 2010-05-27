@@ -29,11 +29,11 @@ session_start();
 	<p><label for="pass">Password</label>
 	  <input id="pass" type="password" name="userPassword" maxlength="10" /></p>
 	<p><label for="repeatPass">Repeat Password</label>
-   <input id="repeatPass"type="password" name="userRepeatPass" maxlength="10" /></p>
+	  <input id="repeatPass"type="password" name="userRepeatPass" maxlength="10" /></p>
 	<p><label for="email">Email</label>
 	  <input id="email" type="text" name="userEmail" maxlength="50"/ value="<?php echo $_REQUEST['userEmail'];  ?>"></p>
 	<p><label for="cell">Cell Phone #</label>
-   <input id="cell" type="text" name="userCell" maxlength="10" value="<?php echo $_REQUEST['userCell']; ?>"/></p>
+	  <input id="cell" type="text" name="userCell" maxlength="10" value="<?php echo $_REQUEST['userCell']; ?>"/></p>
 	<p><label for="carrier">Carrier</label>
 	  <select id="carrier" name="userCarrier">
 	    <option value="AT&T">AT&#38;T</option>
@@ -46,12 +46,23 @@ session_start();
 	    <input type="checkbox" name="receive_sms_text" value="yes" <?php if($_REQUEST['receive_sms_text'] == 'yes') echo 'checked'; ?>/>SMS (Text)<br />
 	    <input type="checkbox" name="receive_sms_link" value="yes" <?php if($_REQUEST['receive_sms_link'] == 'yes') echo 'checked'; ?>/>SMS (Link)<br /></object></p>
 	<p><label for="feeds">Feeds</label> <br />
-	  <object class="multifield">
-	    <input type="text" name="feed1" maxlength="500" value="<?php echo $_REQUEST['feed1']; ?>"/><Br />
-	    <input type="text" name="feed2" maxlength="500" value="<?php echo $_REQUEST['feed2']; ?>"/><br />
-	    <input type="text" name="feed3" maxlength="500" value="<?php echo $_REQUEST['feed3']; ?>"/><br />
-	    <a href="#">Add More Feeds</a>
+	  <object id="feedFields" class="multifield">
+	    <?php
+              if(isset($_REQUEST['feed']))
+              {
+	        foreach($_REQUEST['feed'] as $currentFeed)
+                {
+                  print("<input type=\"text\" name=\"feed[]\" maxlength=\"500\" value=\"{$currentFeed}\"/><br />");
+                }
+              }
+              else
+              {
+                for($counter=0; $counter < 3; $counter++)
+                  print("<input type=\"text\" name=\"feed[]\" maxlength=\"500\" /><br />");
+              }
+	    ?>
 	  </object>
+        <div style="float:left; margin-left:11.5em;"><a onclick="addFeed()">Add More Feeds</a></div>
 	</p>
 	<input class="rightcolumn" type="submit" name="submit" value="Sign Up" />
       </fieldset>
@@ -60,7 +71,16 @@ session_start();
   <div class="validated">
     <a href="http://validator.w3.org/check?uri=referer"><img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0 Strict" /></a>
   </div>
-</body>
+
+  <script type="text/javascript">
+    function addFeed()
+    {
+      var current = document.getElementById('feedFields').innerHTML;
+      current += '<input type="text" name="feed[]" maxlength="500"/><br />';
+      document.getElementById('feedFields').innerHTML = current;
+    }
+  </script>
+  </body>
 </html>
 
 <?php
@@ -242,6 +262,11 @@ if(checkSet() != FALSE)
       {
 	echo 'Please enter your cell phone number or deselect the SMS(text) and SMS(link) default methods of reception.';
 	exit();
+      }
+
+    foreach($_REQUEST['feed'] as $index=>$currentFeed)
+      {
+	Feed::create(array('url'=>$currentFeed, 'name'=>'noname'));
       }
 
     $userInfo = array('username'=>$userName, 'password'=>md5($userPassword), 'email'=>$userEmail, 'phone_number'=>$userCell, 'carrier'=>$_REQUEST['userCarrier'], 'send_email'=>$_REQUEST['receive_email'], 'send_sms_text'=>$_REQUEST['receive_sms_text'], 'send_sms_link'=>$_REQUEST['receive_sms_link']);
