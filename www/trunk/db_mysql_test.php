@@ -85,9 +85,36 @@ class MySQLTest {
     if ($user->username !== 'newusername')
       throw new Exception('MySQLUser::__set test failed');
 
+    // MySQLUser::create with-feeds test (depends on MySQLFeeds::create)
     $user->delete();
+    $feeds = MySQLFeeds::create(array(self::$feedinfo));
+    $user = MySQLUser::create(array_merge(self::$userinfo, 
+					  array('feeds'=>$feeds)), $db);
+    if ($user === NULL)
+      throw new Exception('MySQLUser::create with-feeds test failed');
+
+    // MySQLUser::get feeds test
+    $get_userinfo = $user->get(array('feeds'));
+    if (!($get_userinfo['feeds'] instanceof MySQLFeeds)
+	|| count($get_userinfo['feeds']->feeds) != 1)
+      throw new Exception('MySQLUser::get feeds test failed');
+
+    // MySQLUser::set feeds test
+    $feeds = MySQLFeeds::create(array(self::$feedinfo, self::$feedinfo_2));
+    $user->set(array('feeds'=>$feeds));
+    $get_userinfo = $user->get(array('feeds'));
+    if (!($get_userinfo['feeds'] instanceof MySQLFeeds)
+	|| count($get_userinfo['feeds']->feeds) != 2)
+      throw new Exception('MySQLUser::set feeds test failed');
+
+    $user->delete();
+    foreach ($feeds as $feed)
+      $feed->delete();
     unset($user);
     } catch(Exception $e) {
+      if (isset($feeds))
+	foreach ($feeds as $feed)
+	  $feed->delete();
       if (isset($user))
 	$user->delete();
       throw $e;
