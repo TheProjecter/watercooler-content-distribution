@@ -564,10 +564,7 @@ class MySQLUser extends MySQLDBObject implements iUser {
     $feeds_stmt->setFetchMode(PDO::FETCH_CLASS, 'MySQLFeed', 
 			      array('db'=>$this->db));
     $feeds_result = $feeds_stmt->fetchAll();
-    if ($feeds_result !== FALSE && count($feeds_result) > 0)
-      return new MySQLFeeds($feeds_result, $this->db);
-    else
-      return NULL;
+    return new MySQLFeeds($feeds_result, $this->db);
   }
 
 /* MySQLUser::get implements iUser::get (see corresponding documentation).
