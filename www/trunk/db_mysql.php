@@ -131,7 +131,7 @@ class MySQLFeeds extends MySQLDBObject implements iFeeds {
   private $db;
   public $users;
 
-  private function __construct(array $users, MySQLDB $db) {
+  public function __construct(array $users, MySQLDB $db) {
     $this->users = $users;
     $this->db = $db;
   }
@@ -168,7 +168,7 @@ class MySQLFeed extends MySQLDBObject implements iFeed {
      $db: (MySQLDB object) a valid MySQLDB object connected to the MySQL
           database to use
   */
-  private function __construct(MySQLDB $db) {
+  public function __construct(MySQLDB $db) {
     $this->db = $db;
   }
 
@@ -486,6 +486,16 @@ class MySQLUser extends MySQLDBObject implements iUser {
     $update_stmt->execute();
   }
 
+  public function getFeeds() {
+    static $feeds_sql = 'SELECT sid FROM favorites WHERE uid=:uid;';
+    $feeds_stmt = $this->db->pdo->prepare($feeds_sql);
+    $feeds_stmt->bindParam(':uid', $this->uid);
+    $feeds_stmt->execute();
+    $feeds_stmt->setFetchMode(PDO::FETCH_CLASS, 'MySQLFeed', 
+			      array('db'=>$this->db));
+    return new MySQLFeeds($feeds_stmt->fetchAll(), $this->db);
+  }
+
 /* MySQLUser::get implements iUser::get (see corresponding documentation).
    This function IS vulnerable to SQL injection in parameter $userattr.
 */
@@ -493,6 +503,7 @@ class MySQLUser extends MySQLDBObject implements iUser {
     static $carrier_attr = 'carrier';
     static $carrier_sql = '(SELECT carrior_name FROM carriors WHERE
                            cid=(SELECT cid FROM users WHERE uid=:uid2))';
+    static $feeds_attr = 'feeds';
 
     // build SQL query to use to get user attributes
     $get_sql = 'SELECT ';
@@ -519,6 +530,11 @@ class MySQLUser extends MySQLDBObject implements iUser {
     $get_result = $get_stmt->fetch(PDO::FETCH_ASSOC);
     if ($get_result === FALSE)
       throw new Exception('PDOStatement::fetch failed');
+
+    // get feeds if requested
+    if (in_array($feeds_attr, $userattrs))
+      $get_result[$feeds_attr] = $this->getFeeds();
+
     return $get_result;
   }
 
