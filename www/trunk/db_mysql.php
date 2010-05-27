@@ -505,31 +505,39 @@ class MySQLUser extends MySQLDBObject implements iUser {
                            cid=(SELECT cid FROM users WHERE uid=:uid2))';
     static $feeds_attr = 'feeds';
 
+    $sql_added = FALSE;
+
     // build SQL query to use to get user attributes
     $get_sql = 'SELECT ';
     // add column names
     foreach ($userattrs as $key=>$attr) {
-      if (isset(self::$userattrs_to_cols[$attr]))
+      if (isset(self::$userattrs_to_cols[$attr])) {
 	$get_sql .= self::$userattrs_to_cols[$attr]." AS $attr, ";
-      elseif ($attr === $carrier_attr)
+	$sql_added = TRUE;
+      } elseif ($attr === $carrier_attr) {
 	$get_sql .= "$carrier_sql AS $attr, ";
+	$sql_added = TRUE;
+      }
     }
     // remove trailing comma and space
     $get_sql = substr($get_sql, 0, -2);
     // add rest of SQL query
     $get_sql .= ' FROM users WHERE uid=:uid;';
 
-    $get_stmt = $this->db->pdo->prepare($get_sql);
-    $get_stmt->bindParam(':uid', $this->uid);
+    // do not attempt the SELECT if no attrs were added to the select
+    if ($sql_added === TRUE) {
+      $get_stmt = $this->db->pdo->prepare($get_sql);
+      $get_stmt->bindParam(':uid', $this->uid);
 
-    // bind carrier specific column values
-    if (in_array('carrier', $userattrs))
-      $get_stmt->bindParam(':uid2', $this->uid);
+      // bind carrier specific column values
+      if (in_array('carrier', $userattrs))
+	$get_stmt->bindParam(':uid2', $this->uid);
     
-    $get_stmt->execute();
-    $get_result = $get_stmt->fetch(PDO::FETCH_ASSOC);
-    if ($get_result === FALSE)
-      throw new Exception('PDOStatement::fetch failed');
+      $get_stmt->execute();
+      $get_result = $get_stmt->fetch(PDO::FETCH_ASSOC);
+      if ($get_result === FALSE)
+	throw new Exception('PDOStatement::fetch failed');
+    }
 
     // get feeds if requested
     if (in_array($feeds_attr, $userattrs))
