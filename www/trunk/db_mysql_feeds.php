@@ -203,4 +203,21 @@ class MySQLFeed extends MySQLDBObject implements iFeed {
 
     return $get_result;
   }
+
+/* MySQLFeed::delete implements iFeed::delete (see corresponding documentation)
+*/
+  public function delete() {
+    // build the SQL query to use to delete the feed
+    static $delete_sql = 'DELETE FROM feed_sources WHERE sid=:sid;';
+    // prepare the SQL statement
+    $delete_stmt = $this->db->pdo->prepare($delete_sql);
+    // bind column values
+    $delete_stmt->bindValue(':sid', $this->sid);
+    // execute the SQL statement
+    $delete_stmt->execute();
+
+    /* unset $this->uid so that future operations on this MySQLUser object
+       will fail */
+    unset ($this->uid);
+  }
 }

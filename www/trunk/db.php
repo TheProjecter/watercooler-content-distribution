@@ -102,6 +102,11 @@ interface iFeed {
       $feedattrs parameter
 */
   public function get(array $feedattrs);
+
+/* function iFeed::delete deletes the feed and all information associated with
+   the feed in the database. Do not use an iFeed object after deleting it.
+*/
+  public function delete();
 }
 
 /* interface iUsers represents a group of users, and handles all database
@@ -264,7 +269,7 @@ interface iUser {
   public static function create(array $userinfo, iDatabase $db = NULL);
 
 /* function iUser::delete deletes the user and all information associated with
-   the user in the database
+   the user in the database. Do not use an iUser object after deleting it.
 */
   public function delete();
 }
