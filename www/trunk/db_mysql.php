@@ -128,12 +128,55 @@ class MySQLDB extends MySQLDBObject implements iDatabase {
 }
 
 class MySQLFeeds extends MySQLDBObject implements iFeeds {
+  private $db;
+  public $users;
 
-  /* parseFeedInfo transforms a $userinfo array, in the format taken by many
-     iFeeds functions, into an associative array with keys as database column
+  private function __construct(array $users, MySQLDB $db) {
+    $this->users = $users;
+    $this->db = $db;
+  }
+
+/* MySQLFeeds::create implements iFeeds::create (see corresponding 
+   documentation)
+*/
+  public static function create($feedinfos, $db = NULL) {
+    if ($db === NULL)
+      $db = self::$site_db;
+    return self::__create($feedinfos, $db);
+  }
+
+  /* MySQLFeeds::__create is a helper function to MySQLFeeds::create which
+     performs the actual create operation. This function was added in order to 
+     use typehinting on parameter $db.
+  */
+  private static function __create($feedinfos, MySQLDB $db) {
+    foreach ($feedinfos as $feedinfo)
+      $feeds[] = MySQLFeed::create($feedinfo, $db);
+    $c = __CLASS__;
+    return new $c($feeds, $db);
+  }
+}
+
+class MySQLFeed extends MySQLDBObject implements iFeed {
+  private $db;
+  /* $sid is the unique feed identifier which is used to access feed
+     information in the database */
+  private $sid;
+
+  /* function MySQLFeed::__construct is the constructor for the class
+
+     $db: (MySQLDB object) a valid MySQLDB object connected to the MySQL
+          database to use
+  */
+  private function __construct(MySQLDB $db) {
+    $this->db = $db;
+  }
+
+  /* parseFeedInfo transforms a $feedinfo array, in the format taken by many
+     iFeed functions, into an associative array with keys as database column
      names
   */
-  private static function parseFeedInfos($feedinfos, MySQLDB $db) {
+  private static function parseFeedInfo($feedinfo, MySQLDB $db) {
     static $feedinfo_to_cols = 
       array('name'=>'source_name', 'url'=>'source_url');
 
@@ -145,51 +188,78 @@ class MySQLFeeds extends MySQLDBObject implements iFeeds {
     return $db_feedinfo;
   }
 
-/* MySQLFeeds::create implements iFeed::create (see corresponding 
+/* MySQLFeed::find implements iFeed::find (see corresponding documentation).
+   This function IS vulnerable to SQL injection in parameter $attr.
+*/
+  public static function find($attr, $value, $db = NULL) {
+    if ($db === NULL)
+      $db = self::$site_db;
+    return self::__find($attr, $value, $db);
+  }
+
+  /* MySQLFeed::__find is a helper function to MySQLFeed::find which performs
+     the actual find operation. This function was added in order to use
+     typehinting on parameter $db.
+  */
+  private static function __find($attr, $value, MySQLDB $db) {
+    $db_feedinfo = self::parseFeedInfo(array($attr=>$value), $db);
+
+    // XXX better way to do this
+    foreach ($db_feedinfo as $db_feedinfo_attr=>$db_feedinfo_value) {
+      $db_attr = $db_feedinfo_attr;
+      $db_value = $db_feedinfo_value;
+    }
+
+    $find_sql = "SELECT sid FROM feed_sources WHERE $db_attr=:value;";
+    $find_stmt = $db->pdo->prepare($find_sql);
+    $find_stmt->bindParam(':value', $db_value);
+    $find_stmt->execute();
+    // set fetch mode to create an instance of this class
+    $find_stmt->setFetchMode(PDO::FETCH_CLASS, __CLASS__, array('db'=>$db));
+    $find_result = $find_stmt->fetch();
+    return $find_result !== FALSE ? $find_result : NULL;
+  }
+
+
+/* MySQLFeed::create implements iFeed::create (see corresponding 
    documentation)
 */
-  public static function create($feedinfos, $db = NULL) {
+  public static function create($feedinfo, $db = NULL) {
     if ($db === NULL)
       $db = self::$site_db;
     return self::__create($feedinfo, $db);
   }
 
-  /* MySQLFeeds::__create is a helper function to MySQLFeeds::create which
-     performs the actual create operation. This function was added in order to 
-     use typehinting on parameter $db.
-  */
-  private static function __create($feedinfos, MySQLDB $db) {
-    foreach ($feedinfos as $feedinfo) {
-      // parse $feedinfo into a format able to be fed straight into database
-      $db_feedinfo = self::parseFeedInfos($feedinfo, $db);
-
-      // build the SQL query to use to replace the feed
-      $create_sql = 'REPLACE feed_sources (';
-      // add column names
-      foreach ($db_feedinfo as $col=>$value)
-	$create_sql .= $col.', ';
-      // remove trailing comma and space
-      $create_sql = substr($create_sql, 0, -2);
-      // add column values
-      $create_sql .= ') VALUES (';
-      foreach ($db_feedinfo as $col=>$value)
-	$create_sql .= ':'.$col.', ';
-      // remove trailing comma and space
-      $create_sql = substr($create_sql, 0, -2);
-      $create_sql .= ');';
-
-      // prepare the SQL statement
-      $create_stmt = $db->pdo->prepare($create_sql);
-
-      // bind column values
-      foreach (array_merge($db_feedinfo, $carrier_bind) as $col=>$value)
-	$create_stmt->bindValue(':'.$col, $value);
+  public static function __create($feedinfo, MySQLDB $db) {
+    // parse $feedinfo into a format able to be fed straight into database
+    $db_feedinfo = self::parseFeedInfo($feedinfo, $db);
     
-      // execute the SQL statement
-      $create_stmt->execute();
+    // build the SQL query to use to replace the feed
+    $create_sql = 'INSERT IGNORE INTO feed_sources (';
+    // add column names
+    foreach ($db_feedinfo as $col=>$value)
+      $create_sql .= $col.', ';
+    // remove trailing comma and space
+    $create_sql = substr($create_sql, 0, -2);
+    // add column values
+    $create_sql .= ') VALUES (';
+    foreach ($db_feedinfo as $col=>$value)
+      $create_sql .= ':'.$col.', ';
+    // remove trailing comma and space
+    $create_sql = substr($create_sql, 0, -2);
+    $create_sql .= ');';
+    
+    // prepare the SQL statement
+    $create_stmt = $db->pdo->prepare($create_sql);
+    
+    // bind column values
+    foreach ($db_feedinfo as $col=>$value)
+      $create_stmt->bindValue(':'.$col, $value);
+    
+    // execute the SQL statement
+    $create_stmt->execute();
 
-      var_dump($create_stmt->fetch());
-    }
+    return MySQLFeed::find('name', $feedinfo['name'], $db);
   }
 }
 
@@ -307,7 +377,7 @@ class MySQLUser extends MySQLDBObject implements iUser {
      information in the database */
   private $uid;
 
-  /* function MySQLDB::__construct is the constructor for the class
+  /* function MySQLuser::__construct is the constructor for the class
 
      $db: (MySQLDB object) a valid MySQLDB object connected to the MySQL
           database to use
