@@ -16,5 +16,7 @@ if (!($db instanceof MySQLDB))
   throw new Exception('MySQLDB::connect failed');
 $db->setAsSiteDefault();
 
+class Feed extends MySQLFeed {}
+class Feeds extends MySQLFeeds {}
 class User extends MySQLUser {}
 class Users extends MySQLUsers {}
