@@ -189,6 +189,7 @@ class MySQLFeeds extends MySQLDBObject implements iFeeds {
       $create_stmt->execute();
 
       var_dump($create_stmt->fetch());
+    }
   }
 }
 
