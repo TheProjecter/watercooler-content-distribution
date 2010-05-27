@@ -600,8 +600,11 @@ class MySQLUser extends MySQLDBObject implements iUser {
     // execute the SQL statement
     $create_stmt->execute();
 
-    // XXX there is probably a better way to do this
-    return MySQLUser::find('username', $userinfo['username'], $db);
+    // XXX check that using PDO::lastInsertId is not a race
+    $c = __CLASS__;
+    $user = new $c($db);
+    $user->uid = $db->pdo->lastInsertId();
+    return $user;
   }
 
 /* MySQLUser::delete implements iUser::delete (see corresponding 
@@ -627,58 +630,22 @@ class MySQLUser extends MySQLDBObject implements iUser {
    derived classes
 */
 class MySQLTest {
-  public static function testAll() {
-    $db = self::testDB();
+  public static function testAll(MySQLDB $db = NULL) {
     self::testUser($db);
     self::testUsers($db);
   }
 
-/* function MySQLTest::testDB tests the semantics of operations in class 
-   MySQLDB. These tests require a file called 'MySQLDB.sql' containing SQL
-   which initializes a valid watercooler MySQL database and an empty writable
-   directory called 'test'.
-
-   returns an MySQLDB object connected to a test database
-*/
-  public static function testDB() {
-    static $db_file = 'test/MySQLTest.db';
-    static $db_sql = 'MySQLDB.sql';
-    static $sqlite3_prog = 'sqlite3';
-    static $ini_file = 'test/db_def_cfg.ini';
-    static $ini_contents = "\
-[MySQLDB]
-filename=test/MySQLTest.db
-";
-
-    // create test MySQL database
-    unlink($db_file);
-    exec("$sqlite3_prog -init $db_sql $db_file");
-
-    // MySQLDB::connect test
-    $db = MySQLDB::connect(array('filename'=>$db_file));
-    if (!($db instanceof MySQLDB))
-      throw new Exception('MySQLDB::connect test failed');
-
-    // MySQLDB::connectFromIni test
-    file_put_contents($ini_file, $ini_contents);
-    $db = MySQLDB::connectFromIni('test/db_def_cfg.ini');
-    if (!($db instanceof MySQLDB))
-      throw new Exception('MySQLDB::connect test failed');
-
-    return $db;
-  }
-
-  public static function testUser(MySQLDB $db) {
+  public static function testUser(MySQLDB $db = NULL) {
     static $userinfo = array('username'=>'testuser',
 			     'password'=>'testpassword',
 			     'email'=>'testemail',
 			     'phone_number'=>'testphone',
-			     'carrier'=>'testcarrier');
+			     'carrier'=>'AT&T');
     static $userinfo_2 = array('username'=>'testuser2',
 			       'password'=>'testpassword2',
 			       'email'=>'testemail2',
 			       'phone_number'=>'testphone2',
-			       'carrier'=>'testcarrier2');
+			       'carrier'=>'Verizon');
 
     // MySQLUser::create test
     $user = MySQLUser::create($userinfo, $db);
@@ -735,17 +702,17 @@ filename=test/MySQLTest.db
     $user->delete();
   }
 
-  public static function testUsers(MySQLDB $db) {
+  public static function testUsers(MySQLDB $db = NULL) {
     static $userinfo = array('username'=>'testuser',
 			     'password'=>'testpassword',
 			     'email'=>'testemail',
 			     'phone_number'=>'testphone',
-			     'carrier'=>'testcarrier');
+			     'carrier'=>'AT&T');
     static $userinfo_2 = array('username'=>'testuser2',
 			       'password'=>'testpassword',
 			       'email'=>'testemail2',
 			       'phone_number'=>'testphone2',
-			       'carrier'=>'testcarrier');
+			       'carrier'=>'Verizon');
 
     // MySQLUsers::searchAll test
     $user = MySQLUser::create($userinfo, $db);
