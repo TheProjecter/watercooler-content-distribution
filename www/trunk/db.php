@@ -155,6 +155,13 @@ interface iFeed {
    the feed in the database. Do not use an iFeed object after deleting it.
 */
   public function delete();
+
+/* function iFeed::getUserCount calculates the number of users subscribed to
+   the feed.
+
+   returns an integer representing the number of users
+*/
+  public function getUserCount();
 }
 
 /* interface iUsers represents a group of users, and handles all database

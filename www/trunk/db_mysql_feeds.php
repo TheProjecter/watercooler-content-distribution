@@ -243,4 +243,15 @@ class MySQLFeed extends MySQLDBObject implements iFeed {
        will fail */
     unset ($this->uid);
   }
+
+/* MySQLFeed::getUserCount implements iFeed::getUserCount (see corresponding 
+   documentation)
+*/
+  public function getUserCount() {
+    static $usercount_sql = 'SELECT COUNT(uid) FROM favorites WHERE sid=:sid;';
+    $usercount_stmt = $this->db->pdo->prepare($usercount_sql);
+    $usercount_stmt->bindParam(':sid', $this->sid);
+    $usercount_stmt->execute();
+    return $usercount_stmt->fetchColumn();
+  }
 }
