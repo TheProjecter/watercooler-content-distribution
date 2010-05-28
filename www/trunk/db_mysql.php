@@ -21,7 +21,9 @@ class MySQLDBObject extends DatabaseObject {
          table
        'feeds': feeds need to be accessed in the 'favorites' table */
   protected static $userattrs_to_cols = 
-    array('username'=>'username',
+    array('uid'=>'uid',
+	  'id'=>'uid',
+	  'username'=>'username',
 	  'email'=>'email',
 	  'password'=>'password',
 	  'phone_number'=>'phone_number');
@@ -30,7 +32,9 @@ class MySQLDBObject extends DatabaseObject {
      as the $feedinfo parameter to methods in classes derived from this one to
      column names in the MySQL database. */
   protected static $feedattrs_to_cols =
-    array('name'=>'source_name',
+    array('sid'=>'sid',
+	  'id'=>'sid',
+	  'name'=>'source_name',
 	  'url'=>'source_url');
 
   /* $storyattrs_to_cols is an associative array mapping attribute names given 
@@ -44,6 +48,7 @@ class MySQLDBObject extends DatabaseObject {
   */
   protected static $storyattrs_to_cols =
     array('fid'=>'fid',
+	  'id'=>'fid',
 	  'title'=>'title',
 	  'content'=>'content',
 	  'url'=>'url',
