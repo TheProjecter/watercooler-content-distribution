@@ -96,11 +96,8 @@ class MySQLStory extends MySQLDBObject implements iStory {
     
     $db_storyinfo = self::parseStoryInfo(array($attr=>$value), $db);
 
-    // XXX better way to do this
-    foreach ($db_storyinfo as $db_storyinfo_attr=>$db_storyinfo_value) {
-      $db_attr = $db_storyinfo_attr;
-      $db_value = $db_storyinfo_value;
-    }
+    $db_attr = key($db_storyinfo);
+    $db_value = current($db_storyinfo);
 
     $find_sql = "SELECT fid FROM feed_stories WHERE $db_attr=:value;";
     $find_stmt = $db->pdo->prepare($find_sql);
