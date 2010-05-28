@@ -86,13 +86,10 @@ class MySQLFeed extends MySQLDBObject implements iFeed {
      names
   */
   private static function parseFeedInfo(array $feedinfo, MySQLDB $db) {
-    static $feedinfo_to_cols = 
-      array('name'=>'source_name', 'url'=>'source_url');
-
     // rename the feedinfo keys as database column names
     foreach ($feedinfo as $key=>$value)
-      if ($feedinfo_to_cols[$key] !== NULL)
-	$db_feedinfo[$feedinfo_to_cols[$key]] = $value;
+      if (self::$feedattrs_to_cols[$key] !== NULL)
+	$db_feedinfo[self::$feedattrs_to_cols[$key]] = $value;
 
     return $db_feedinfo;
   }
@@ -112,11 +109,12 @@ class MySQLFeed extends MySQLDBObject implements iFeed {
   private static function __find($attr, $value, MySQLDB $db) {
     $db_feedinfo = self::parseFeedInfo(array($attr=>$value), $db);
 
-    // XXX better way to do this
-    foreach ($db_feedinfo as $db_feedinfo_attr=>$db_feedinfo_value) {
-      $db_attr = $db_feedinfo_attr;
-      $db_value = $db_feedinfo_value;
-    }
+    if ($db_feedinfo === NULL)
+      throw new InvalidArgumentException('parameter $attr is not a valid '.
+					 'attribute');
+
+    $db_attr = key($db_feedinfo);
+    $db_value = current($db_feedinfo);
 
     $find_sql = "SELECT sid FROM feed_sources WHERE $db_attr=:value;";
     $find_stmt = $db->pdo->prepare($find_sql);
