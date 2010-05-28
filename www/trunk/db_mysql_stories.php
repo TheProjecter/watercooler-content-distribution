@@ -63,11 +63,11 @@ class MySQLStory extends MySQLDBObject implements iStory {
       return $ret[$name];
   }
 
-  /* parseFeedInfo transforms a $storyinfo array, in the format taken by many
+  /* parseStoryInfo transforms a $storyinfo array, in the format taken by many
      iStory functions, into an associative array with keys as database column
      names
   */
-  private static function parseFeedInfo(array $storyinfo, MySQLDB $db) {
+  private static function parseStoryInfo(array $storyinfo, MySQLDB $db) {
     // rename the storyinfo keys as database column names
     foreach ($storyinfo as $key=>$value)
       if (self::$storyattrs_to_cols[$key] !== NULL)

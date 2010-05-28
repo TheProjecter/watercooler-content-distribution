@@ -61,6 +61,8 @@ class MySQLFeed extends MySQLDBObject implements iFeed {
      information in the database */
   public $sid;
 
+  static $stories_attr = 'stories';
+
   /* function MySQLFeed::__construct is the constructor for the class
 
      $db: (MySQLDB object) a valid MySQLDB object connected to the MySQL
@@ -171,10 +173,29 @@ class MySQLFeed extends MySQLDBObject implements iFeed {
     return MySQLFeed::find('url', $feedinfo['url'], $db);
   }
 
+  /* MySQLFeed::getStories is a written as a helper function to MySQLFeed::get
+     which carries out the operation of getting a feed's stories
+
+     returns a MySQLStories object representing the set of the feed's stories
+  */
+  private function getStories() {
+    static $stories_sql = 'SELECT fid FROM feed_stories WHERE sid=:sid;';
+    $stories_stmt = $this->db->pdo->prepare($stories_sql);
+    $stories_stmt->bindParam(':sid', $this->sid);
+    $stories_stmt->execute();
+    /* XXX creating the objects this way relies on DB consistency (sid is not
+       checked to be existent in feed_sources table) */
+    $stories_stmt->setFetchMode(PDO::FETCH_CLASS, 'MySQLStory', 
+			      array('db'=>$this->db));
+    $stories_result = $stories_stmt->fetchAll();
+    return new MySQLStories($stories_result, $this->db);
+  }
+
 /* MySQLFeed::get implements iFeed::get (see corresponding documentation)
 */
   public function get(array $feedattrs) {
     $sql_added = FALSE;
+    $get_result = array();
 
     // build SQL query to use to get feed attributes
     $get_sql = 'SELECT ';
@@ -200,6 +221,10 @@ class MySQLFeed extends MySQLDBObject implements iFeed {
       if ($get_result === FALSE)
 	throw new Exception('PDOStatement::fetch failed');
     }
+
+    // get stories if requested
+    if (in_array(self::$stories_attr, $feedattrs))
+      $get_result[self::$stories_attr] = $this->getStories();
 
     return $get_result;
   }

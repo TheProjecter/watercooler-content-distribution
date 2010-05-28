@@ -142,6 +142,8 @@ interface iFeed {
 	         'sid': (integer) the feed's id number
 	         'name': (string) the feed's name
 		 'url': (string) the feed's url
+		 'stories': (iStories) an object representing the feed's 
+		            stories in the database
 
     returns an array containing all requested feed information that could be
       successfully fetched, in the form described in the description of the

@@ -259,8 +259,9 @@ class MySQLTest extends MySQLDBObject {
                              'MySQLTest_storyurl', ".time().",
                              ".$feed->sid.", 1);");
 
-    $stories = $feed->get(array('stories'), $db);
-    if ($stories === NULL)
+    $get_feedinfo = $feed->get(array('stories'), $db);
+    $stories = $get_feedinfo['stories'];
+    if ($get_feedinfo === NULL)
       throw new Exception('MySQLFeed::get stories test failed');
 
     // MySQLStories foreach test
@@ -298,5 +299,5 @@ class MySQLTest extends MySQLDBObject {
 }
 
 require_once('db_init.php');
-MySQLTest::testAll();
+MySQLTest::testStories();
 echo 'all tests passed!';

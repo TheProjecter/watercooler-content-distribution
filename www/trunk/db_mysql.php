@@ -43,7 +43,8 @@ class MySQLDBObject extends DatabaseObject {
          by 'gid' column
   */
   protected static $storyattrs_to_cols =
-    array('title'=>'title',
+    array('fid'=>'fid',
+	  'title'=>'title',
 	  'content'=>'content',
 	  'url'=>'url',
 	  'timestamp'=>'time_stamp');
