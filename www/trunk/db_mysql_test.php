@@ -278,7 +278,7 @@ class MySQLTest extends MySQLDBObject {
 
       // MySQLStory::get test
       $get_storyinfo = $story->get(array('url'));
-      if ($get_storyinfo['url'] != 'MySQLTest_url')
+      if ($get_storyinfo['url'] != 'MySQLTest_storyurl')
 	throw new Exception('MySQLStory::get test failed');
 
       // MySQLStory::__get test
@@ -286,13 +286,19 @@ class MySQLTest extends MySQLDBObject {
       if ($story->content !== $get_name['content'])
 	throw new Exception('MySQLStory::__get test failed');
 
-      $db->pdo->exec("DELETE FROM feed_stories WHERE sid={$feed->sid}");
+      $db->pdo->exec("DELETE FROM feed_stories WHERE fid={$story->fid};");
+      /* XXX if this line is added and "SELECT * FROM feed_stories WHERE 
+	 url='MySQLTest_storyurl';" is run from the same system in the 'mysql'
+	 program, then the stories are not deleted below! */
+      //throw new Exception();
     }
 
     $feed->delete();
     } catch(Exception $e) {
-      if (isset($feed))
+      if (isset($feed)) {
+	$db->pdo->exec("DELETE FROM feed_stories WHERE sid={$feed->sid};");
 	$feed->delete();
+      }
       throw $e;
     }    
   }
