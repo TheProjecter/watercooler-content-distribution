@@ -25,7 +25,10 @@
 	    <?php
             foreach($user->feeds as $currentFeed)
             {
-              print("<li onclick=\"getStories('{$currentFeed->name}','reader')\">{$currentFeed->name}</li>");//"
+	      $stories = $feed->stories;
+	      echo $stories[0]->content;
+	      
+              print("<li onclick=\"getStories('test','title')\">{$currentFeed->name}</li>");//"
             }
 	    ?>
 	  </ul>
@@ -48,7 +51,16 @@
     </div>
 
     <script type="text/javascript">
+      function getFeeds($feedSource) {
+        $output = 'default';
+        $stories = $feed->stories;
+        foreach ($stories as $story)
+          $output += $story->content;
+	return $output;
+      }
+
       function getStories(feedName,id){
+	echo "test";
         document.getElementById(id).innerHTML = feedName;
       }
     </script>
