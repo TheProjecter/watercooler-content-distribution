@@ -89,7 +89,13 @@ def sendStories(listOfStoriesURL):
         storyContent = story[2]
     
         listOfUsers = Database.getUsersByStory(storyURL)
-        
+
+        # DEBUG: Print listOfUsers
+        print "List of users from database:"
+        for user in listOfUsers:
+            print user[0], user[4]
+        print "\n"     
+
         for user in listOfUsers:
         
             # Get user info
