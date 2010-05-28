@@ -175,8 +175,8 @@ class MySQLUser extends MySQLDBObject implements iUser {
   private static function parseUserInfo(array $userinfo, MySQLDB $db) {
     // rename the userinfo keys as database column names
     foreach ($userinfo as $key=>$value)
-      if (self::$userattrs_to_cols[$key] !== NULL)
-	$db_userinfo[$userattrs_to_cols[$key]] = $value;
+      if (isset(self::$userattrs_to_cols[$key]))
+	$db_userinfo[self::$userattrs_to_cols[$key]] = $value;
 
     // XXX fake unused database fields for now
     $db_userinfo['status'] = 1;
