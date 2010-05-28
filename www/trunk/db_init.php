@@ -3,6 +3,7 @@ require_once('db.php');
 require_once('db_mysql.php');
 require_once('db_mysql_users.php');
 require_once('db_mysql_feeds.php');
+require_once('db_mysql_stories.php');
 
 /*
 $db_file = 'test/watercooler.db';
@@ -18,6 +19,8 @@ if (!($db instanceof MySQLDB))
   throw new Exception('MySQLDB::connect failed');
 $db->setAsSiteDefault();
 
+class Stories extends MySQLStories {}
+class Story extends MySQLStory {}
 class Feed extends MySQLFeed {}
 class Feeds extends MySQLFeeds {}
 class User extends MySQLUser {}
