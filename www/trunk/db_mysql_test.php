@@ -2,11 +2,13 @@
 require_once('db.php');
 require_once('db_mysql.php');
 require_once('db_mysql_users.php');
+require_once('db_mysql_feeds.php');
+require_once('db_mysql_stories.php');
 
 /* class MySQLTest contains functions used for unit testing on MySQLObject
    derived classes
 */
-class MySQLTest {
+class MySQLTest extends MySQLDBObject {
     static $userinfo = array('username'=>'MySQLTest_user',
 			     'password'=>'MySQLTest_password',
 			     'email'=>'MySQLTest_email2@nothing.nothing',
@@ -30,6 +32,7 @@ class MySQLTest {
     self::testUsers($db);
     self::testFeed($db);
     self::testFeeds($db);
+    self::testStories($db);
   }
 
   public static function testUser(MySQLDB $db = NULL) {
@@ -238,6 +241,62 @@ class MySQLTest {
       throw $e;
     }
   }
+
+  public static function testStories(MySQLDB $db = NULL) {
+    if ($db === NULL)
+      $db = self::$site_db;
+    try {
+    // MySQLFeed::get stories test (relies on MySQLFeed::create)
+    $feed = MySQLFeed::create(self::$feedinfo, $db);
+    $db->pdo->exec("INSERT INTO feed_stories
+		    (title, content, url, time_stamp, sid, gid)
+		     VALUES ('MySQLTest_title', 'MySQLTest_content',
+                             'MySQLTest_storyurl', ".time().",
+                             ".$feed->sid.", 1);");
+    $db->pdo->exec("INSERT INTO feed_stories
+		    (title, content, url, time_stamp, sid, gid)
+		     VALUES ('MySQLTest_title2', 'MySQLTest_content2',
+                             'MySQLTest_storyurl', ".time().",
+                             ".$feed->sid.", 1);");
+
+    $stories = $feed->get(array('stories'), $db);
+    if ($stories === NULL)
+      throw new Exception('MySQLFeed::get stories test failed');
+
+    // MySQLStories foreach test
+    foreach($stories as $story) {
+      if (!($story instanceof MySQLStory))
+	throw new Exception('MySQLStories foreach test failed');
+    }
+
+    foreach ($stories as $story) {
+      // MySQLStory::find test
+      $find_story = MySQLStory::find('fid', $story->fid, $db);
+      if ($find_story === NULL || $find_story->fid != $story->fid)
+	throw new Exception('MySQLFeed::find test failed');
+
+      // MySQLStory::get test
+      $get_storyinfo = $story->get(array('url'));
+      if ($get_storyinfo['url'] != 'MySQLTest_url')
+	throw new Exception('MySQLStory::get test failed');
+
+      // MySQLStory::__get test
+      $get_name = $story->get(array('content'));
+      if ($story->content !== $get_name['content'])
+	throw new Exception('MySQLStory::__get test failed');
+
+      $db->pdo->exec("DELETE FROM feed_stories WHERE sid={$feed->sid}");
+    }
+
+    $feed->delete();
+    } catch(Exception $e) {
+      if (isset($feed))
+	$feed->delete();
+      throw $e;
+    }    
+  }
 }
 
-//MySQLTest::testAll();
+require_once('db_init.php');
+MySQLTest::testAll();
+echo 'all tests passed!';

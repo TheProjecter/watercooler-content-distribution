@@ -17,8 +17,9 @@ class MySQLDBObject extends DatabaseObject {
          'carrior_name' and entered in user table under column 'cid' 
        'send_email', 
        'send_sms_text',
-       'send_sms_link': reception methods need to be set in 'receptions' table
-       'feeds': feeds need to be added in the 'favorites' table */
+       'send_sms_link': reception methods need to be accessed in 'receptions'
+         table
+       'feeds': feeds need to be accessed in the 'favorites' table */
   protected static $userattrs_to_cols = 
     array('username'=>'username',
 	  'email'=>'email',
@@ -31,6 +32,21 @@ class MySQLDBObject extends DatabaseObject {
   protected static $feedattrs_to_cols =
     array('name'=>'source_name',
 	  'url'=>'source_url');
+
+  /* $storyattrs_to_cols is an associative array mapping attribute names given 
+     as the $storyinfo parameter to methods in classes derived from this one to
+     column names in the MySQL database. Note that the following attributes are
+     missing and require special handling
+       'feed': feed source need to be accessed in the 'feed_sources' table by
+         'fid' column
+       'category': category need to be accessed in the 'feed_categories' table
+         by 'gid' column
+  */
+  protected static $storyattrs_to_cols =
+    array('title'=>'title',
+	  'content'=>'content',
+	  'url'=>'url',
+	  'timestamp'=>'time_stamp');
 }
 
 /* class MySQLDB implements iDatabase on MySQL databases (see corresponding 

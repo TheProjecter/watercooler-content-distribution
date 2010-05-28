@@ -34,6 +34,52 @@ interface iDatabase {
   public function setAsSiteDefault();
 }
 
+/* interface iStories represents a group of feed stories, and handles all
+   operations involving multiple feed stories
+*/
+interface iStories extends Iterator {
+}
+
+/* interface iStory handles all operations involving a single feed story
+*/
+interface iStory {
+/* function iStory::find finds a feed by any attribute guaranteed to be unique
+   for each feed story
+
+   $attr: (string) an attribute name, selected from the following attribute-
+          value pairs
+	    'fid': (integer) the feeds's id number
+   $value: (mixed) the value associated with the attribute
+   $db: (object) an object representing the database to use, or NULL to use
+        the database established as the site default. Note that the type of
+	object required for this parameter is implementation-specific
+
+   returns an iFeed object representing the matched user, or NULL if none was
+     found
+*/
+  public static function find($attr, $value, iDatabase $db = NULL);
+
+/* function iStory::get gets the feed story's information from the database
+
+   $storyattrs: (array) an array of strings specifying the desired feed story
+               attributes to get, selected from the possible keys in the
+	       following list of key-value pairs returned by this function
+	         'fid': (integer) the feed story's id number
+	         'title': (string) the feed story's title
+		 'content': (string) the feed story's content
+		 'url': (string) the feed story's url
+		 'timestamp': (integer) the feed story's timestamp, in seconds
+		              since 1970-01-01 00:00:00 UTC
+		 'feed': (iFeed) the feed story's source feed
+		 'category': (string) the feed story's category
+
+    returns an array containing all requested feed story information that could
+      be successfully fetched, in the form described in the description of the
+      $storyattrs parameter
+*/
+  public function get(array $feedattrs);
+}
+
 /* interface iFeeds represents a group of feed sources, and handles all
    operations involving multiple feed sources
 */
