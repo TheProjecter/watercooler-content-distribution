@@ -86,9 +86,15 @@ class MySQLFeed extends MySQLDBObject implements iFeed {
      names
   */
   private static function parseFeedInfo(array $feedinfo, MySQLDB $db) {
+    /* $valid_feedinfo_attrs is a list of attributes from $feedinfo which can
+       be handled by a simple column name transformation. Keep this list 
+       updated with MySQLDBObject::$feedattrs_to_cols.
+    */
+    static $valid_feedinfo_attrs = array('name'=>TRUE, 'url'=>TRUE);
+
     // rename the feedinfo keys as database column names
     foreach ($feedinfo as $key=>$value)
-      if (self::$feedattrs_to_cols[$key] !== NULL)
+      if ($valid_feedinfo_attrs[$key] !== NULL)
 	$db_feedinfo[self::$feedattrs_to_cols[$key]] = $value;
 
     return $db_feedinfo;
@@ -107,18 +113,23 @@ class MySQLFeed extends MySQLDBObject implements iFeed {
      typehinting on parameter $db.
   */
   private static function __find($attr, $value, MySQLDB $db) {
-    $db_feedinfo = self::parseFeedInfo(array($attr=>$value), $db);
+    /* $valid_find_feedattrs is a list of attributes from $feedinfo which can
+       be used as input to this function. Keep this list updated with
+       MySQLDBObject::$feedattrs_to_cols.
+    */
+    static $valid_find_feedattrs = 
+      array('id'=>TRUE, 'sid'=>TRUE, 'name'=>TRUE, 'url'=>TRUE);
+
+    if (isset($valid_find_feedattrs[$attr]))
+      $db_attr = self::$feedattrs_to_cols[$attr];
 
     if ($db_feedinfo === NULL)
       throw new InvalidArgumentException('parameter $attr is not a valid '.
 					 'attribute');
 
-    $db_attr = key($db_feedinfo);
-    $db_value = current($db_feedinfo);
-
     $find_sql = "SELECT sid FROM feed_sources WHERE $db_attr=:value;";
     $find_stmt = $db->pdo->prepare($find_sql);
-    $find_stmt->bindParam(':value', $db_value);
+    $find_stmt->bindParam(':value', $value);
     $find_stmt->execute();
     // set fetch mode to create an instance of this class
     $find_stmt->setFetchMode(PDO::FETCH_CLASS, __CLASS__, array('db'=>$db));
