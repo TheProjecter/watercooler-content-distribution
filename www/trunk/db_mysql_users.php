@@ -421,6 +421,13 @@ class MySQLUser extends MySQLDBObject implements iUser {
 /* MySQLUser::get implements iUser::get (see corresponding documentation)
 */
   public function get(array $userattrs) {
+    /* $valid_userattrs is a list of attributes from $userattrs which can be
+       handled by the simple sql query generator below. Keep this list updated
+       with MySQLDBObject::$userattrs_to_cols.
+    */
+    static $valid_feedattrs = 
+      array('username'=>TRUE, 'email'=>TRUE, 'password'=>TRUE, 
+	    'phone_number'=>TRUE);
     static $carrier_sql = '(SELECT carrior_name FROM carriors WHERE
                            cid=(SELECT cid FROM users WHERE uid=:uid2))';
 
@@ -431,7 +438,7 @@ class MySQLUser extends MySQLDBObject implements iUser {
     $get_sql = 'SELECT ';
     // add column names
     foreach ($userattrs as $key=>$attr) {
-      if (isset(self::$userattrs_to_cols[$attr])) {
+      if (isset($valid_feedattrs[$attr])) {
 	$get_sql .= self::$userattrs_to_cols[$attr]." AS $attr, ";
 	$sql_added = TRUE;
       } elseif ($attr === self::$carrier_attr) {
@@ -458,6 +465,12 @@ class MySQLUser extends MySQLDBObject implements iUser {
       if ($get_result === FALSE)
 	throw new Exception('PDOStatement::fetch failed');
     }
+
+    // get id if requested
+    if (in_array('id', $userattrs))
+      $get_result['id'] = $this->uid;
+    if (in_array('uid', $userattrs))
+      $get_result['uid'] = $this->uid;
 
     // get reception method settings if requested
     $get_result = array_merge($get_result, $this->getReceptions($userattrs));
