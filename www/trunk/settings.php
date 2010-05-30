@@ -50,11 +50,28 @@ if (!isset($user))
 	<p><label for="feeds">Feeds</label> <br />
 	  <object id="feedFields" class="multifield">
             <div id="rightCol" style="">
-	    <?php  
-              foreach($user->feeds as $currentFeed)
-              {
-                print("<input type=\"text\" name=\"feed[]\" maxlength=\"500\" value=\"{$currentFeed->url}\"/><br />");
-              }
+	    <?php
+              if (isset($_REQUEST['feed']))
+		{
+		  foreach($_REQUEST['feed'] as $index=>$currentFeed)
+		    {
+		      print("<input type=\"text\" name=\"feed[]\" maxlength=\"500\" value=\"{$currentFeed}\"/><br />");
+		    }
+		}
+	      else if (($userFeeds = $user->feeds) != NULL)
+		{
+		  foreach($userFeeds as $currentFeed)
+		    {
+		      print("<input type=\"text\" name=\"feed[]\" maxlength=\"500\" value=\"{$currentFeed->url}\"/><br />");
+		    }
+		}
+	      else
+		{
+		  for($i = 0; $i < 3; $i++)
+		    {
+		      print("<input type=\"text\" name=\"feed[]\" maxlength=\"500\" /><br />");
+		    }
+		}
             ?>
             </div>
 	  </object>
