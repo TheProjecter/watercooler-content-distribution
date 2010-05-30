@@ -1,6 +1,11 @@
 <?php
 include_once('db_init.php');
 include_once('auth.php');
+
+// XXX make this prettier
+// die if user not logged in
+if (!isset($user))
+  die('You are not logged in');
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
