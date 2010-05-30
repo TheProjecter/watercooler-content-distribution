@@ -425,7 +425,7 @@ class MySQLUser extends MySQLDBObject implements iUser {
        handled by the simple sql query generator below. Keep this list updated
        with MySQLDBObject::$userattrs_to_cols.
     */
-    static $valid_feedattrs = 
+    static $valid_userattrs = 
       array('username'=>TRUE, 'email'=>TRUE, 'password'=>TRUE, 
 	    'phone_number'=>TRUE);
     static $carrier_sql = '(SELECT carrior_name FROM carriors WHERE
@@ -438,7 +438,7 @@ class MySQLUser extends MySQLDBObject implements iUser {
     $get_sql = 'SELECT ';
     // add column names
     foreach ($userattrs as $key=>$attr) {
-      if (isset($valid_feedattrs[$attr])) {
+      if (isset($valid_userattrs[$attr])) {
 	$get_sql .= self::$userattrs_to_cols[$attr]." AS $attr, ";
 	$sql_added = TRUE;
       } elseif ($attr === self::$carrier_attr) {
