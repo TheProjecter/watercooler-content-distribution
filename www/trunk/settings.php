@@ -218,14 +218,10 @@ if (empty($_REQUEST['userCell'])==FALSE)
 
 foreach($_REQUEST['feed'] as $index=>$currentFeed)
   {
-    $flag = TRUE;
-    foreach($user->feeds as $feedCheck)
-      {
-	if($feedCheck->url == $currentFeed->url)
-	  $flag = FALSE;
-      }
-    $user->addFeeds(Feeds::create(array(array('url'=>$currentFeed, 'name'=>'noname'))));
+    if (!empty($currentFeed))
+      $feedinfos[] = array('url'=>$currentFeed, 'name'=>$currentFeed);
   }
+$user->feeds = Feeds::create($feedinfos);
 
 print($_REQUEST['userName']);
 print(" 's settings have been updated.");
