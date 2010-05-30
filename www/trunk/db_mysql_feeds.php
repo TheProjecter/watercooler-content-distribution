@@ -122,8 +122,7 @@ class MySQLFeed extends MySQLDBObject implements iFeed {
 
     if (isset($valid_find_feedattrs[$attr]))
       $db_attr = self::$feedattrs_to_cols[$attr];
-
-    if ($db_feedinfo === NULL)
+    else
       throw new InvalidArgumentException('parameter $attr is not a valid '.
 					 'attribute');
 
