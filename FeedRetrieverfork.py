@@ -171,7 +171,12 @@ All received as intended
 
 6.5 Test
 Change "story" is per feed specific, to facilitate 
-improvement on amount of email spent
+improvement reducing on amount of email spent
+
+6.6 Test
+Debugging new implementation, changed definition of story to:
+[Feed Title, Feed URL, [Entry Titles], [Entry Contents], [Entry Categories], [Entry URLs], [Entry Timestamps]] 
+
 
 ------ CODE FREEZE UNTIL BUGS FOUND -------
 ------ USE 6.4 TO TEST! -----------------
@@ -962,6 +967,7 @@ def UpdateFeed():
 	# for each URL in the URL list, parse things.....
 	filename_counter = 0
 	all_stories = []
+
 	for source_URL in source_URLs:
 		myfeed = feedparser.parse(source_URL)
 
@@ -1016,11 +1022,22 @@ def UpdateFeed():
 		if ((myfeed.version is not None) and (myfeed.has_key('version')) and (myfeed.version[:3] == "rss")):
 			if (debug):
 				print 'VERBOSE: RSS feed detected!'
-			stories = _RSS(f, errlog, myfeed, latest_ts, debug)
+			raw_stories = _RSS(f, errlog, myfeed, latest_ts, debug)
+			stories = []
+			if (len(raw_stories) > 0):
+				stories.append(raw_stories[0])
+				stories.append(str(source_URL))
+				stories.extend(raw_stories[1:])
+			
 		elif ((myfeed.version is not None) and (myfeed.has_key('version')) and (myfeed.version[:4] == "atom")):
 			if (debug):
 				print 'VERBOSE: ATOM feed detected!'
-			stories = _ATOM(f, errlog, myfeed, latest_ts, debug)
+			raw_stories = _ATOM(f, errlog, myfeed, latest_ts, debug)
+			stories = []
+			if (len(raw_stories) > 0):
+				stories.append(raw_stories[0])
+				stories.append(str(source_URL))
+				stories.extend(raw_stories[1:])
 		else:
 			if (debug):
 				print 'UNKNOWN feed type! Probably invalid URL'
@@ -1028,7 +1045,7 @@ def UpdateFeed():
 
 		f.close()
 
-		all_stories.extend(stories)
+		all_stories.append(stories)
 		filename_counter = filename_counter + 1
 
 	# now i have a big list of stories: all_stories (list of many story)
@@ -1065,30 +1082,34 @@ def UpdateFeed():
 			debug_counter = debug_counter + 1
 		debug_counter0 = debug_counter0 + 1
 	"""
+	#print 'LC DEBUG 1069 ALL STORIES'
+	#print str(all_stories)
 	for p_story in all_stories:
 		# print 'LC CHECK 1 ARRIVAL, PER STORY START' # LC DEBUG
 		# loop to check and get feed title
 		mysid = 0
-		for id_list in sources_id_list:
-			if (id_list[1] == p_story[0]):
-				mysid = id_list[0] 
-				break
-		if (mysid == 0):
-			print ('INVALID SID!, refer to log file!')
-			errlog.write ('INVALID SID: Processed STORY\n')
-			errlog.write('   FEED ENTRY TITLE IS:')
-			errlog.write(p_story[1])
-			cursor2.close()
-			cursor3.close()
-			conn.commit()
-			conn.close()
-			return []
-		for iteration in (range(len(feed_sid_tuple))):
-			cursor3.execute ("""
-				INSERT INTO feed_stories (title, content, url, time_stamp, sid, gid)
-				VALUES (%s, %s, %s, %s, %s, %s)
-				ON DUPLICATE KEY UPDATE fid=fid+1;
-				""", (p_story[1][iteration][:255], p_story[2][iteration][:255], p_story[4][iteration][:255], int(p_story[5][iteration]), mysid, 1))
+		if (len(p_story) > 0):
+			for id_list in sources_id_list:
+				if (id_list[1] == p_story[0]):
+					mysid = id_list[0] 
+					break
+			if (mysid == 0):
+				print ('INVALID SID!, refer to log file! \n')
+				errlog.write ('INVALID SID: Processed STORY\n')
+				errlog.write('   FEED ENTRY TITLE IS:')
+				errlog.write(p_story[1])
+				errlog.write('\n')
+				cursor2.close()
+				cursor3.close()
+				conn.commit()
+				conn.close()
+				return []
+			for iteration in (range(len(p_story[5]))):
+				cursor3.execute ("""
+					INSERT INTO feed_stories (title, content, url, time_stamp, sid, gid)
+					VALUES (%s, %s, %s, %s, %s, %s)
+					ON DUPLICATE KEY UPDATE fid=fid+1;
+					""", (p_story[1][iteration][:255], p_story[2][iteration][:255], p_story[4][iteration][:255], int(p_story[5][iteration]), mysid, 1))
 
 	cursor3.close ()
 	cursor2.close ()
