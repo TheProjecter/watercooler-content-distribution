@@ -9,11 +9,10 @@ if (isset($_REQUEST['id'])) {
 }
 
 function getFeedOutput($feed) {
-  $stories = $feed->stories->get(array('title', 'content'));
+  $stories = $feed->stories->get(array('url', 'title', 'content'));
 
   foreach ($stories as $story)
     {
-      echo $story['url'];
       $contents .= "<h3><a href=\"{$story['url']}\">{$story['title']}</a></h3><p>{$story['content']}</p>";
     }
   return $contents;
