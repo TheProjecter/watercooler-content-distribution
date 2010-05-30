@@ -6,6 +6,8 @@
     <title><?php echo $user->username; ?>'s homepage</title>
     <link rel="stylesheet" href="homepage.css" title="signup" />
     <link rel="stylesheet" href="template.css" title="template" />
+    <script src="http://www.google.com/jsapi"></script>
+    <script>google.load("jquery", "1");</script>
   </head>
   <body>
     <div id="wrap">
@@ -24,12 +26,7 @@
 	  <ul>
 	    <?php
             foreach($user->feeds as $currentFeed)
-            {
-	      $stories = $feed->stories;
-	      echo $stories[0]->content;
-	      
-              print("<li onclick=\"getStories('test','title')\">{$currentFeed->name}</li>");//"
-            }
+              print("<li onclick=\"getStories('{$currentFeed->id}','reader')\">{$currentFeed->name}</li>");//"
 	    ?>
 	  </ul>
 	</div>
@@ -51,18 +48,15 @@
     </div>
 
     <script type="text/javascript">
-      function getFeeds($feedSource) {
-        $output = 'default';
-        $stories = $feed->stories;
-        foreach ($stories as $story)
-          $output += $story->content;
-	return $output;
-      }
+   function getStories(feedId, readerElementId) {
+   // get reader element
+   reader = $('#'+readerElementId);
+   // notify user that data is being fetched
+   reader.html('<h1>Getting stories...</h1>');
 
-      function getStories(feedName,id){
-	echo "test";
-        document.getElementById(id).innerHTML = feedName;
-      }
+   // set up and execute the request
+   reader.load('retrieve_feeds.php',{id:feedId});
+ }
     </script>
     
   </body>
