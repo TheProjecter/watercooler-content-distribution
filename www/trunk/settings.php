@@ -44,13 +44,14 @@ include_once('auth.php');
 	    <input type="checkbox" name="receive_sms_link" value="yes" <?php if($user->receive_sms_link == 'yes') echo 'checked'; ?>/>SMS (Link)<br /></object></p>
 	<p><label for="feeds">Feeds</label> <br />
 	  <object id="feedFields" class="multifield">
-
+            <div id="rightCol" style="">
 	    <?php  
               foreach($user->feeds as $currentFeed)
               {
                 print("<input type=\"text\" name=\"feed[]\" maxlength=\"500\" value=\"{$currentFeed->url}\"/><br />");
               }
             ?>
+            </div>
 	  </object>
 	 <div style="float:left;margin-left:11.5em;"> <a onclick="addFeed()">Add More Feeds</a></div>
 	</p>
@@ -65,9 +66,13 @@ include_once('auth.php');
   <script type="text/javascript">
     function addFeed()
     {
-      var current = document.getElementById('feedFields').innerHTML;
-      current += '<input type="text" name="feed[]" maxlength="500"/><br />';
-      document.getElementById('feedFields').innerHTML = current;
+      var currentFeeds = document.getElementById('rightCol');
+      var newFeeds = document.createElement('input');
+      newFeeds.setAttribute('type', 'text');
+      newFeeds.setAttribute('name', 'feed[]');
+      newFeeds.setAttribute('maxlength', '500');
+      currentFeeds.appendChild(newFeeds);
+      currentFeeds.appendChild(document.createElement('br'));
     }
   </script>
 </body>

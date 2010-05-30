@@ -6,6 +6,9 @@ include('db_init.php');
 
 //start user session
 session_start();
+
+$fieldNumber = 0;
+
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
@@ -47,6 +50,7 @@ session_start();
 	    <input type="checkbox" name="receive_sms_link" value="yes" <?php if($_REQUEST['receive_sms_link'] == 'yes') echo 'checked'; ?>/>SMS (Link)<br /></object></p>
 	<p><label for="feeds">Feeds</label> <br />
 	  <object id="feedFields" class="multifield">
+            <div id="rightCol" style="">
 	    <?php
               if(isset($_REQUEST['feed']))
               {
@@ -61,10 +65,11 @@ session_start();
                   print("<input type=\"text\" name=\"feed[]\" maxlength=\"500\" /><br />");
               }
 	    ?>
+            </div>
 	  </object>
         <div style="float:left; margin-left:11.5em;"><a onclick="addFeed()">Add More Feeds</a></div>
 	</p>
-	<input class="rightcolumn" type="submit" name="submit" value="Sign Up" />
+	<input class="rightcolumn" type="submit" name="submit" value="Sign Up" onclick="printOut()"/>
       </fieldset>
     </form>
   </div>
@@ -75,10 +80,15 @@ session_start();
   <script type="text/javascript">
     function addFeed()
     {
-      var current = document.getElementById('feedFields').innerHTML;
-      current += '<input type="text" name="feed[]" maxlength="500"/><br />';
-      document.getElementById('feedFields').innerHTML = current;
+      var currentFeeds = document.getElementById('rightCol');
+      var newFeeds = document.createElement('input');
+      newFeeds.setAttribute('type', 'text');
+      newFeeds.setAttribute('name', 'feed[]');
+      newFeeds.setAttribute('maxlength', '500');
+      currentFeeds.appendChild(newFeeds);
+      currentFeeds.appendChild(document.createElement('br'));
     }
+
   </script>
   </body>
 </html>
