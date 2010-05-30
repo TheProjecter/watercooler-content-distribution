@@ -25,8 +25,44 @@
 	<div id="main">
 	  <ul>
 	    <?php
+
+            function getDomain($url)
+            {
+	      $www_stripped = ereg_replace('www\.','',$url);
+	      $domain = parse_url($www_stripped);
+	      if(!empty($domain["host"]))
+		{
+		  return $domain["host"];
+		}
+	      else
+		{
+		  return $domain["path"];
+		}
+
+	    }
+
             foreach($user->feeds as $currentFeed)
-              print("<li onclick=\"getStories('{$currentFeed->id}','reader')\">{$currentFeed->name}</li>");//"
+            {
+	      $domain = getDomain($currentFeed->url);
+	      $icon = "http://";
+	      $icon .=$domain;
+	      $icon .= '/favicon.ico';
+	      $handle = @fopen($icon, 'r');
+	      
+	      if($handle !== false)
+		{
+		  $icon = $icon;
+		}
+	      else
+		{
+		  $icon = '';
+		}
+
+	      print("<div onclick=\"getStories('$currentFeed->id}', 'reader')\">");
+	      if($icon != '')
+		print("<img src=\"{$icon}\" alt=\"{$domain}\"></img>");
+	      print("<div style=\"float:right; margin-left:1em;\">{$currentFeed->name}</div></div>");//"
+	    }
 	    ?>
 	  </ul>
 	</div>
