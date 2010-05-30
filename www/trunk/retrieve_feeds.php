@@ -12,7 +12,9 @@ function getFeedOutput($feed) {
   $stories = $feed->stories->get(array('title', 'content'));
 
   foreach ($stories as $story)
-    $contents .= "<h1>{$story['title']}</h1><p>{$story['content']}</p>";
-
+    {
+      echo $story['url'];
+      $contents .= "<h3><a href=\"{$story['url']}\">{$story['title']}</a></h3><p>{$story['content']}</p>";
+    }
   return $contents;
 }
