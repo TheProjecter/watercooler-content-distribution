@@ -175,6 +175,12 @@ class MySQLStory extends MySQLDBObject implements iStory {
 /* MySQLStory::get implements iStory::get (see corresponding documentation)
 */
   public function get(array $storyattrs) {
+    /* $valid_storyattrs is a list of attributes from $storyattrs which can be
+       handled by the simple sql query generator below. Keep this list updated
+       with MySQLDBObject::$storyattrs_to_cols.
+    */
+    static $valid_storyattrs = 
+      array('title'=>TRUE, 'content'=>TRUE, 'url'=>TRUE, 'timestamp'=>TRUE);
     static $category_sql = '(SELECT category FROM feed_categories WHERE 
                              gid=(SELECT gid FROM feed_stories 
                                   WHERE fid=:fid3))';
@@ -186,7 +192,7 @@ class MySQLStory extends MySQLDBObject implements iStory {
     $get_sql = 'SELECT ';
     // add column names
     foreach ($storyattrs as $key=>$attr) {
-      if (isset(self::$storyattrs_to_cols[$attr])) {
+      if (isset($valid_storyattrs[$attr])) {
 	$get_sql .= self::$storyattrs_to_cols[$attr]." AS $attr, ";
 	$sql_added = TRUE;
       } else if ($attr === self::$category_attr) {
@@ -209,6 +215,12 @@ class MySQLStory extends MySQLDBObject implements iStory {
       if ($get_result === FALSE)
 	throw new Exception('PDOStatement::fetch failed');
     }
+
+    // get id if requested
+    if (in_array('id', $storyattrs))
+      $get_result['id'] = $this->fid;
+    if (in_array('fid', $storyattrs))
+      $get_result['fid'] = $this->fid;
 
     // get feed source if requested
     if (in_array(self::$feed_attr, $storyattrs))
