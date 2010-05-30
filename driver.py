@@ -5,20 +5,31 @@ Version LOG
 1.0:
 Just a basic version including feed retriever
 
-1.1
-Add more debug code and delays
+2.0:
+A Looping functional driver 
 
+2.1:
+Adding driver log to facilitate debug
+
+2.2:
+Added more debug output
 
 """
 global debug
 debug = False
+logs = False
 import FeedRetriever
 import EmailServer
 import time
 
 def Driver():
+	# a driver to debug
+	if (logs):
+		driverlog = open("DRIVERLOG.txt", mode ='w')
+		storylog = open("STORYLOG.txt", mode ='w')
+
 	# a loop to call all backend functions
-	while (True)
+	while (True):
 		# gather new feeds entries
 		stories = FeedRetriever.UpdateFeed()
 
@@ -37,6 +48,9 @@ def Driver():
 						print 'Item', item , ':', story[item]
 				print ''
 
+		if (logs):
+			storylog.write(str(stories))
+			storylog.write('\n\n')
 		# for testing, only get first four stories, and trim the 
 		cutted_stories = []
 		limiter = 0
@@ -48,22 +62,40 @@ def Driver():
 				cutted_story.append(str(story[2]))
 				cutted_stories.append(cutted_story)
 				limiter = limiter + 1
-			if ((limiter % 20) == 0):
+			if ((limiter % 10) == 0):
 				# call tim's function
 				# special code to delay Tim's code to avoid bombing, to facilitate testing
-				print 'Here is 20 story passed to email server'
-				print str(cutted_stories)
-				print ''
+				print ' -------------------------------------- '
+				print 'Here is 10 story passed to email server'
+				print ' -------------------------------------- '
+				if (logs):
+					driverlog.write('--------------------------------------\n')
+					driverlog.write('Here is 10 story passed to email server\n')
+					driverlog.write('--------------------------------------\n')
+					driverlog.write(str(cutted_stories))
+					driverlog.write('\n')
+					driverlog.flush()
+
 				EmailServer.sendStories(cutted_stories)
 				time.sleep(60)
 				cutted_stories = []
-
-		print 'Here is remaining ', str(limiter % 20), ' story passed to email server'
-		print str(cutted_stories)
-		print ''
+		print ' ------------------------------------------ '
+		print 'Here is remaining ', str(limiter % 10), ' story passed to email server'
+		print ' ------------------------------------------ '
+		if (logs):
+				driverlog.write('--------------------------------------\n')
+				driverlog.write('Here is remaining ' + str(limiter % 10) + ' story passed to email server\n')
+				driverlog.write('--------------------------------------\n')
+				driverlog.write(str(cutted_stories))
+				driverlog.write('\n')
+				driverlog.flush()
 		EmailServer.sendStories(cutted_stories)
 		time.sleep(60)
+		cutted_stories = []
 		# print cutted_stories
+	if (logs):
+		driverlog.close()
+		storylog.close()
 
 	return
 
