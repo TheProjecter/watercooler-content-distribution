@@ -11,6 +11,9 @@ A Looping functional driver
 2.1:
 Adding driver log to facilitate debug
 
+2.2:
+Added more debug output
+
 """
 global debug
 debug = False
@@ -23,11 +26,14 @@ def Driver():
 	# a driver to debug
 	if (logs):
 		driverlog = open("DRIVERLOG.txt", mode ='w')
-	# a loopto call all backend functions
+		storylog = open("STORYLOG.txt", mode ='w')
+
+	# a loop to call all backend functions
 	while (True):
 		# gather new feeds entries
 		stories = FeedRetriever.UpdateFeed()
 
+		""" DEPRECATED WITH NEW DEFINITION
 		if (debug):
 			# current debug/testing purpose
 			print 'story is [Feed Title, Entry Title, Entry Content, Entry Category, Entry URL, Entry Timestamp]'
@@ -42,16 +48,20 @@ def Driver():
 					else:
 						print 'Item', item , ':', story[item]
 				print ''
-
+		"""
+		if (logs):
+			storylog.write(str(stories))
+			storylog.write('\n\n')
 		# for testing, only get first four stories, and trim the 
 		cutted_stories = []
 		limiter = 0
 		for story in stories:
 			if limiter < 1000:
 				cutted_story = []
-				cutted_story.append(str(story[4]))
-				cutted_story.append(str(story[1]))
-				cutted_story.append(str(story[2]))
+				cutted_story.append(story[1])
+				cutted_story.append(story[5])
+				cutted_story.append(story[2])
+				cutted_story.append(story[3])
 				cutted_stories.append(cutted_story)
 				limiter = limiter + 1
 			if ((limiter % 10) == 0):
@@ -87,6 +97,7 @@ def Driver():
 		# print cutted_stories
 	if (logs):
 		driverlog.close()
+		storylog.close()
 
 	return
 
