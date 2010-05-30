@@ -192,6 +192,12 @@ class MySQLFeed extends MySQLDBObject implements iFeed {
 /* MySQLFeed::get implements iFeed::get (see corresponding documentation)
 */
   public function get(array $feedattrs) {
+    /* $valid_feedattrs is a list of attributes from $feedattrs which can be
+       handled by the simple sql query generator below. Keep this list updated
+       with MySQLDBObject::$feedattrs_to_cols.
+    */
+    static $valid_feedattrs = array('name'=>TRUE, 'url'=>TRUE);
+
     $sql_added = FALSE;
     $get_result = array();
 
@@ -199,7 +205,7 @@ class MySQLFeed extends MySQLDBObject implements iFeed {
     $get_sql = 'SELECT ';
     // add column names
     foreach ($feedattrs as $key=>$attr) {
-      if (isset(self::$feedattrs_to_cols[$attr])) {
+      if (isset($valid_feedattrs[$attr])) {
 	$get_sql .= self::$feedattrs_to_cols[$attr]." AS $attr, ";
 	$sql_added = TRUE;
       }
@@ -219,6 +225,12 @@ class MySQLFeed extends MySQLDBObject implements iFeed {
       if ($get_result === FALSE)
 	throw new Exception('PDOStatement::fetch failed');
     }
+
+    // get id if requested
+    if (in_array('id', $feedattrs))
+      $get_result['id'] = $this->sid;
+    if (in_array('sid', $feedattrs))
+      $get_result['sid'] = $this->sid;
 
     // get stories if requested
     if (in_array(self::$stories_attr, $feedattrs))
