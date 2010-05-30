@@ -9,12 +9,10 @@ if (isset($_REQUEST['id'])) {
 }
 
 function getFeedOutput($feed) {
-  $stories = $feed->stories;
+  $stories = $feed->stories->get(array('title', 'content'));
 
-  // XXX do all the fetching at once through iStories instead of iStory
-  foreach ($stories as $story) {
-    $contents .= "<h1>{$story->title}</h1><p>{$story->content}</p>";
-  }
+  foreach ($stories as $story)
+    $contents .= "<h1>{$story['title']}</h1><p>{$story['content']}</p>";
 
   return $contents;
 }

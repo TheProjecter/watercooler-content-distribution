@@ -38,6 +38,27 @@ interface iDatabase {
    operations involving multiple feed stories
 */
 interface iStories extends Iterator {
+/* function iStory::get gets the feed storys' information from the database
+
+   $storyattrs: (array) an array of strings specifying the desired feed story
+               attributes to get, selected from the possible keys in the
+	       following list of key-value pairs returned by this function
+	         'fid': (integer) the feed storys' id numbers
+	         'title': (string) the feed storys' titles
+		 'content': (string) the feed storys' contents
+		 'url': (string) the feed storys' urls
+		 'timestamp': (integer) the feed storys' timestamps, in seconds
+		              since 1970-01-01 00:00:00 UTC
+		 'feed': (iFeed) the feed story's source feeds
+		 'category': (string) the feed storys' categories
+
+    returns an array of arrays, each representing information for a single 
+      story and containing all requested feed story information that could be
+      successfully fetched, in the form described in the description of the
+      $storyattrs parameter. The results are sorted in the arbitrary order
+      returned by the database.
+*/
+  public function get(array $feedattrs);
 }
 
 /* interface iStory handles all operations involving a single feed story

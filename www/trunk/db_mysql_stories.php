@@ -14,6 +14,52 @@ class MySQLStories extends MySQLDBObject implements iStories {
     $this->db = $db;
   }
 
+/* MySQLStories::get implements iStories::get (see corresponding documentation)
+*/
+  public function get(array $storyattrs) {
+    // XXX implement 'category' and 'feed' attributes
+
+    if (count($this->stories) == 0)
+      return array();
+
+    $get_result = array();
+
+    // build SQL query
+    $get_sql = 'SELECT ';
+    // add column names
+    foreach ($storyattrs as $key=>$attr) {
+      if (isset(self::$storyattrs_to_cols[$attr])) {
+	$get_sql .= self::$storyattrs_to_cols[$attr]." AS $attr, ";
+	$sql_added = TRUE;
+      }
+    }
+    // remove trailing comma and space
+    $get_sql = substr($get_sql, 0, -2);
+    // add rest of SQL query
+    $get_sql .= ' FROM feed_stories WHERE fid IN (';
+    // add story ids
+    for ($i = 0; $i < count($this->stories); $i++)
+      $get_sql .= '?, ';
+    // remove trailing comma and space
+    $get_sql = substr($get_sql, 0, -2);
+    // add rest of SQL query
+    $get_sql .= ');';
+
+    if ($sql_added === TRUE) {
+      $get_stmt = $this->db->pdo->prepare($get_sql);
+      // build an array of story ids
+      foreach ($this as $story)
+	$ids[] = $story->id;
+      $get_stmt->execute($ids);
+      $get_result = $get_stmt->fetchAll();
+      if ($get_result === FALSE)
+	throw new Exception('PDOStatement::fetchAll failed');
+    }
+
+    return $get_result;
+  }
+	    
+
   // these functions implement Iterator
   public function rewind() {
     reset($this->stories);
