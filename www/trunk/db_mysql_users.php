@@ -173,9 +173,12 @@ class MySQLUser extends MySQLDBObject implements iUser {
      names
   */
   private static function parseUserInfo(array $userinfo, MySQLDB $db) {
+    static $valid_userinfo_attrs = 
+      array('username'=>TRUE, 'email'=>TRUE, 'password'=>TRUE, 
+	    'phone_number'=>TRUE);
     // rename the userinfo keys as database column names
     foreach ($userinfo as $key=>$value)
-      if (isset(self::$userattrs_to_cols[$key]))
+      if (isset($valid_userinfo_attrs[$key]))
 	$db_userinfo[self::$userattrs_to_cols[$key]] = $value;
 
     // XXX fake unused database fields for now
@@ -198,7 +201,22 @@ class MySQLUser extends MySQLDBObject implements iUser {
      typehinting on parameter $db.
   */
   private static function __find($attr, $value, MySQLDB $db) {
-    $find_sql = "SELECT uid FROM users WHERE $attr=:value;";
+    /* $valid_find_userattrs is a list of attributes from $userinfo which can
+       be used as input to this function. Keep this list updated with
+       MySQLDBObject::$userattrs_to_cols.
+    */
+    static $valid_find_userattrs = 
+      array('id'=>TRUE, 'uid'=>TRUE, 'username'=>TRUE, 'email'=>TRUE,
+	    'password'=>TRUE, 'phone_number'=>TRUE);
+
+    if (isset($valid_find_userattrs[$attr]))
+      $db_attr = self::$userattrs_to_cols[$attr];
+    else
+      throw new InvalidArgumentException('parameter $attr is not a valid '.
+					 'attribute');
+
+
+    $find_sql = "SELECT uid FROM users WHERE $db_attr=:value;";
     $find_stmt = $db->pdo->prepare($find_sql);
     $find_stmt->bindParam(':value', $value);
     $find_stmt->execute();
