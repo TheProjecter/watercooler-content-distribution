@@ -4,13 +4,7 @@ include('common.php');
 
 session_start();
 
-if (ini_get("session.use_cookies")) {
-    $params = session_get_cookie_params();
-    setcookie(session_name(), '', time() - 42000,
-        $params["path"], $params["domain"],
-        $params["secure"], $params["httponly"]);
-}
+unset($_SESSION['uid']);
+unset($_SESSION['password']);
 
-session_destroy();
-
-header("Location: $page_uri_base");
+header("Location: {$page_uri_base}");

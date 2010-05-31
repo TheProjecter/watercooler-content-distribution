@@ -12,12 +12,12 @@ if(isset($_REQUEST['userName']) && isset($_REQUEST['userPassword']))
 	echo 'This username does not exist';
 	exit();
       }
-    $sessionPass = $sessionUser->get(array('password'));
-    if($sessionPass['password'] == md5($_REQUEST['userPassword']))
+    if($sessionUser->password == md5($_REQUEST['userPassword']))
       {
-	$_SESSION['userName'] = $_REQUEST['userName'];
+	$_SESSION['uid'] = $sessionUser->uid;
+	$_SESSION['password'] = $sessionUser->password;
 
-	header("Location: $page_uri_base");
+	header("Location: {$page_uri_base}");
       }
     else
       {
