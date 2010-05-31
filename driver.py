@@ -14,6 +14,9 @@ Adding driver log to facilitate debug
 2.2:
 Added more debug output
 
+2.3:
+Lengthened the looping frequency to 3 mins
+
 """
 global debug
 debug = False
@@ -90,7 +93,7 @@ def Driver():
 				driverlog.write('\n')
 				driverlog.flush()
 		EmailServer.sendStories(cutted_stories)
-		time.sleep(60)
+		time.sleep(180)
 		cutted_stories = []
 		# print cutted_stories
 	if (logs):
