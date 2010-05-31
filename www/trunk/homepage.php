@@ -22,7 +22,7 @@
 	</div>
       </div>
       <div id="feedreader">
-	<div id="main">
+	<div id="feedreader_feeds">
 	  <ul>
 	    <?php
 
@@ -58,7 +58,7 @@
 		  $icon = '';
 		}
 
-	      print("<div onclick=\"getStories('$currentFeed->id}', 'reader')\">");
+	      print("<div onclick=\"getStories('$currentFeed->id}', 'feedreader_stories')\">");
 	      if($icon != '')
 		print("<img src=\"{$icon}\" alt=\"{$domain}\"></img>");
 	      print("<div style=\"float:right; margin-left:1em;\">{$currentFeed->name}</div></div>");//"
@@ -66,11 +66,8 @@
 	    ?>
 	  </ul>
 	</div>
-	<div id="sidebar">
-	  <ul>
-	    <div id="reader"></div>
-	  </ul>
-	</div>
+	<div id="feedreader_stories">
+        </div>
       </div>
       <div id="userspace">
       </div>
