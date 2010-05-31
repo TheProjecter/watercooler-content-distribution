@@ -169,6 +169,19 @@ Adding additional checks to avoid crashing due to these URLS
 Tested with Tim's Email server and totally 46 emails and texts sent
 All received as intended
 
+6.5 Bug test
+Fixing the duplicate email bug
+added tons of print messages in default mode, to be removed later
+identified bug reason, hypothesis made
+
+6.5.1 Test
+replaced SQL code in UpdateFeed()
+Added logic not to add existing entry
+
+6.6 Test
+Appearing seemed to work, now run it in server for a day to see
+Modifying driver also to cooperate
+
 ------ CODE FREEZE UNTIL BUGS FOUND -------
 ------ USE 6.4 TO TEST! -----------------
 
@@ -567,15 +580,18 @@ def _RSS(f, log, myfeed, latest_ts, debug):
 	print 'Feed Title:' , feedtitle
 
 	# write all entries parsed on local file
+	print 'LC DEBUG LATEST_TS IN RSS', str(latest_ts)
 	for count in range(n_entries):
 		# check time_stamp of the entry before proceeding
 		#   to avoid processing something we will trash!
 		# convert Universal Feed Parser generated time (tuple) into UNIX time
 		UNIX_time = 0
 		if myfeed.entries[count].has_key('date_parsed'):
+			#print 'LC 576 GET FROM 1'
 			date_parsed = myfeed.entries[count].date_parsed
 			UNIX_time = int(time.mktime(date_parsed))
 		elif myfeed.feed.has_key('date'):
+			#print 'LC 580 GET FROM 2'
 			date_parsed = myfeed.feed.date_parsed
 			UNIX_time = int(time.mktime(date_parsed))
 
@@ -1008,7 +1024,7 @@ def UpdateFeed():
 	# Process the List List:
 	# 	Comparing the time stamp of each story with "newest" time stamp obtained
 	# 	remove all old story
-	processed_stories = all_stories
+	processed_stories = []
 	"""
 	for r_story in all_stories:
 		r_story_ts = r_story[5]
@@ -1027,6 +1043,8 @@ def UpdateFeed():
 
 	# story is [Feed Title, Entry Title, Entry Content, Entry Category, Entry URL, Entry Timestamp]
 	cursor3 = conn.cursor ()
+	cursor_chkexist = conn.cursor ()
+
 	"""
 	# LC DEBUG: DISPLAY ALL PROCESSED_STORIES
 	debug_counter0 = 0
@@ -1037,7 +1055,7 @@ def UpdateFeed():
 			debug_counter = debug_counter + 1
 		debug_counter0 = debug_counter0 + 1
 	"""
-	for p_story in processed_stories:
+	for p_story in all_stories:
 		# print 'LC CHECK 1 ARRIVAL, PER STORY START' # LC DEBUG
 		# loop to check and get feed title
 		mysid = 0
@@ -1056,12 +1074,66 @@ def UpdateFeed():
 			conn.close()
 			return []
 
+		# check existence of entry
+		cursor_chkexist.execute("""
+			SELECT fid
+			FROM feed_stories
+			WHERE feed_stories.url = (%s);
+			""", p_story[4][:255])
+		entry_existence = cursor_chkexist.fetchall ()
+
+		# story exist implies the len check > 0
+		if (len(entry_existence) > 0):
+			# check again if the content match
+			cursor_getstory = conn.cursor ()
+			cursor_getstory.execute ("""
+                        SELECT content
+                        FROM feed_stories
+                        WHERE feed_stories.url = (%s);
+                        """, p_story[4][:255])
+			db_story = cursor_getstory.fetchall ()
+			cursor_getstory.close ()
+			if (len(db_story) == 0):
+				print 'DEBUG 1093, db_story IS NULL:', db_story
+			else:
+				print 'HERE IS db_story RETURNED: ', db_story
+
+			# safety check
+			if (len(db_story) == 0):
+				print 'DEBUG 1099, db_story is NULL when it should not be'
+			else:
+				if (len(db_story[0]) == 0):
+					print 'DEBUG 1102, db_story[0] is NULL when it should not be'
+				else:
+					if (db_story[0][0][:255] != p_story[2][:255]):
+						# add the story
+						processed_stories.append(p_story)
+					else:
+						print 'DUPLICATE STORY DETECTED, CONTENT MATCHES'
+					# delete that story
+					cursor_deletestory = conn.cursor ()
+					cursor_deletestory.execute ("""
+						DELETE FROM feed_stories
+						WHERE feed_stories.url = (%s);
+						""", p_story[4][:255])
+					cursor_deletestory.close ()
+					print 'HERE I REPLACE TO DB: ----------------'
+		else:
+			# implies story does not exist
+			processed_stories.append(p_story)
+			print 'HERE I ADD TO DB: ----------------'
+
+		# Add entry to DB
+		print p_story[1][:255], p_story[2][:255], p_story[4][:255], str(p_story[5])
+		print '-------------------------------------'
 		cursor3.execute ("""
 			INSERT INTO feed_stories (title, content, url, time_stamp, sid, gid)
 			VALUES (%s, %s, %s, %s, %s, %s)
 			ON DUPLICATE KEY UPDATE fid=fid+1;
 			""", (p_story[1][:255], p_story[2][:255], p_story[4][:255], int(p_story[5]), mysid, 1))
 
+
+	cursor_chkexist.close ()
 	cursor3.close ()
 	cursor2.close ()
 	conn.commit ()
