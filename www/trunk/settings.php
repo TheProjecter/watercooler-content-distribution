@@ -22,37 +22,58 @@ if (!isset($user))
     </div>
     <h1><?php echo $user->username; ?>'s Settings</h1><!--'-->
     <form action="<?php echo $_SERVER['PHP_SELF'];?>" method="post">
-      <fieldset>
-	<legend>Personal Information</legend>
+      <fieldset><legend>Personal Information</legend>
+
 	<div class="lineWidth"><label class="leftCol" for="name">Username</label>
-	  <input class="middleCol" id="name" type="text" name="userName" maxlength="25" value="<?php echo $user->username; ?>"/></div>
-	<div class="lineWidth"><label class="leftCol" for="newPass">New Password</label>
-	  <input class="middleCol" id="newPass" type="password" name="userNewPass" maxlength="10" /></div>
-	<div class="lineWidth"><label class="leftCol" for="repeatNewPass">Repeat Password</label>
-	  <input class="middleCol" id="repeatNewPass"type="password" name="userRepeatNewPass" maxlength="10" /></div>
+	  <input class="middleCol" id="name" type="text" name="userName" maxlength="25" value="<?php echo $user->username; ?>"/>
+	</div>
+	
 	<div class="lineWidth"><label class="leftCol" for="currentPass">Current Password</label>
-	  <input class="middleCol" id="currentPass" type="password" name="userCurrentPass" maxlength="10" /></div>
+	  <input class="middleCol" id="currentPass" type="password" name="userCurrentPass" maxlength="10" />
+	</div>
+	
+	<div class="lineWidth"><label class="leftCol" for="newPass">New Password</label>
+	  <input class="middleCol" id="newPass" type="password" name="userNewPass" maxlength="10" />
+	</div>
+	
+	<div class="lineWidth"><label class="leftCol" for="repeatNewPass">Repeat Password</label>
+	  <input class="middleCol" id="repeatNewPass"type="password" name="userRepeatNewPass" maxlength="10" />
+	</div>
+	
 	<div class="lineWidth"><label class="leftCol" for="email">Email</label>
-	  <input class="middleCol" id="email" type="text" name="userEmail" maxlength="50"/ value="<?php echo $user->email;  ?>"></div>
+	  <input class="middleCol" id="email" type="text" name="userEmail" maxlength="50"/ value="<?php echo $user->email;  ?>">
+	</div>
+	  
 	<div class="lineWidth"><label class="leftCol" for="cell">Cell Phone #</label>
-	  <input class="middleCol" id="cell" type="text" name="userCell" maxlength="10" value="<?php echo $user->phone_number ?>"/></div>
-	<div class="lineWidth"><label class="leftCol" for="carrier">Carrier</label>
+	  <input class="middleCol" id="cell" type="text" name="userCell" maxlength="10" value="<?php echo $user->phone_number ?>"/>
+	</div>
+
+	<div class="lineWidth">
+	  <label class="leftCol" for="carrier">Carrier</label>
 	  <select id="carrier" name="userCarrier">
 	    <option value="AT&T">AT&#38;T</option>
 	    <option <?php if($user->carrier == 'Verizon') echo 'selected'; ?> value="Verizon">Verizon</option>
 	    <option <?php if($user->carrier == 'T-Mobile') echo 'selected'; ?> value="T-Mobile">T-Mobile</option>
 	    <option <?php if($user->carrier == 'Sprint') echo 'selected'; ?> value="Sprint">Sprint</option>
-	</select></div>
-	<div class="lineWidth"><label class="leftCol" for="reception">Default Methods of Reception</label>
+          </select>
+        </div>
+      </fieldset>
+
+      <fieldset><legend>Feed Information</legend>
+
+	<div class="lineWidth">
+	  <label class="leftCol" for="reception">Default Methods of Reception</label>
 	  <object class="middleCol">
             <input type="checkbox" name="receive_email" value="yes" <?php if($user->receive_email == 'yes') echo 'checked'; ?>/>Email<br />
 	    <input type="checkbox" name="receive_sms_text" value="yes" <?php if($user->receive_sms_text == 'yes') echo 'checked'; ?>/>SMS (Text)<br />
 	    <input type="checkbox" name="receive_sms_link" value="yes" <?php if($user->receive_sms_link == 'yes') echo 'checked'; ?>/>SMS (Link)<br />
           </object>
         </div>
-        <div class="lineWidth"><label for="feeds">Feeds</label>
+	
+        <div class="lineWidth">
+	  <label for="feeds">Feeds</label>
 	  <object class="middleCol">
-					  <div id="rightCol">
+            <div id="rightCol">
 	    <?php
               if (isset($_REQUEST['feed']))
 		{
@@ -78,10 +99,12 @@ if (!isset($user))
             ?>
             </div>
 	  </object>
+
 	  <div class="lineWidth">
             <input class="rightcolumn" type="submit" onclick="addFeed()" value="Add More Feeds"></input>
           </div>
 	</div>
+
 	<input class="rightcolumn" type="submit" name="submit" value="Update" style="margin-left:13em;" />
       </fieldset>
     </form>
@@ -162,6 +185,47 @@ if($actualPass != $givenPass)
     exit();
   }
 
+    // Verify new Password
+
+    // Validate the password input
+    if(empty($_REQUEST['userNewPass'])==FALSE && sanityCheck($_REQUEST['userNewPass'], 'string', 10) != FALSE)
+      {
+	if (strlen($_REQUEST['userNewPass']) < 6)
+	  {
+	    echo 'Please choose a password of at least 6 characters';
+	    $_REQUEST['userNewPass'] = '';
+	    exit();
+	  }
+	else
+	  {
+
+	  }
+      }
+    else
+      {
+        echo 'Please enter a valid password of between 6 and 10 characters';
+	$_REQUEST['userNewPass'] = '';
+        exit();
+      }
+
+    // Make sure that the two password entries are identical
+    if (empty($_REQUEST['userRepeatNewPass'])==FALSE && sanityCheck($_REQUEST['userRepeatNewPass'], 'string', 10) != FALSE)
+      {
+	$userRepeatNewPass = $_REQUEST['userRepeatNewPass'];
+	if ($userRepeatNewPass != $_REQUEST['userNewPass'])
+	  {
+	    echo 'Password mismatch.  Please re-enter your password.';
+	    exit();
+	  }
+      }
+    else
+      {
+	echo 'Please enter your password again in the Repeat Password field.';
+	exit();
+      }
+
+$user->password = md5($_REQUEST['userNewPass']);
+
 // Sanity check the username variable.
 
 if(empty($_REQUEST['userName'])==FALSE && sanityCheck($_REQUEST['userName'], 'string', 25) != FALSE)
@@ -236,7 +300,6 @@ if (empty($_REQUEST['userCell'])==FALSE)
 	exit();
       }
   }
-
 
 
 foreach($_REQUEST['feed'] as $index=>$currentFeed)

@@ -25,33 +25,57 @@ $fieldNumber = 0;
     </div>
     <h1>Sign up</h1>
     <form action="<?php echo $_SERVER['PHP_SELF'];?>" method="post">
-      <fieldset>
-	<legend>Personal Information</legend>
-	<p><label for="name">Username</label>
-	  <input id="name" type="text" name="userName" maxlength="25" value="<?php echo $_REQUEST['userName']; ?>"/></p>
-	<p><label for="pass">Password</label>
-	  <input id="pass" type="password" name="userPassword" maxlength="10" /></p>
-	<p><label for="repeatPass">Repeat Password</label>
-	  <input id="repeatPass"type="password" name="userRepeatPass" maxlength="10" /></p>
-	<p><label for="email">Email</label>
-	  <input id="email" type="text" name="userEmail" maxlength="50"/ value="<?php echo $_REQUEST['userEmail'];  ?>"></p>
-	<p><label for="cell">Cell Phone #</label>
-	  <input id="cell" type="text" name="userCell" maxlength="10" value="<?php echo $_REQUEST['userCell']; ?>"/></p>
-	<p><label for="carrier">Carrier</label>
+      <fieldset><legend>Personal Information</legend>
+
+	<div class="lineWidth">
+	  <label class="leftCol" for="name">Username</label>
+	  <input class="middleCol" id="name" type="text" name="userName" maxlength="25" value="<?php echo $_REQUEST['userName']; ?>"/>
+	</div>
+
+	<div class="lineWidth">
+	  <label class="leftCol" for="pass">Password</label>
+	  <input class="middleCol" id="pass" type="password" name="userPassword" maxlength="10" />
+	</div>
+
+	<div class="lineWidth"><label class="leftCol" for="repeatPass">Repeat Password</label>
+	  <input class="middleCol" id="repeatPass"type="password" name="userRepeatPass" maxlength="10" />
+	</div>
+
+	<div class="lineWidth"><label class="leftCol" for="email">Email</label>
+	  <input class="middleCol" id="email" type="text" name="userEmail" maxlength="50"/ value="<?php echo $_REQUEST['userEmail'];  ?>">
+	  </div>
+
+	<div class="lineWidth"><label class="leftCol" for="cell">Cell Phone #</label>
+	  <input class="middleCol" id="cell" type="text" name="userCell" maxlength="10" value="<?php echo $_REQUEST['userCell']; ?>"/>
+	</div>
+
+	<div class="lineWidth">
+	  <label class="leftCol" for="carrier">Carrier</label>
 	  <select id="carrier" name="userCarrier">
 	    <option value="AT&T">AT&#38;T</option>
 	    <option <?php if($_REQUEST['userCarrier'] == 'Verizon') echo 'selected'; ?> value="Verizon">Verizon</option>
 	    <option <?php if($_REQUEST['userCarrier'] == 'T-Mobile') echo 'selected'; ?> value="T-Mobile">T-Mobile</option>
 	    <option <?php if($_REQUEST['userCarrier'] == 'Sprint') echo 'selected'; ?> value="Sprint">Sprint</option>
-	</select></p>
-	<p><label for="reception">Default Methods of Reception</label>
-	  <object class="multifield"><input type="checkbox" name="receive_email" value="yes" <?php if($_REQUEST['receive_email'] == 'yes') echo 'checked'; ?>/>Email<br />
+	  </select>
+	</div>
+      </fieldset>
+
+      <fieldset><legend>Feed Information</legend>
+
+	<div class="lineWidth">
+	  <label class="leftCol" for="reception">Default Methods of Reception</label>
+	  <object class="multifield">
+	    <input type="checkbox" name="receive_email" value="yes" <?php if($_REQUEST['receive_email'] == 'yes') echo 'checked'; ?>/>Email<br />
 	    <input type="checkbox" name="receive_sms_text" value="yes" <?php if($_REQUEST['receive_sms_text'] == 'yes') echo 'checked'; ?>/>SMS (Text)<br />
-	    <input type="checkbox" name="receive_sms_link" value="yes" <?php if($_REQUEST['receive_sms_link'] == 'yes') echo 'checked'; ?>/>SMS (Link)<br /></object></p>
-	<p><label for="feeds">Feeds</label> <br />
-	  <object id="feedFields" class="multifield">
-            <div id="rightCol" style="">
-	    <?php
+	    <input type="checkbox" name="receive_sms_link" value="yes" <?php if($_REQUEST['receive_sms_link'] == 'yes') echo 'checked'; ?>/>SMS (Link)<br />
+	  </object>
+	</div>
+	
+        <div class="lineWidth">
+	  <label for="feeds">Feeds</label>
+	  <object class="middleCol">
+            <div id="rightCol">
+	      <?php
               if(isset($_REQUEST['feed']))
               {
 	        foreach($_REQUEST['feed'] as $currentFeed)
@@ -65,21 +89,27 @@ $fieldNumber = 0;
                   print("<input type=\"text\" name=\"feed[]\" maxlength=\"500\" /><br />");
               }
 	    ?>
-            </div>
-	  </object>
-        <div style="float:left; margin-left:11.5em;"><a onclick="addFeed()">Add More Feeds</a></div>
-	</p>
-	<input class="rightcolumn" type="submit" name="submit" value="Sign Up" onclick="printOut()"/>
+          </div>
+	</object>
+
+	<div class="lineWidth">
+          <input class="rightcolumn" type="submit" onclick="addFeed()" value="Add More Feeds"></input>
+	</div>
+      </div>
+
+	<input class="rightcolumn" type="submit" name="submit" value="Register!" style="margin-left:13em;" />
       </fieldset>
     </form>
-  </div>
-  <div class="validated">
-    <a href="http://validator.w3.org/check?uri=referer"><img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0 Strict" /></a>
-  </div>
-
+ 
+ </div>
+    <!--
+       <div class="validated">
+	 <a href="http://validator.w3.org/check?uri=referer"><img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0 Strict" /></a>
+       </div>
+       -->
   <script type="text/javascript">
-    function addFeed()
-    {
+      function addFeed()
+      {
       var currentFeeds = document.getElementById('rightCol');
       var newFeeds = document.createElement('input');
       newFeeds.setAttribute('type', 'text');
@@ -87,8 +117,8 @@ $fieldNumber = 0;
       newFeeds.setAttribute('maxlength', '500');
       currentFeeds.appendChild(newFeeds);
       currentFeeds.appendChild(document.createElement('br'));
-    }
-
+      }
+      
   </script>
   </body>
 </html>

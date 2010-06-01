@@ -70,7 +70,7 @@ border: 2px outset #d7b9c9
 
 fieldset
 {
-margin: 0 auto;
+margin: 0 auto 5em auto;
 border: 1px solid navy;
 width: 35em;
 }
