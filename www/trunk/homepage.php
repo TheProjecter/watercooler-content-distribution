@@ -55,13 +55,11 @@
 		}
 	      else
 		{
-		  $icon = '';
+		  $icon = 'feed-icon-14x14.png';
 		}
-
 	      print("<div onclick=\"getStories('$currentFeed->id}', 'feedreader_stories')\">");
-	      if($icon != '')
-		print("<img src=\"{$icon}\" alt=\"{$domain}\"></img>");
-	      print("<div style=\"float:right; margin-left:1em;\">{$currentFeed->name}</div></div>");//"
+	      print("<img src=\"{$icon}\" alt=\"{$domain}\"></img>");
+	      print("<div style=\"float:right; margin-left:1em;\">{$currentFeed->name}</div></div><br />");//"
 	    }
 	    ?>
 	  </ul>
@@ -75,9 +73,6 @@
 	<a href="settings.php" id="footerLeft">Settings</a>
 	<a href="unsubscribe.php" id="footerRight">Unsubscribe</a>
       </div>
-    </div>
-    <div class="validated">
-      <a href="http://validator.w3.org/check?uri=referer"><img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0 Strict" /></a>
     </div>
 
     <script type="text/javascript">

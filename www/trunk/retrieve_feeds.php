@@ -14,7 +14,7 @@ function getFeedOutput($feed) {
   $contents = '<ul>';
   foreach ($stories as $story)
     {
-      $contents .= "<li><h3><a href=\"{$story['url']}\">{$story['title']}</a></h3><p>{$story['content']}</p></li>";
+      $contents .= "<li><h3><a href=\"{$story['url']} target=\"_blank\"\">{$story['title']}</a></h3><p>{$story['content']}</p></li>";
     }
   $contents .= '</ul>';
 

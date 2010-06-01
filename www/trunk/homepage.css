@@ -14,12 +14,10 @@ margin: 0;
 
 #wrap 
 {
-width:79em;
+width:75em;
 margin:0 auto;
-margin-top: 2em;
 background:white;
-border: 0.1em groove navy;
-padding:1em;
+padding:2%;
 }
 
 #title
@@ -36,9 +34,10 @@ color:navy;
 {
 border: .1em solid navy;
 border-style:solid;
-border-width:.1em;
+border-width:1%;
 padding:1em;
 background-color:#ffa20f;
+background-image:url('orange_gradient.jpg');
 }
 
 #nav ul
@@ -57,31 +56,33 @@ padding:0;
 
 #feedreader
 {
-height: 27.4em;
-width: 45.5em;
+height: 22.5em;
+width: 37em;
 margin: 1em auto;
 border: .1em groove navy;
 padding: 1em;
 float:  left;
 background-color:#ffa20f;
+background-image:url('orange_gradient.jpg');
 }
 
 #userspace
 {
-height: 27.5em;
-width: 28em;
+height: 22.5em;
+width: 33em;
 margin: 1em auto;
 border: .1em groove navy;
 padding: 1em;
 float:  right;
 background-color:#ffa20f;
+background-image:url('orange_gradient.jpg');
 }
 
 #feedreader_feeds
 {
 float:left;
 padding:1em;
-height:25em;
+height:20em;
 width:10em;
 border: .1em solid navy;
 margin-right: 1em;
@@ -92,9 +93,9 @@ overflow: auto;
 #feedreader_stories
 {
 float:left;
-width:30em;
+width:21em;
 padding:1em;
-height:25em;
+height:20em;
 border: .1em solid navy;
 border-style: groove;
 background-color: white;
@@ -108,6 +109,7 @@ clear:both;
 padding: 1em;
 height:2.2em;
 background-color:#ffa20f;
+background-image:url('orange_gradient.jpg');
 }
 
 #footerLeft
