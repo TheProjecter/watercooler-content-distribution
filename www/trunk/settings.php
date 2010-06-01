@@ -24,32 +24,35 @@ if (!isset($user))
     <form action="<?php echo $_SERVER['PHP_SELF'];?>" method="post">
       <fieldset>
 	<legend>Personal Information</legend>
-	<p><label for="name">Username</label>
-	  <input id="name" type="text" name="userName" maxlength="25" value="<?php echo $user->username; ?>"/></p>
-	<p><label for="newPass">New Password</label>
-	  <input id="newPass" type="password" name="userNewPass" maxlength="10" /></p>
-	<p><label for="repeatNewPass">Repeat Password</label>
-	  <input id="repeatNewPass"type="password" name="userRepeatNewPass" maxlength="10" /></p>
-	<p><label for="currentPass">Current Password</label>
-	  <input id="currentPass" type="password" name="userCurrentPass" maxlength="10" /></p>
-	<p><label for="email">Email</label>
-	  <input id="email" type="text" name="userEmail" maxlength="50"/ value="<?php echo $user->email;  ?>"></p>
-	<p><label for="cell">Cell Phone #</label>
-	  <input id="cell" type="text" name="userCell" maxlength="10" value="<?php echo $user->phone_number ?>"/></p>
-	<p><label for="carrier">Carrier</label>
+	<div class="lineWidth"><label class="leftCol" for="name">Username</label>
+	  <input class="middleCol" id="name" type="text" name="userName" maxlength="25" value="<?php echo $user->username; ?>"/></div>
+	<div class="lineWidth"><label class="leftCol" for="newPass">New Password</label>
+	  <input class="middleCol" id="newPass" type="password" name="userNewPass" maxlength="10" /></div>
+	<div class="lineWidth"><label class="leftCol" for="repeatNewPass">Repeat Password</label>
+	  <input class="middleCol" id="repeatNewPass"type="password" name="userRepeatNewPass" maxlength="10" /></div>
+	<div class="lineWidth"><label class="leftCol" for="currentPass">Current Password</label>
+	  <input class="middleCol" id="currentPass" type="password" name="userCurrentPass" maxlength="10" /></div>
+	<div class="lineWidth"><label class="leftCol" for="email">Email</label>
+	  <input class="middleCol" id="email" type="text" name="userEmail" maxlength="50"/ value="<?php echo $user->email;  ?>"></div>
+	<div class="lineWidth"><label class="leftCol" for="cell">Cell Phone #</label>
+	  <input class="middleCol" id="cell" type="text" name="userCell" maxlength="10" value="<?php echo $user->phone_number ?>"/></div>
+	<div class="lineWidth"><label class="leftCol" for="carrier">Carrier</label>
 	  <select id="carrier" name="userCarrier">
 	    <option value="AT&T">AT&#38;T</option>
 	    <option <?php if($user->carrier == 'Verizon') echo 'selected'; ?> value="Verizon">Verizon</option>
 	    <option <?php if($user->carrier == 'T-Mobile') echo 'selected'; ?> value="T-Mobile">T-Mobile</option>
 	    <option <?php if($user->carrier == 'Sprint') echo 'selected'; ?> value="Sprint">Sprint</option>
-	</select></p>
-	<p><label for="reception">Default Methods of Reception</label>
-	  <object class="multifield"><input type="checkbox" name="receive_email" value="yes" <?php if($user->receive_email == 'yes') echo 'checked'; ?>/>Email<br />
+	</select></div>
+	<div class="lineWidth"><label class="leftCol" for="reception">Default Methods of Reception</label>
+	  <object class="middleCol">
+            <input type="checkbox" name="receive_email" value="yes" <?php if($user->receive_email == 'yes') echo 'checked'; ?>/>Email<br />
 	    <input type="checkbox" name="receive_sms_text" value="yes" <?php if($user->receive_sms_text == 'yes') echo 'checked'; ?>/>SMS (Text)<br />
-	    <input type="checkbox" name="receive_sms_link" value="yes" <?php if($user->receive_sms_link == 'yes') echo 'checked'; ?>/>SMS (Link)<br /></object></p>
-	<p><label for="feeds">Feeds</label> <br />
-	  <object id="feedFields" class="multifield">
-            <div id="rightCol" style="">
+	    <input type="checkbox" name="receive_sms_link" value="yes" <?php if($user->receive_sms_link == 'yes') echo 'checked'; ?>/>SMS (Link)<br />
+          </object>
+        </div>
+        <div class="lineWidth"><label for="feeds">Feeds</label>
+	  <object class="middleCol">
+					  <div id="rightCol">
 	    <?php
               if (isset($_REQUEST['feed']))
 		{
@@ -75,16 +78,19 @@ if (!isset($user))
             ?>
             </div>
 	  </object>
-	 <div style="float:left;margin-left:11.5em;"> <a onclick="addFeed()">Add More Feeds</a></div>
-	</p>
-	<input class="rightcolumn" type="submit" name="submit" value="Sign Up" />
+	  <div class="lineWidth">
+            <input class="rightcolumn" type="submit" onclick="addFeed()" value="Add More Feeds"></input>
+          </div>
+	</div>
+	<input class="rightcolumn" type="submit" name="submit" value="Update" style="margin-left:13em;" />
       </fieldset>
     </form>
   </div>
+<!--
   <div class="validated">
     <a href="http://validator.w3.org/check?uri=referer"><img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0 Strict" /></a>
   </div>
-
+-->
   <script type="text/javascript">
     function addFeed()
     {

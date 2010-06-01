@@ -152,3 +152,20 @@ ul
 margin: 0;
 padding: 0;
 }
+
+.story
+{
+border: 1px solid black;
+margin: 0 0 1em 0;
+{
+
+.storyTitle
+{
+
+}
+
+.storyDate
+{
+margin: 5em 0 5em 0;
+font-style: italic;
+}

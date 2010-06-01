@@ -31,7 +31,7 @@ width: 11em;
 float: left;
 text-align: right;
 margin-right: 0.5em;
-display: block
+display: block;
 }
 
 .multifield {
@@ -41,14 +41,9 @@ float: left;
 .rightcolumn {
 float: left;
 margin-top: 1em;
-margin-left: 10.2em;
+margin-left: 12em;
 background: #ffa20c;
 }
-
-.submit input
-{
-margin-left: 4.5em;
-} 
 
 input
 {
@@ -59,6 +54,15 @@ border: 1px solid navy;
 
 .submit input
 {
+margin-left: 4.5em;
+color: #000;
+background: #ffa20c;
+border: 2px outset #d7b9c9
+} 
+
+addFeeds
+{
+margin-left: 4.5em;
 color: #000;
 background: #ffa20c;
 border: 2px outset #d7b9c9
@@ -68,7 +72,7 @@ fieldset
 {
 margin: 0 auto;
 border: 1px solid navy;
-width: 27em;
+width: 35em;
 }
 
 legend
@@ -84,7 +88,20 @@ margin-left: 2em;
 {
 height:31px;
 width:88px;
-position:absolute;
 bottom:5px;
 right:5px;
+}
+
+.lineWidth
+{
+float:left;
+width:35em;
+margin: .5em .5em .5em .5em;
+}
+
+.middleCol
+{
+float:left;
+text-align:left;
+width:11em;
 }
