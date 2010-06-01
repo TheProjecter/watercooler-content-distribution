@@ -12,7 +12,7 @@ if (!isset($user)) {
     <link rel="stylesheet" title="template" href="template.css" type="text/css"/>
     
   </head>
-  <body>
+    <body onload="document.userName.infield.focus()">
     <h1>Welcome to the Watercooler!</h1>
     <div class="outerbody">
 	<form action="login.php" method="post">
