@@ -17,10 +17,14 @@ Added more debug output
 2.3:
 Lengthened the looping frequency to 3 mins
 
+2.3.1:
+Reduce initial iteration delay to 30 seconds
+Enable logs by default for the testing purpose
+
 """
 global debug
 debug = False
-logs = False
+logs = True
 import FeedRetriever
 import EmailServer
 import time
@@ -80,7 +84,7 @@ def Driver():
 					driverlog.flush()
 
 				EmailServer.sendStories(cutted_stories)
-				time.sleep(60)
+				time.sleep(30)
 				cutted_stories = []
 		print ' ------------------------------------------ '
 		print 'Here is remaining ', str(limiter % 10), ' story passed to email server'
