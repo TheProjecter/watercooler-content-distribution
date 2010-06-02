@@ -25,3 +25,4 @@ class Feed extends MySQLFeed {}
 class Feeds extends MySQLFeeds {}
 class User extends MySQLUser {}
 class Users extends MySQLUsers {}
+class DB extends MySQLDB {}
