@@ -18,6 +18,9 @@ $fieldNumber = 0;
     <meta http-equiv="content-type" content="text/xml; charset=utf-8" />
     <title>Sign up</title>
     <link rel="stylesheet" href="signup.css" title="signup" />
+    <script type="text/JavaScript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js">
+      $(document).ready(function(){$('#userName').focus();});
+    </script>
   </head>
   <body>
     <div class="corner">
@@ -28,8 +31,11 @@ $fieldNumber = 0;
       <fieldset><legend>Personal Information</legend>
 
 	<div class="lineWidth">
-	  <label class="leftCol" for="name">Username</label>
-	  <input class="middleCol" id="name" type="text" name="userName" maxlength="25" value="<?php echo $_REQUEST['userName']; ?>"/>
+	  <label class="leftCol" for="userName">Username</label>
+	  <input class="middleCol" id="userName" type="text" name="userName" maxlength="25" value="<?php echo $_REQUEST['userName']; ?>"/>
+	  <script type="text/javascript">
+	    $('#userName').focus();
+          </script>
 	</div>
 
 	<div class="lineWidth">
@@ -93,7 +99,7 @@ $fieldNumber = 0;
 	</object>
 
 	<div class="lineWidth">
-          <input class="rightcolumn" type="submit" onclick="addFeed()" value="Add More Feeds"></input>
+          <button class="rightcolumn" type="button" onclick="addFeed()">Add More Feeds</button>
 	</div>
       </div>
 
@@ -117,6 +123,11 @@ $fieldNumber = 0;
       newFeeds.setAttribute('maxlength', '500');
       currentFeeds.appendChild(newFeeds);
       currentFeeds.appendChild(document.createElement('br'));
+      }
+
+      function expandFeed()
+      {
+	var url;
       }
       
   </script>

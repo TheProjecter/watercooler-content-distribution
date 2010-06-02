@@ -8,6 +8,7 @@ require_once('db_mysql.php');
 class MySQLStories extends MySQLDBObject implements iStories {
   private $db;
   public $stories;
+  public $sort_sql = '';
 
   public function __construct(array $stories, MySQLDB $db) {
     $this->stories = $stories;
@@ -16,11 +17,16 @@ class MySQLStories extends MySQLDBObject implements iStories {
 
 /* MySQLStories::get implements iStories::get (see corresponding documentation)
 */
-  public function get(array $storyattrs) {
+  public function get(array $storyattrs, $sortattr = NULL) {
     // XXX implement 'category' and 'feed' attributes
 
     if (count($this->stories) == 0)
       return array();
+
+    if ($sortattr !== NULL)
+      $sort_sql = self::get_sort_sql($sortattr);
+    else
+      $sort_sql = $this->sort_sql;
 
     $get_result = array();
 
@@ -43,7 +49,7 @@ class MySQLStories extends MySQLDBObject implements iStories {
     // remove trailing comma and space
     $get_sql = substr($get_sql, 0, -2);
     // add rest of SQL query
-    $get_sql .= ');';
+    $get_sql .= ") $sort_sql;";
 
     if ($sql_added === TRUE) {
       $get_stmt = $this->db->pdo->prepare($get_sql);
@@ -58,8 +64,27 @@ class MySQLStories extends MySQLDBObject implements iStories {
 
     return $get_result;
   }
-	    
 
+  private static function get_sort_sql($storyattr, $reverse) {
+    if (!is_bool($reverse))
+      throw new InvalidArgumentException('parameter $reverse must be a '.
+					 'boolean');
+    if (!isset(self::$storyattrs_to_cols[$storyattr]))
+      throw new InvalidArgumentException('parameter $storyattr is not a '.
+					 'valid attribute');
+
+    $col = self::$storyattrs_to_cols[$storyattr];
+
+    return "ORDER BY $col ".($reverse? 'DESC' : 'ASC');
+  }	    
+/* MySQLStories::sortBy implements iStories::sortBy (see corresponding 
+   documentation)
+*/
+  public function sortBy($storyattr, $reverse = FALSE) {
+    $this->sort_sql = self::get_sort_sql($storyattr, $reverse);
+    $this->rewind();
+  }
+  
   // these functions implement Iterator
   public function rewind() {
     reset($this->stories);

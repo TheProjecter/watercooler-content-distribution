@@ -57,7 +57,7 @@
 		{
 		  $icon = 'feed-icon-14x14.png';
 		}
-	      print("<div onclick=\"getStories('$currentFeed->id}', 'feedreader_stories')\">");
+	      print("<div onclick=\"getStories('{$currentFeed->id}', 'feedreader_stories')\">");
 	      //print("<img src=\"{$icon}\" alt=\"{$domain}\"></img>");
 	      print("<div style=\"float:right; margin-left:1em;\">{$currentFeed->name}</div></div><br />");//"
 	    }
@@ -65,6 +65,9 @@
 	  </ul>
 	</div>
 	<div id="feedreader_stories">
+<!--
+	      getStories(<?php print("");  ?>);
+-->
         </div>
       </div>
       <div id="userspace">

@@ -6,6 +6,50 @@ include_once('auth.php');
 // die if user not logged in
 if (!isset($user))
   die('You are not logged in');
+
+$displayUserName;
+$displayEmail;
+$displayCell;
+$displayCarrier;
+$displayReceiveEmail;
+$displayReceiveText;
+$displayReceiveLink;
+
+if(isset($_REQUEST['userName']))
+  $displayUserName = $_REQUEST['userName'];
+else
+  $displayUserName = $user->username;
+
+if(isset($_REQUEST['userEmail']))
+  $displayEmail = $_REQUEST['userEmail'];
+else
+  $displayEmail = $user->email;
+
+if(isset($_REQUEST['userCell']))
+  $displayCell = $_REQUEST['userCell'];
+else
+  $displayCell = $user->phone_number;
+
+if(isset($_REQUEST['userCarrier']))
+  $displayCarrier = $_REQUEST['userCarrier'];
+else
+  $displayCarrier = $user->carrier;
+
+if(isset($_REQUEST['receive_email']))
+  $displayReceiveEmail = $_REQUEST['receive_email'];
+else
+  $displayReceiveEmail = $user->receive_email;
+
+if(isset($_REQUEST['receive_sms_text']))
+  $displayReceiveText = $_REQUEST['receive_sms_text'];
+else
+  $displayReceiveText = $user->receive_sms_text;
+
+if(isset($_REQUEST['receive_sms_link']))
+  $displayReceiveLink = $_REQUEST['receive_sms_link'];
+else
+  $displayReceiveLink = $user->receive_sms_link;
+
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
@@ -15,6 +59,7 @@ if (!isset($user))
     <meta http-equiv="content-type" content="text/xml; charset=utf-8" />
     <title>Settings</title>
     <link rel="stylesheet" href="signup.css" title="signup" />
+    <script type="text/JavaScript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js" />
   </head>
   <body>
     <div class="corner">
@@ -24,8 +69,11 @@ if (!isset($user))
     <form action="<?php echo $_SERVER['PHP_SELF'];?>" method="post">
       <fieldset><legend>Personal Information</legend>
 
-	<div class="lineWidth"><label class="leftCol" for="name">Username</label>
-	  <input class="middleCol" id="name" type="text" name="userName" maxlength="25" value="<?php echo $user->username; ?>"/>
+	<div class="lineWidth"><label class="leftCol" for="userName">Username</label>
+	  <input class="middleCol" id="userName" type="text" name="userName" maxlength="25" value="<?php echo $displayUserName; ?>"/>
+	  <script type="text/javascript">
+	    $('#userName').focus();
+          </script>
 	</div>
 	
 	<div class="lineWidth"><label class="leftCol" for="currentPass">Current Password</label>
@@ -41,20 +89,20 @@ if (!isset($user))
 	</div>
 	
 	<div class="lineWidth"><label class="leftCol" for="email">Email</label>
-	  <input class="middleCol" id="email" type="text" name="userEmail" maxlength="50"/ value="<?php echo $user->email;  ?>">
+	  <input class="middleCol" id="email" type="text" name="userEmail" maxlength="50"/ value="<?php echo $displayEmail;  ?>">
 	</div>
 	  
 	<div class="lineWidth"><label class="leftCol" for="cell">Cell Phone #</label>
-	  <input class="middleCol" id="cell" type="text" name="userCell" maxlength="10" value="<?php echo $user->phone_number ?>"/>
+	  <input class="middleCol" id="cell" type="text" name="userCell" maxlength="10" value="<?php echo $displayCell ?>"/>
 	</div>
 
 	<div class="lineWidth">
 	  <label class="leftCol" for="carrier">Carrier</label>
 	  <select id="carrier" name="userCarrier">
 	    <option value="AT&T">AT&#38;T</option>
-	    <option <?php if($user->carrier == 'Verizon') echo 'selected'; ?> value="Verizon">Verizon</option>
-	    <option <?php if($user->carrier == 'T-Mobile') echo 'selected'; ?> value="T-Mobile">T-Mobile</option>
-	    <option <?php if($user->carrier == 'Sprint') echo 'selected'; ?> value="Sprint">Sprint</option>
+	    <option <?php if($displayCarrier == 'Verizon') echo 'selected'; ?> value="Verizon">Verizon</option>
+	    <option <?php if($displayCarrier == 'T-Mobile') echo 'selected'; ?> value="T-Mobile">T-Mobile</option>
+	    <option <?php if($displayCarrier == 'Sprint') echo 'selected'; ?> value="Sprint">Sprint</option>
           </select>
         </div>
       </fieldset>
@@ -64,9 +112,9 @@ if (!isset($user))
 	<div class="lineWidth">
 	  <label class="leftCol" for="reception">Default Methods of Reception</label>
 	  <object class="middleCol">
-            <input type="checkbox" name="receive_email" value="yes" <?php if($user->receive_email == 'yes') echo 'checked'; ?>/>Email<br />
-	    <input type="checkbox" name="receive_sms_text" value="yes" <?php if($user->receive_sms_text == 'yes') echo 'checked'; ?>/>SMS (Text)<br />
-	    <input type="checkbox" name="receive_sms_link" value="yes" <?php if($user->receive_sms_link == 'yes') echo 'checked'; ?>/>SMS (Link)<br />
+            <input type="checkbox" name="receive_email" value="yes" <?php if($displayReceiveEmail) echo 'checked'; ?>/>Email<br />
+	    <input type="checkbox" name="receive_sms_text" value="yes" <?php if($displayReceiveText) echo 'checked'; ?>/>SMS (Text)<br />
+	    <input type="checkbox" name="receive_sms_link" value="yes" <?php if($displayReceiveLink) echo 'checked'; ?>/>SMS (Link)<br />
           </object>
         </div>
 	
@@ -91,6 +139,7 @@ if (!isset($user))
 		}
 	      else
 		{
+		  echo 'yo';
 		  for($i = 0; $i < 3; $i++)
 		    {
 		      print("<input type=\"text\" name=\"feed[]\" maxlength=\"500\" /><br />");
@@ -100,9 +149,9 @@ if (!isset($user))
             </div>
 	  </object>
 
-	  <div class="lineWidth">
-            <input class="rightcolumn" type="submit" onclick="addFeed()" value="Add More Feeds"></input>
-          </div>
+  	  <div class="lineWidth">
+            <button class="rightcolumn" type="button" onclick="addFeed()">Add More Feeds</button>
+	  </div>
 	</div>
 
 	<input class="rightcolumn" type="submit" name="submit" value="Update" style="margin-left:13em;" />
@@ -185,8 +234,6 @@ if($actualPass != $givenPass)
     exit();
   }
 
-    // Verify new Password
-
     // Validate the password input
     if(empty($_REQUEST['userNewPass'])==FALSE && sanityCheck($_REQUEST['userNewPass'], 'string', 10) != FALSE)
       {
@@ -196,35 +243,25 @@ if($actualPass != $givenPass)
 	    $_REQUEST['userNewPass'] = '';
 	    exit();
 	  }
+
+	// Make sure that the two password entries are identical
+	if (empty($_REQUEST['userRepeatNewPass'])==FALSE && sanityCheck($_REQUEST['userRepeatNewPass'], 'string', 10) != FALSE)
+	  {
+	    $userRepeatNewPass = $_REQUEST['userRepeatNewPass'];
+	    if ($userRepeatNewPass != $_REQUEST['userNewPass'])
+	      {
+		echo 'Password mismatch.  Please re-enter your password.';
+		exit();
+	      }
+	  }
 	else
 	  {
-
-	  }
-      }
-    else
-      {
-        echo 'Please enter a valid password of between 6 and 10 characters';
-	$_REQUEST['userNewPass'] = '';
-        exit();
-      }
-
-    // Make sure that the two password entries are identical
-    if (empty($_REQUEST['userRepeatNewPass'])==FALSE && sanityCheck($_REQUEST['userRepeatNewPass'], 'string', 10) != FALSE)
-      {
-	$userRepeatNewPass = $_REQUEST['userRepeatNewPass'];
-	if ($userRepeatNewPass != $_REQUEST['userNewPass'])
-	  {
-	    echo 'Password mismatch.  Please re-enter your password.';
+	    echo 'Please enter your password again in the Repeat Password field.';
 	    exit();
 	  }
-      }
-    else
-      {
-	echo 'Please enter your password again in the Repeat Password field.';
-	exit();
+	$user->password = md5($_REQUEST['userNewPass']);
       }
 
-$user->password = md5($_REQUEST['userNewPass']);
 
 // Sanity check the username variable.
 
@@ -301,13 +338,18 @@ if (empty($_REQUEST['userCell'])==FALSE)
       }
   }
 
+$user->send_email = $_REQUEST['receive_email']=='yes';
+$user->send_sms_text = $_REQUEST['receive_sms_text']=='yes';
+$user->send_sms_link = $_REQUEST['receive_sms_link']=='yes';
 
+$feedinfos = array();
 foreach($_REQUEST['feed'] as $index=>$currentFeed)
   {
     if (!empty($currentFeed))
       $feedinfos[] = array('url'=>$currentFeed, 'name'=>$currentFeed);
   }
 $user->feeds = Feeds::create($feedinfos);
+
 
 print($_REQUEST['userName']);
 print(" 's settings have been updated.");
