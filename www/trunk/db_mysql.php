@@ -175,7 +175,7 @@ class MySQLDB extends MySQLDBObject implements iDatabase {
   }
 
   public function getFeeds() {
-    static $feeds_sql = 'SELECT fid FROM feed_sources;';
+    static $feeds_sql = 'SELECT sid FROM feed_sources;';
     $feeds_stmt = $this->pdo->prepare($feeds_sql);
     $feeds_stmt->execute();
     /* XXX creating the objects this way relies on DB consistency (sid is not
