@@ -51,14 +51,37 @@ interface iStories extends Iterator {
 		              since 1970-01-01 00:00:00 UTC
 		 'feed': (iFeed) the feed story's source feeds
 		 'category': (string) the feed storys' categories
+   $sortattr: (string) the name of an attribute to sort by, selected from the
+              list of possible attributes for MySQLStories::sort (see 
+	      corresponding documentation)
+   $sortreverse: (boolean) TRUE if the sort should be done in reverse of the
+                 default direction. See documentation for MySQLStories::sort
+		 for default sorting directions for different attributes.
 
     returns an array of arrays, each representing information for a single 
       story and containing all requested feed story information that could be
       successfully fetched, in the form described in the description of the
-      $storyattrs parameter. The results are sorted in the arbitrary order
-      returned by the database.
+      $storyattrs parameter. The results are sorted by the column and
+      direction specified by the $sortattr and $sortreverse parameters if they
+      are specified.
 */
-  public function get(array $feedattrs);
+  public function get(array $feedattrs, $sortattr = NULL, 
+		      $sortreverse = FALSE);
+
+/* function MySQLStories::sort changes the default sorting order and direction
+   of the MySQLStories object
+
+   $storyattr: (string) the name of the story attribute to sort by, selected
+               from the following list of attributes with their default sorting
+	       orders
+	         'fid': (asc) the feed storys' id numbers
+	         'title': (asc) the feed storys' titles
+		 'content': (asc) the feed storys' contents
+		 'url': (asc) the feed storys' urls
+		 'timestamp': (desc) the feed storys' timestamps
+  $reverse: (boolean) TRUE if the sorting direction should be reversed
+*/
+  public function sort($storyattr, $reverse = FALSE);
 }
 
 /* interface iStory handles all operations involving a single feed story
