@@ -1081,6 +1081,7 @@ def UpdateFeed():
 			errlog.write ('INVALID SID: Processed STORY\n')
 			errlog.write('   FEED ENTRY TITLE IS:')
 			errlog.write(p_story[1])
+			errlog.write('\n')
 			cursor2.close()
 			cursor3.close()
 			conn.commit()
