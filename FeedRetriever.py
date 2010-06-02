@@ -189,6 +189,13 @@ Added even more unicode conversion as bugs found
 Make debug log look nicer
 Try to resolve bugs that title cant match in some rare scenarios
 
+6.6.3 Test
+Changed title to be normalized from unicode, avoid failure to match in rare case
+changing story definition once again to contain more information
+# old story is [Feed Title, Entry Title, Entry Content, Entry Category, Entry URL, Entry Timestamp]
+# new story is [Feed Title, Feed URL, Entry Title, Entry Content, Entry Category, Entry URL, Entry Timestamp]
+
+
 
 ------ CODE FREEZE UNTIL BUGS FOUND -------
 ------ USE 6.4 TO TEST! -----------------
@@ -974,8 +981,8 @@ def UpdateFeed():
 		# we first get feed sid by URL, then update the title with sid
 		source_feed_title = 'Undefined'
 		if ((myfeed is not None) and (myfeed.feed is not None) and (myfeed.feed.has_key('title'))):
-			source_feed_title_uni = myfeed.feed.title
-			source_feed_title = str(source_feed_title_uni)
+			source_feed_title = myfeed.feed.title
+			source_feed_title = unicodedata.normalize('NFKD', source_feed_title).encode('ascii','ignore')
 			if (len(source_feed_title) > 0):
 				cursor_title = conn.cursor ()
 				cursor_title.execute ("""
@@ -1073,7 +1080,7 @@ def UpdateFeed():
 			debug_counter = debug_counter + 1
 		debug_counter0 = debug_counter0 + 1
 	"""
-	for p_story in all_stories:
+	for p_story_index, p_story in enumerate(all_stories):
 		# print 'LC CHECK 1 ARRIVAL, PER STORY START' # LC DEBUG
 		# loop to check and get feed title
 		mysid = 0
