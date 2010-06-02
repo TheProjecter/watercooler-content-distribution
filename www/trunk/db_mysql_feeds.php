@@ -32,8 +32,11 @@ class MySQLFeeds extends MySQLDBObject implements iFeeds {
     foreach ($feedinfos as $feedinfo) {
       if (!isset($feedinfo['url']))
 	throw new InvalidArgumentException('$feedinfos requires url attr');
-      if (MySQLFeed::find($feedinfo['url'], $db) === NULL)
+      $feed = MySQLFeed::find('url', $feedinfo['url'], $db);
+      if ($feed === NULL)
 	$feeds[] = MySQLFeed::create($feedinfo, $db);
+      else
+	$feeds[] = $feed;
     }
     $c = __CLASS__;
     return new $c($feeds, $db);

@@ -81,7 +81,7 @@
 	<div id="feedBrowser">
 	  <div id="feedHeader" style="margin:1em 1em 0 0; border-bottom: 2px solid navy;">
 	    <div style="width:12em;text-align:left; float:left;">Title</div>
-	    <div style="width:3.5em; text-align:right; float:right; margin-right:1em;">Views</div>
+	    <div style="width:3.5em; text-align:right; float:right; margin-right:1em;">Users</div>
 	  </div>
 	  <div id="feedRows">
 	    <?php include_once('feedBrowser.php') ?>
