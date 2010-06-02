@@ -21,8 +21,7 @@ if (!isset($user)) {
     </div>
     <div class="outerbody">
 	<form action="login.php" method="post">
-          <fieldset>
-            <legend>TODO</legend>
+          <fieldset style="margin-bottom:1em;"><legend>Watercooler</legend>
 	    <p>
               <label for="userName">username</label>
               <input type="text" id="userName"name="userName" />

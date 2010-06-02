@@ -12,7 +12,7 @@
   <body>
     <div id="wrap">
       <div id="header">
-	<a href="logout.php" style="float:left; width:100%;">logout</a>
+	<a href="logout.php" style="position:absolute; text-align:left;">logout</a>
 	<div id="logo" style="text-align:center;">
 	  <img style="text-align: center;" src="watercooler_logo.png" alt="Welcome to the Watercooler" />
 	</div>

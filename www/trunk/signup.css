@@ -41,7 +41,7 @@ float: left;
 .rightcolumn {
 float: left;
 margin-top: 1em;
-margin-left: 11em;
+margin-left: 13.5em;
 background: #ffa20c;
 }
 
@@ -70,9 +70,9 @@ border: 2px outset #d7b9c9
 
 fieldset
 {
-margin: 0 auto 5em auto;
+margin: 0 auto 1em auto;
 border: 1px solid navy;
-width: 35em;
+width: 25em;
 }
 
 legend
@@ -123,4 +123,9 @@ margin: 0 auto 0 auto;
 text-align:center;
 float:left;
 border: 1px solid black;
+}
+
+a:visited
+{
+color:blue;
 }
