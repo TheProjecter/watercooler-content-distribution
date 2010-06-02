@@ -23,10 +23,13 @@ $fieldNumber = 0;
     </script>
   </head>
   <body>
-    <div class="corner">
+    <div class="corner" style="position:absolute; text-align:left;">
       <a href="index.php">home</a>
     </div>
-    <h1>Sign up</h1>
+    <div style="text-align:center; width:100%; margin:0 auto 0 auto;">
+      <img style="text-align: center;" src="watercooler_logo.png" alt="Welcome to the Watercooler" />
+    </div>
+    
     <form action="<?php echo $_SERVER['PHP_SELF'];?>" method="post">
       <fieldset><legend>Personal Information</legend>
 
@@ -103,7 +106,7 @@ $fieldNumber = 0;
 	</div>
       </div>
 
-	<input class="rightcolumn" type="submit" name="submit" value="Register!" style="margin-left:13em;" />
+	<input class="rightcolumn" type="submit" name="submit" value="Register!" style="margin-left: 14.7em;"/>
       </fieldset>
     </form>
  

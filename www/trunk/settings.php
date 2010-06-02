@@ -38,17 +38,17 @@ else
 if(isset($_REQUEST['receive_email']))
   $displayReceiveEmail = $_REQUEST['receive_email'];
 else
-  $displayReceiveEmail = $user->receive_email;
+  $displayReceiveEmail = $user->send_email;
 
 if(isset($_REQUEST['receive_sms_text']))
   $displayReceiveText = $_REQUEST['receive_sms_text'];
 else
-  $displayReceiveText = $user->receive_sms_text;
+  $displayReceiveText = $user->send_sms_text;
 
 if(isset($_REQUEST['receive_sms_link']))
   $displayReceiveLink = $_REQUEST['receive_sms_link'];
 else
-  $displayReceiveLink = $user->receive_sms_link;
+  $displayReceiveLink = $user->send_sms_link;
 
 ?>
 
@@ -62,10 +62,13 @@ else
     <script type="text/JavaScript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js" />
   </head>
   <body>
-    <div class="corner">
+    <div class="corner" style="position:absolute; text-align:left;">
       <a href="index.php">home</a>
     </div>
-    <h1><?php echo $user->username; ?>'s Settings</h1><!--'-->
+    <div style="text-align:center; width:100%; margin:0 auto 0 auto;">
+      <img style="text-align: center;" src="watercooler_logo.png" alt="Welcome to the Watercooler" />
+    </div>
+
     <form action="<?php echo $_SERVER['PHP_SELF'];?>" method="post">
       <fieldset><legend>Personal Information</legend>
 
@@ -153,16 +156,8 @@ else
             <button class="rightcolumn" type="button" onclick="addFeed()">Add More Feeds</button>
 	  </div>
 	</div>
-
-	<input class="rightcolumn" type="submit" name="submit" value="Update" style="margin-left:13em;" />
-      </fieldset>
-    </form>
-  </div>
-<!--
-  <div class="validated">
-    <a href="http://validator.w3.org/check?uri=referer"><img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0 Strict" /></a>
-  </div>
--->
+	<input class="rightcolumn" type="submit" name="submit" value="Update" style="margin-left:14.7em;" />
+        <div class="lineWidth" style="font-weight:bold; width:24em; color:red; text-align:center;"> <br />
   <script type="text/javascript">
     function addFeed()
     {
@@ -175,8 +170,6 @@ else
       currentFeeds.appendChild(document.createElement('br'));
     }
   </script>
-</body>
-</html>
 
 <?php
 
@@ -351,9 +344,14 @@ foreach($_REQUEST['feed'] as $index=>$currentFeed)
 $user->feeds = Feeds::create($feedinfos);
 
 
-print($_REQUEST['userName']);
-print(" 's settings have been updated.");
+print("<p style=\"color:navy;\">Update Successful.</p>");
 print('<a href="index.php">Here is your homepage!</a>');
 print('</br></br>');
 
 ?>
+        </div>
+      </fieldset>
+    </form>
+  </div>
+</body>
+</html>
