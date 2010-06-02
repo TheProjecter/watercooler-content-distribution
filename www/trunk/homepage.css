@@ -14,13 +14,14 @@ margin: 0;
 
 #wrap 
 {
-width:75em;
+text-align:center;
+width:63.2em;
 margin:0 auto;
 background:white;
-padding:2%;
+padding:1em;
 }
 
-#title
+.title
 {
 text-align:center;
 text-transform:uppercase;
@@ -34,10 +35,11 @@ color:navy;
 {
 border: .1em solid navy;
 border-style:solid;
-border-width:1%;
+border-width:1px;
+width: 34em;
 padding:1em;
-background-color:#ffa20f;
-background-image:url('orange_gradient.jpg');
+background-color:white;
+margin-bottom: 1em;
 }
 
 #nav ul
@@ -69,20 +71,39 @@ background-image:url('orange_gradient.jpg');
 #userspace
 {
 height: 22.5em;
-width: 33em;
+width: 20em;
 margin: 1em auto;
+margin-left: 1em;
 border: .1em groove navy;
 padding: 1em;
-float:  right;
+float:  left;
 background-color:#ffa20f;
 background-image:url('orange_gradient.jpg');
+}
+
+#feedBrowser
+{
+height:17.5em;
+width:20em;
+background-color:white;
+}
+
+#browse
+{
+border: .1em solid navy;
+border-style:solid;
+border-width:1px;
+width: 18em;
+padding:1em;
+background-color:white;
+margin-bottom: 1em;
 }
 
 #feedreader_feeds
 {
 float:left;
 padding:1em;
-height:20em;
+height:15.5em;
 width:10em;
 border: .1em solid navy;
 margin-right: 1em;
@@ -95,7 +116,7 @@ overflow: auto;
 float:left;
 width:21em;
 padding:1em;
-height:20em;
+height:15.5em;
 border: .1em solid navy;
 border-style: groove;
 background-color: white;
@@ -110,6 +131,7 @@ padding: 1em;
 height:2.2em;
 background-color:#ffa20f;
 background-image:url('orange_gradient.jpg');
+width:60.2em;
 }
 
 #footerLeft
@@ -165,7 +187,7 @@ text-decoration:none;
 
 .story a:link
 {
-color:black;
+color:navy;
 }
 
 .story a:visited

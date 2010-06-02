@@ -16,7 +16,9 @@ if (!isset($user)) {
     
   </head>
     <body>
-    <h1>Welcome to the Watercooler!</h1>
+    <div id="logo">
+      <img src="watercooler_logo.png" alt="Welcome to the Watercooler"></img>
+    </div>
     <div class="outerbody">
 	<form action="login.php" method="post">
           <fieldset>
