@@ -182,6 +182,10 @@ Added logic not to add existing entry
 Appearing seemed to work, now run it in server for a day to see
 Modifying driver also to cooperate
 
+6.6.1 Test
+Added even more unicode conversion as bugs found
+
+
 ------ CODE FREEZE UNTIL BUGS FOUND -------
 ------ USE 6.4 TO TEST! -----------------
 
@@ -241,6 +245,9 @@ def __ProHTMLUnicodeSpace(content):
 		if (content[index:ending] == '&nbsp;'):
 			newcontent = content[:index] + ' ' + content[ending:]
 			return __ProHTMLUnicodeSpace(newcontent)
+		if (content[index:ending] == '&#149;'):
+			newcontent = content[:index] + '.' + content[ending:]
+			return __ProHTMLUnicodeSpace(newcontent)
 	return content
 
 def __ProHTMLUnicodeDash(content):
@@ -255,8 +262,14 @@ def __ProHTMLUnicodeDash(content):
 		if (content[index:ending] == '&#8211;'):
 			newcontent = content[:index] + '-' + content[ending:]
 			return __ProHTMLUnicodeDash(newcontent)
+		if (content[index:ending] == '&#8212;'):
+			newcontent = content[:index] + '--' + content[ending:]
+			return __ProHTMLUnicodeDash(newcontent)
 		if ((content[index:ending] == '&#8221;') or (content[index:ending] == '&#8220;')):
 			newcontent = content[:index] + '"' + content[ending:]
+			return __ProHTMLUnicodeDash(newcontent)
+		if (content[index:ending] == '&#8226;'):
+			newcontent = content[:index] + '.' + content[ending:]
 			return __ProHTMLUnicodeDash(newcontent)
 	return content
 
