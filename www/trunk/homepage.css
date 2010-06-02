@@ -222,4 +222,10 @@ color:blue;
 {
 color:navy;
 font-weight:bold;
+text-align:left;
+}
+
+#feedBrowser
+{
+overflow:auto;
 }
