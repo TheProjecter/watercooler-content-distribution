@@ -4,6 +4,8 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
+from urlparse import urlparse
+
 import sys
 import Database
 
@@ -14,21 +16,13 @@ HOST = {'AT&T':'txt.att.net',
 
 SENDER = 'Sender@watercooler.geogriffin.info'
 
-def sendAsEmail(emailAddr, subject, body):
-    """Use program mail to send mail to specified emailadddr
+def sendAsEmail(emailAddr, message):
+    """(Internal Use) Send email using smtplib
     
-    This function send the mail using mail program
-    and whatever MTA mail is using to send mail. All inputs
-    must be strings.
+    Input is a destination email address and a MIMEMultipart message. This
+    function is intended to be used with formatEmail function. However, any
+    other function that supples the right input can work.
     """
-
-    # Construct the message body
-    message = MIMEMultipart()
-    message['Subject'] = subject
-    message['From'] = SENDER
-    message['To'] = emailAddr
-    message.attach(MIMEText(body, 'plain'))
-
     # Create a SMTP connection. It is assumed that a
     # MTA is set up locally.
     smtpObj = smtplib.SMTP('localhost')
@@ -40,11 +34,13 @@ def sendAsEmail(emailAddr, subject, body):
     smtpObj.sendmail(SENDER, sendlist, message.as_string())
 
 def sendAsText(phoneNum, provider, subject, body):
-    """Use program mail to send text.
+    """(Internal Use) Send text message (SMS) through email
     
-    This function send text using mail program. All inputs
-    are strings. Input provider must be found in HOST as defined
-    on the top of this script.    
+    This function composes the destination address using the following
+    format: phone_number@provider_server. If you have AT&T, the destination
+    address may be sent like the following: 5553872638@txt.att.net. This
+    works because major phone provider have servers that delivers email
+    messages to user's phone using SMS. 
     """
     # Create a SMTP connection. It is assumed that a
     # MTA is set up locally.
@@ -54,6 +50,9 @@ def sendAsText(phoneNum, provider, subject, body):
     if provider not in HOST:
         print "We do not support " + provider + "."
         return
+
+    # Remove '-' from phone number
+    phoneNum = phoneNum.replace("-", "")
 
     # Set Email Address
     emailAddr = phoneNum + "@" + HOST[provider] 
@@ -71,60 +70,109 @@ def sendAsText(phoneNum, provider, subject, body):
     # TODO: Catch the exceptions.
     smtpObj.sendmail(SENDER, sendlist, message.as_string())    
 
-def sendStories(listOfStoriesURL):
-    """Send the given list of stories to users who subscribe to them
+def formatEmail(feed, emailAddr):
+    """(Internal Use) Compose the an email based a given feed and destination
     
-    The input to sendStories is of the following form:
-    [storyURL, storyTitle, storyContents]
-    For example,
-    ["www.yahoo.com", "yahoo", "This is yahoo"]
-
-    this function does not return anything.
+    Returns a MIMEMultiplat message. 
     """
-    for story in listOfStoriesURL:
-
-        # Get story info
-        storyURL = story[0]
-        storyTitle = story[1]
-        storyContent = story[2]
     
-        listOfUsers = Database.getUsersByStory(storyURL)
+    # Rename variables
+    feedURL = feed[0] 
+    entries_URL = feed[1]
+    entries_titles = feed[2]
+    entries_contents = feed[3]
 
-        # DEBUG: Print listOfUsers
-        print "List of users from database:"
-        for user in listOfUsers:
-            print user[0], user[4]
-        print "\n"     
+    # Find the Subject of the Email
+    parsed_url = urlparse(feedURL)
+    subject = parsed_url.netloc
 
-        for user in listOfUsers:
+    # Construct the message body
+    message = MIMEMultipart()
+    message['Subject'] = subject
+    message['From'] = SENDER
+    message['To'] = emailAddr
+    
+    # Form an html form of the email body  
+    body = "<html><head></head><body>"
+ 
+    # I assume that there are same number of entries_URL, entries_titles,
+    # and entries_contents are the same. 
+    numEntries = len(entries_URL)
+    for index in range(numEntries):
         
-            # Get user info
-            userEmail = user[1]
-            userPhone = user[2]
-            userCarrier = user[3]
-            userMethod = user[4]
+        link = "<a href=\"" + entries_URL[index] + "\">" + \
+                entries_titles[index] + "</a>" 
+        content = entries_contents[index]
+        body += link + "<br />" + content
 
-            # Format user info
-            userPhone = userPhone.replace("-", "")
+        if index < (numEntries - 1):
+               body += "<br /><br />"
+    
+    body += "</body></html>"
+    message.attach(MIMEText(body, "html"))
+    
+    return message
+
+def sendFeedAsSMS(feed, user):
+    """(Internal Use) Send the stories in the given feed to the given user
+
+    """
+    
+    # Rename variables
+    entries_URL = feed[1]
+    entries_titles = feed[2]
+    entries_contents = feed[3]
+
+    phoneNum = user[2]
+    provider = user[3]
+    send_method = user[4]
+ 
+    numEntries = len(entries_titles)
+    
+    # Send each story to given user. I assume that there are same number of 
+    # entries_URL, entries_titles, and entries_contents are the same.
+    for index in range(numEntries):
+        if send_method == "sms_text":
+            sendAsText(phoneNum, provider, entries_titles[index], \
+                        entries_contents[index])
+        elif send_method == "sms_link":
+            sendAsText(phoneNum, provider, entries_titles[index], \
+                        entries_URL[index])
+
+def sendStories(listOfFeeds):
+    """Send the stories in the list of feeds to the subscribers
+
+    For each of the listOfFeeds, sendStories will pull a list of users 
+    who subscribe to that feed. Then, it will send the stories to users
+    based on the receiver's perfer receiving method.
+    """
+    for feed in listOfFeeds:
+       
+        # Rename variables 
+        feedURL = feed[0]
+        entries_URL = feed[1]
+        entries_titles = feed[2]
+        entries_contents = feed[3]
+        
+        listOfUsers = Database.getUsersBySourceURL(feedURL)
+        
+        for user in listOfUsers:
             
-            # Send
-            if userMethod == "email":
-                print "Send mail to:", userEmail
-                print "title:", storyTitle
-                print "\n"
-                #print "storyContent:", storyContent
-                sendAsEmail(userEmail, storyTitle, storyContent)
-            elif userMethod == "sms_text":
-                print "Send text (without link) to phone#:", userPhone
-                #print "carrier:", userCarrier
-                print "title:", storyTitle
-                print "\n"
-                #print "storyContent:", storyContent
-                sendAsText(userPhone, userCarrier, storyTitle, storyContent)
-            elif userMethod == "sms_link":
-                print "Send text (with link) to phone:", userPhone
-                #print "carrier:", userCarrier
-                print "title:", storyTitle
-                print "\n"
-                #print "storyURL:", storyURL
-                sendAsText(userPhone, userCarrier, storyTitle, storyURL)
+            # Rename variables
+            username = user[0]
+            emailAddr = user[1]
+            phone = user[2]
+            carrier = user[3]
+            send_method = user[4] 
+            
+            # Send stories based on user's prefer method
+            if send_method == "email":
+                message = formatEmail(feed, emailAddr)
+                sendAsEmail(emailAddr, message)
+            
+            elif send_method == "sms_text" or send_method == "sms_link":
+                sendFeedAsSMS(feed, user)
+
+
+
+
