@@ -21,6 +21,10 @@ Lengthened the looping frequency to 3 mins
 Reduce initial iteration delay to 30 seconds
 Enable logs by default for the testing purpose
 
+2.4:
+Change dereferencing index for the stories list
+This is to synchronize with the story definition change in FeedRetriever 6.6.3
+
 """
 global debug
 debug = False
@@ -42,7 +46,7 @@ def Driver():
 
 		if (debug):
 			# current debug/testing purpose
-			print 'story is [Feed Title, Entry Title, Entry Content, Entry Category, Entry URL, Entry Timestamp]'
+			print 'story is [Feed Title, Feed URL, Entry Title, Entry Content, Entry Category, Entry URL, Entry Timestamp]'
 			for index, story in enumerate(stories):
 				print 'Story', index, ':'
 				for item in range(len(story)):
@@ -64,9 +68,9 @@ def Driver():
 		for story in stories:
 			if limiter < 1000:
 				cutted_story = []
-				cutted_story.append(str(story[4]))
-				cutted_story.append(str(story[1]))
+				cutted_story.append(str(story[5]))
 				cutted_story.append(str(story[2]))
+				cutted_story.append(str(story[3]))
 				cutted_stories.append(cutted_story)
 				limiter = limiter + 1
 			if ((limiter % 10) == 0):
