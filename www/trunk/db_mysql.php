@@ -85,6 +85,13 @@ class MySQLDB extends MySQLDBObject implements iDatabase {
     self::$site_db = $this;
   }
 
+/* function MySQLDB::getSiteDefault implements 
+   iDatabase::getSiteDefault (see corresponding documentation)
+*/
+  public static function getSiteDefault() {
+    return self::$site_db;
+  }
+
 /* function MySQLDB::connect implements iDatabase::connect (see 
    corresponding documentation)
 
@@ -165,5 +172,17 @@ class MySQLDB extends MySQLDBObject implements iDatabase {
 	$cfg_vars['opts'][constant($key)] = $value;
 
     return self::connect($cfg_vars);
+  }
+
+  public function getFeeds() {
+    static $feeds_sql = 'SELECT fid FROM feed_sources;';
+    $feeds_stmt = $this->db->pdo->prepare($feeds_sql);
+    $feeds_stmt->execute();
+    /* XXX creating the objects this way relies on DB consistency (sid is not
+       checked to be existent in feed_sources table) */
+    $feeds_stmt->setFetchMode(PDO::FETCH_CLASS, 'MySQLFeed', 
+			      array('db'=>$this->db));
+    $feeds_result = $feeds_stmt->fetchAll();
+    return new MySQLFeeds($feeds_result, $this->db);
   }
 }
