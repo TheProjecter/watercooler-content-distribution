@@ -3,7 +3,7 @@
 <html lang="EN" dir="ltr" xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="content-type" content="text/xml; charset=utf-8" />
-    <title><?php echo $user->username; ?>'s homepage</title>
+    <title><?php echo $user->username; ?>'s homepage</title><!-- ' -->
     <link rel="stylesheet" href="homepage.css" title="signup" />
     <link rel="stylesheet" href="template.css" title="template" />
     <script src="http://www.google.com/jsapi"></script>
@@ -12,16 +12,19 @@
   <body>
     <div id="wrap">
       <div id="header">
-	<a href="logout.php">logout</a>
-      </div>
-      <div id="title">
-	<p><?php echo $user->username; ?>'s Latest News</p>
-      </div>
-      <div id="outline">
-	<div id="nav">
+	<a href="logout.php" style="float:left; width:100%;">logout</a>
+	<div id="logo" style="text-align:center;">
+	  <img style="text-align: center;" src="watercooler_logo.png" alt="Welcome to the Watercooler" />
 	</div>
       </div>
+      <div id="outline">
+      </div>
       <div id="feedreader">
+	<div id="nav">
+	  <h1 class="title">
+	    <?php echo $user->username; ?>'s Latest News <!-- ' -->
+	  </h1>
+	</div>
 	<div id="feedreader_feeds">
 	  <ul>
 	    <?php
@@ -71,6 +74,13 @@
         </div>
       </div>
       <div id="userspace">
+	<div id="browse">
+	  <h1 class="title">
+	    Browse Feeds
+	  </h1>
+	</div>
+	<div id="feedBrowser">
+        </div>
       </div>
       <div id="footer">
 	<a href="settings.php" id="footerLeft">Settings</a>
@@ -83,7 +93,7 @@
    // get reader element
    reader = $('#'+readerElementId);
    // notify user that data is being fetched
-   reader.html('<h1>Getting stories...</h1>');
+   reader.html('<h1>Fetching stories...</h1>');
 
    // set up and execute the request
    reader.load('retrieve_feeds.php',{id:feedId});

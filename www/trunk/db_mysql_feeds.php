@@ -8,7 +8,6 @@ require_once('db_mysql.php');
 class MySQLFeeds extends MySQLDBObject implements iFeeds {
   private $db;
   public $feeds;
-  private $sort_sql = '';
 
   public function __construct(array $feeds, MySQLDB $db) {
     $this->feeds = $feeds;
@@ -34,13 +33,6 @@ class MySQLFeeds extends MySQLDBObject implements iFeeds {
       $feeds[] = MySQLFeed::create($feedinfo, $db);
     $c = __CLASS__;
     return new $c($feeds, $db);
-  }
-
-/* MySQLFeeds::sortBy implements iFeeds::sortBy (see corresponding 
-   documentation)
-*/
-  public function sortBy($feedattr, $reverse) {
-    
   }
 
   // these functions implement Iterator
