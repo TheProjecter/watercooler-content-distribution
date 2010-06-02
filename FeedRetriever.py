@@ -194,7 +194,7 @@ Changed title to be normalized from unicode, avoid failure to match in rare case
 changing story definition once again to contain more information
 # old story is [Feed Title, Entry Title, Entry Content, Entry Category, Entry URL, Entry Timestamp]
 # new story is [Feed Title, Feed URL, Entry Title, Entry Content, Entry Category, Entry URL, Entry Timestamp]
-
+This will not affect email server in anyway
 
 
 ------ CODE FREEZE UNTIL BUGS FOUND -------
@@ -579,10 +579,10 @@ def _DisplayGlobal(myfeed, type):
 #		   myfeed = feedparser parsed object
 #   output: List of stories
 
-def _RSS(f, log, myfeed, latest_ts, debug):
+def _RSS(f, log, myfeed, latest_ts, feedurl, debug):
 	# intialize the story list, note, for each entry, it is a list, and append
 	#   the list into "stories"
-	# story is [Feed Title, Entry Title, Entry Content, Entry Category, Entry URL, Entry Timestamp]
+	# story is [Feed Title, Feed URL, Entry Title, Entry Content, Entry Category, Entry URL, Entry Timestamp]
 	stories = []
 
 	if ((myfeed is None) or (myfeed.feed is None)):
@@ -671,18 +671,18 @@ def _RSS(f, log, myfeed, latest_ts, debug):
 				log.write('Entry ' + str(count+1) + ' error: Time Stamp = 0\n')
 
 			# make a story from above parsed content
-			# story is [Feed Title, Entry Title, Entry Content, Entry Category, Entry URL, Entry Timestamp]
+			# story is [Feed Title, Feed URL, Entry Title, Entry Content, Entry Category, Entry URL, Entry Timestamp]
 			if content == '':
 				content = 'Undefined'
-			story = [feedtitle, entrytitle, content, 'Undefined', entryURL, UNIX_time]
+			story = [feedtitle, feedurl, entrytitle, content, 'Undefined', entryURL, UNIX_time]
 			stories.append(story)
 
 	return stories
 
 
-def _ATOM(f, log, myfeed, latest_ts, debug):
+def _ATOM(f, log, myfeed, latest_ts, feedurl, debug):
 	# intialize the story list, note, for each entry, it is a list, and append
-	#   the list into "stories" [Feed Title, Entry Title, Entry Content, Entry Category, Entry URL, Entry Timestamp]
+	#   the list into "stories" [Feed Title, Feed URL, Entry Title, Entry Content, Entry Category, Entry URL, Entry Timestamp]
 	stories = []
 
 	if ((myfeed is None) or (myfeed.feed is None)):
@@ -795,10 +795,10 @@ def _ATOM(f, log, myfeed, latest_ts, debug):
 				log.write('Entry ' + str(count+1) + ' error: Time Stamp = 0\n')
 
 			# make a story from above parsed content
-			# story is [Feed Title, Entry Title, Entry Content, Entry Category, Entry URL, Entry Timestamp]
+			# story is [Feed Title, Feed URL, Entry Title, Entry Content, Entry Category, Entry URL, Entry Timestamp]
 			if content == '':
 				content = 'Undefined'
-			story = [feedtitle, entrytitle, content, 'Undefined', entryURL, UNIX_time]
+			story = [feedtitle, feedurl, entrytitle, content, 'Undefined', entryURL, UNIX_time]
 			stories.append(story)
 
 	return stories
@@ -916,7 +916,7 @@ def UpdateFeed():
 	debug = False
 	# create a local log for indicating error
 	errlog = open("ERRORLOG.txt", mode ='a')
-	print 'UPDATEFEED STARTED AT 911 \n'
+	print 'UPDATEFEED STARTED AT 919 \n'
 	# connect to the database
 	conn = MySQLdb.connect (host = "localhost", user = "root", passwd = "adminsql", db = "watercooler")
 
@@ -1028,11 +1028,11 @@ def UpdateFeed():
 		if ((myfeed.version is not None) and (myfeed.has_key('version')) and (myfeed.version[:3] == "rss")):
 			if (debug):
 				print 'VERBOSE: RSS feed detected!'
-			stories = _RSS(f, errlog, myfeed, latest_ts, debug)
+			stories = _RSS(f, errlog, myfeed, latest_ts, source_URL, debug)
 		elif ((myfeed.version is not None) and (myfeed.has_key('version')) and (myfeed.version[:4] == "atom")):
 			if (debug):
 				print 'VERBOSE: ATOM feed detected!'
-			stories = _ATOM(f, errlog, myfeed, latest_ts, debug)
+			stories = _ATOM(f, errlog, myfeed, latest_ts, source_URL, debug)
 		else:
 			if (debug):
 				print 'UNKNOWN feed type! Probably invalid URL'
@@ -1044,7 +1044,7 @@ def UpdateFeed():
 		filename_counter = filename_counter + 1
 
 	# now i have a big list of stories: all_stories (list of many story)
-	# story is [Feed Title, Entry Title, Entry Content, Entry Category, Entry URL, Entry Timestamp]
+	# story is [Feed Title, Feed URL, Entry Title, Entry Content, Entry Category, Entry URL, Entry Timestamp]
 
 	# Process the List List:
 	# 	Comparing the time stamp of each story with "newest" time stamp obtained
@@ -1057,16 +1057,16 @@ def UpdateFeed():
 			processed_stories.append(r_story)
 	"""
 	# now I have a processed list of stories as processed_stories
-	# get list of IDs... sources_id_list
+	# get list of (SID, S URL)... sources_id_list
 	cursor2 = conn.cursor ()
 	cursor2.execute ("""
-                SELECT DISTINCT sid, source_name
+                SELECT DISTINCT sid, source_url
                 FROM feed_sources
                 ORDER BY sid;
                 """)
 	sources_id_list = cursor2.fetchall ()
 
-	# story is [Feed Title, Entry Title, Entry Content, Entry Category, Entry URL, Entry Timestamp]
+	# story is [Feed Title, Feed URL, Entry Title, Entry Content, Entry Category, Entry URL, Entry Timestamp]
 	cursor3 = conn.cursor ()
 	cursor_chkexist = conn.cursor ()
 
@@ -1080,19 +1080,19 @@ def UpdateFeed():
 			debug_counter = debug_counter + 1
 		debug_counter0 = debug_counter0 + 1
 	"""
-	for p_story_index, p_story in enumerate(all_stories):
+	for p_story in all_stories:
 		# print 'LC CHECK 1 ARRIVAL, PER STORY START' # LC DEBUG
-		# loop to check and get feed title
+		# loop to check against feed URL
 		mysid = 0
 		for id_list in sources_id_list:
-			if (id_list[1][:255] == p_story[0][:255]):
+			if (id_list[1][:255] == p_story[1][:255]):
 				mysid = id_list[0] 
 				break
 		if (mysid == 0):
 			print ('INVALID SID!, refer to log file!')
 			errlog.write ('INVALID SID: Processed STORY\n')
 			errlog.write('   FEED ENTRY TITLE IS:')
-			errlog.write(p_story[1])
+			errlog.write(p_story[2][:255])
 			errlog.write('\n')
 			cursor2.close()
 			cursor3.close()
@@ -1105,7 +1105,7 @@ def UpdateFeed():
 			SELECT fid
 			FROM feed_stories
 			WHERE feed_stories.url = (%s);
-			""", p_story[4][:255])
+			""", p_story[5][:255])
 		entry_existence = cursor_chkexist.fetchall ()
 
 		# story exist implies the len check > 0
@@ -1116,7 +1116,7 @@ def UpdateFeed():
                         SELECT content
                         FROM feed_stories
                         WHERE feed_stories.url = (%s);
-                        """, p_story[4][:255])
+                        """, p_story[5][:255])
 			db_story = cursor_getstory.fetchall ()
 			cursor_getstory.close ()
 			if (len(db_story) == 0):
@@ -1131,7 +1131,7 @@ def UpdateFeed():
 				if (len(db_story[0]) == 0):
 					print 'DEBUG 1102, db_story[0] is NULL when it should not be'
 				else:
-					if (db_story[0][0][:255] != p_story[2][:255]):
+					if (db_story[0][0][:255] != p_story[3][:255]):
 						# add the story
 						processed_stories.append(p_story)
 					else:
@@ -1141,7 +1141,7 @@ def UpdateFeed():
 					cursor_deletestory.execute ("""
 						DELETE FROM feed_stories
 						WHERE feed_stories.url = (%s);
-						""", p_story[4][:255])
+						""", p_story[5][:255])
 					cursor_deletestory.close ()
 					print 'HERE I REPLACE TO DB: ----------------'
 		else:
@@ -1150,13 +1150,13 @@ def UpdateFeed():
 			print 'HERE I ADD TO DB: ----------------'
 
 		# Add entry to DB
-		print p_story[1][:255], p_story[2][:255], p_story[4][:255], str(p_story[5])
+		print p_story[2][:255], p_story[3][:255], p_story[5][:255], str(p_story[6])
 		print '-------------------------------------'
 		cursor3.execute ("""
 			INSERT INTO feed_stories (title, content, url, time_stamp, sid, gid)
 			VALUES (%s, %s, %s, %s, %s, %s)
 			ON DUPLICATE KEY UPDATE fid=fid+1;
-			""", (p_story[1][:255], p_story[2][:255], p_story[4][:255], int(p_story[5]), mysid, 1))
+			""", (p_story[2][:255], p_story[3][:255], p_story[5][:255], int(p_story[6]), mysid, 1))
 
 
 	cursor_chkexist.close ()
