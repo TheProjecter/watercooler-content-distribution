@@ -185,6 +185,9 @@ Modifying driver also to cooperate
 6.6.1 Test
 Added even more unicode conversion as bugs found
 
+6.6.2 Test
+Make debug log look nicer
+
 
 ------ CODE FREEZE UNTIL BUGS FOUND -------
 ------ USE 6.4 TO TEST! -----------------
