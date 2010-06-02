@@ -65,7 +65,7 @@ class MySQLStories extends MySQLDBObject implements iStories {
     return $get_result;
   }
 
-  private static function get_sort_sql($storyattr, $reverse) {
+  private static function get_sort_sql($storyattr, $reverse = FALSE) {
     if (!is_bool($reverse))
       throw new InvalidArgumentException('parameter $reverse must be a '.
 					 'boolean');
@@ -75,7 +75,7 @@ class MySQLStories extends MySQLDBObject implements iStories {
 
     $col = self::$storyattrs_to_cols[$storyattr];
 
-    return "ORDER BY $col ".($reverse? 'DESC' : 'ASC');
+    return "ORDER BY $col ".($reverse? 'ASC' : 'DESC');
   }	    
 /* MySQLStories::sortBy implements iStories::sortBy (see corresponding 
    documentation)

@@ -9,7 +9,7 @@ if (isset($_REQUEST['id'])) {
 }
 
 function getFeedOutput($feed) {
-  $stories = $feed->stories->get(array('url', 'title', 'content', 'timestamp'));
+  $stories = $feed->stories->get(array('url', 'title', 'content', 'timestamp'), 'timestamp');
   $contents = '<ul>';
   foreach ($stories as $story)
     {
