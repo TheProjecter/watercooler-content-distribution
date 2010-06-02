@@ -187,6 +187,7 @@ Added even more unicode conversion as bugs found
 
 6.6.2 Test
 Make debug log look nicer
+Try to resolve bugs that title cant match in some rare scenarios
 
 
 ------ CODE FREEZE UNTIL BUGS FOUND -------
@@ -695,6 +696,7 @@ def _ATOM(f, log, myfeed, latest_ts, debug):
 	print 'Feed Title:' , feedtitle
 
 	# write all entries parsed on local file
+	print 'LC DEBUG LATEST_TS IN ATOM', str(latest_ts)
 	for count in range(n_entries):
 		# check time_stamp of the entry before proceeding
 		#   to avoid processing something we will trash!
@@ -907,7 +909,7 @@ def UpdateFeed():
 	debug = False
 	# create a local log for indicating error
 	errlog = open("ERRORLOG.txt", mode ='a')
-
+	print 'UPDATEFEED STARTED AT 911 \n'
 	# connect to the database
 	conn = MySQLdb.connect (host = "localhost", user = "root", passwd = "adminsql", db = "watercooler")
 
@@ -933,7 +935,7 @@ def UpdateFeed():
 		latest_ts_tuple = timestamp_list[0]
 		latest_ts = latest_ts_tuple[1]
 	else:
-		print ('TimeStamp POS Trapped 1, potential bug!')
+		print ('TimeStamp POS Trapped 1, potential bug if not initial!')
 		latest_ts = 1
 
 	cursor.close ()
@@ -1076,7 +1078,7 @@ def UpdateFeed():
 		# loop to check and get feed title
 		mysid = 0
 		for id_list in sources_id_list:
-			if (id_list[1] == p_story[0]):
+			if (id_list[1][:255] == p_story[0][:255]):
 				mysid = id_list[0] 
 				break
 		if (mysid == 0):
