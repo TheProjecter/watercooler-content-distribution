@@ -35,6 +35,40 @@ class MySQLFeeds extends MySQLDBObject implements iFeeds {
     return new $c($feeds, $db);
   }
 
+  public function sortByPopularity() {
+    // XXX this is the slowest SQL query on the planet
+
+    if (count($this->feeds) == 0)
+      return;
+
+    $get_result = array();
+
+    // build SQL query
+    $get_sql = 
+      'SELECT feed_sources.sid, COUNT(favorites.uid) AS usercount FROM feed_sources LEFT JOIN favorites ON feed_sources.sid=favorites.sid WHERE feed_sources.sid IN (';
+    // add story ids
+    for ($i = 0; $i < count($this->feeds); $i++)
+      $get_sql .= '?, ';
+    // remove trailing comma and space
+    $get_sql = substr($get_sql, 0, -2);
+    // add rest of SQL query
+    $get_sql .= 
+      ') GROUP BY feed_sources.sid ORDER BY usercount DESC;';
+
+    $get_stmt = $this->db->pdo->prepare($get_sql);
+    // build an array of story ids
+    foreach ($this as $feed)
+      $ids[] = $feed->id;
+    $get_stmt->execute($ids);
+    $get_stmt->setFetchMode(PDO::FETCH_CLASS, 'MySQLFeed', 
+			    array('db'=>$this->db));
+    $get_result = $get_stmt->fetchAll();
+    if ($get_result === FALSE)
+      throw new Exception('PDOStatement::fetchAll failed');
+
+    $this->feeds = $get_result;
+  }
+
   // these functions implement Iterator
   public function rewind() {
     reset($this->feeds);
