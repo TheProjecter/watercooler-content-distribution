@@ -60,6 +60,7 @@
 		{
 		  $icon = 'feed-icon-14x14.png';
 		}
+//"
 	      print("<div onclick=\"getStories('{$currentFeed->id}', 'feedreader_stories')\">");
 	      //print("<img src=\"{$icon}\" alt=\"{$domain}\"></img>");
 	      print("<div class=\"feedName\" style=\"float:right; margin-left:1em;\">{$currentFeed->name}</div></div><br />");//"
@@ -68,19 +69,23 @@
 	  </ul>
 	</div>
 	<div id="feedreader_stories">
-<!--
-	      getStories(<?php print("");  ?>);
--->
+	  <!--
+	     getStories(<?php print("");  ?>);
+	    -->
         </div>
       </div>
       <div id="userspace">
 	<div id="browse">
-	  <h1 class="title">
-	    Browse Feeds
-	  </h1>
+	  <h1 class="title">Browse Feeds</h1>
 	</div>
 	<div id="feedBrowser">
-	  <?php include_once('feedBrowser.php') ?>
+	  <div id="feedHeader" style="margin:1em 1em 0 0; border-bottom: 2px solid navy;">
+	    <div style="width:12em;text-align:left; float:left;">Title</div>
+	    <div style="width:3.5em; text-align:right; float:right; margin-right:1em;">Views</div>
+	  </div>
+	  <div id="feedRows">
+	    <?php include_once('feedBrowser.php') ?>
+	  </div>
         </div>
       </div>
       <div id="footer">
@@ -88,18 +93,19 @@
 	<a href="unsubscribe.php" id="footerRight">Unsubscribe</a>
       </div>
     </div>
-
+    
     <script type="text/javascript">
-   function getStories(feedId, readerElementId) {
-   // get reader element
-   reader = $('#'+readerElementId);
-   // notify user that data is being fetched
-   reader.html('<h1>Fetching stories...</h1>');
-
-   // set up and execute the request
-   reader.load('retrieve_feeds.php',{id:feedId});
- }
+      function getStories(feedId, readerElementId) {
+      // get reader element
+      reader = $('#'+readerElementId);
+      // notify user that data is being fetched
+      reader.html('<h1>Fetching stories...</h1>');
+      
+      // set up and execute the request
+      reader.load('retrieve_feeds.php',{id:feedId});
+      }
     </script>
     
   </body>
 </html>   
+
