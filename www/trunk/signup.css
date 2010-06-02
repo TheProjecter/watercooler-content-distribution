@@ -41,7 +41,7 @@ float: left;
 .rightcolumn {
 float: left;
 margin-top: 1em;
-margin-left: 12em;
+margin-left: 11em;
 background: #ffa20c;
 }
 
@@ -52,7 +52,7 @@ background: #fee3ad;
 border: 1px solid navy;
 }
 
-.submit input
+.submit input, button
 {
 margin-left: 4.5em;
 color: #000;
@@ -60,7 +60,7 @@ background: #ffa20c;
 border: 2px outset #d7b9c9
 } 
 
-addFeeds
+addFeeds, button
 {
 margin-left: 4.5em;
 color: #000;
