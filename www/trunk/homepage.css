@@ -84,9 +84,24 @@ background-image:url('orange_gradient.jpg');
 #feedBrowser
 {
 height:17.5em;
-width:20em;
+width:18.8em;
 background-color:white;
 border:.1em solid navy;
+padding:0 0 0 1em;
+}
+
+#feedHeader
+{
+height:1.5em;
+font-weight:bolder;
+color:navy;
+}
+
+#feedRows
+{
+margin:1em 1em 0 0;
+height:13.5em;
+overflow: auto;
 }
 
 #browse
@@ -109,7 +124,6 @@ width:10em;
 border: .1em solid navy;
 margin-right: 1em;
 background-color: white;
-overflow: auto;
 }
 
 #feedreader_stories
@@ -225,7 +239,3 @@ font-weight:bold;
 text-align:left;
 }
 
-#feedBrowser
-{
-overflow:auto;
-}
