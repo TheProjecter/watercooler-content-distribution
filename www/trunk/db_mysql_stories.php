@@ -17,14 +17,15 @@ class MySQLStories extends MySQLDBObject implements iStories {
 
 /* MySQLStories::get implements iStories::get (see corresponding documentation)
 */
-  public function get(array $storyattrs, $sortattr = NULL) {
+  public function get(array $storyattrs, $sortattr = NULL, 
+		      $sortreverse = FALSE) {
     // XXX implement 'category' and 'feed' attributes
 
     if (count($this->stories) == 0)
       return array();
 
     if ($sortattr !== NULL)
-      $sort_sql = self::get_sort_sql($sortattr);
+      $sort_sql = self::get_sort_sql($sortattr, $sortreverse);
     else
       $sort_sql = $this->sort_sql;
 
@@ -66,6 +67,16 @@ class MySQLStories extends MySQLDBObject implements iStories {
   }
 
   private static function get_sort_sql($storyattr, $reverse = FALSE) {
+    // $forward_dir is the forward sort direction
+    static $forward_dir = 'ASC';
+    // $reverse_dir is the reversed sort direction
+    static $reverse_dir = 'DESC';
+    /* setting an attribute as a key to $storyattr_reversed indicates that it
+       should be sorted the reverse direction by default */
+    static $storyattr_reversed =
+      array('timestamp'=>TRUE);
+
+    // validate parameters
     if (!is_bool($reverse))
       throw new InvalidArgumentException('parameter $reverse must be a '.
 					 'boolean');
@@ -73,16 +84,29 @@ class MySQLStories extends MySQLDBObject implements iStories {
       throw new InvalidArgumentException('parameter $storyattr is not a '.
 					 'valid attribute');
 
+    // convert story attribute to database column
     $col = self::$storyattrs_to_cols[$storyattr];
 
-    return "ORDER BY $col ".($reverse? 'ASC' : 'DESC');
+    // calculate which direction to sort
+    if ($reverse) {
+      if (isset($storyattr_reversed[$storyattr]))
+	$dir = $forward_dir;
+      else
+	$dir = $reverse_dir;
+    } else {
+      if (isset($storyattr_reversed[$storyattr]))
+	$dir = $reverse_dir;
+      else
+	$dir = $forward_dir;
+    }
+
+    return "ORDER BY $col $dir";
   }	    
-/* MySQLStories::sortBy implements iStories::sortBy (see corresponding 
+/* MySQLStories::sort implements iStories::sort (see corresponding 
    documentation)
 */
-  public function sortBy($storyattr, $reverse = FALSE) {
+  public function sort($storyattr, $reverse = FALSE) {
     $this->sort_sql = self::get_sort_sql($storyattr, $reverse);
-    $this->rewind();
   }
   
   // these functions implement Iterator
