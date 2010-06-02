@@ -181,8 +181,8 @@ class MySQLDB extends MySQLDBObject implements iDatabase {
     /* XXX creating the objects this way relies on DB consistency (sid is not
        checked to be existent in feed_sources table) */
     $feeds_stmt->setFetchMode(PDO::FETCH_CLASS, 'MySQLFeed', 
-			      array('db'=>$this->db));
+			      array('db'=>$this));
     $feeds_result = $feeds_stmt->fetchAll();
-    return new MySQLFeeds($feeds_result, $this->db);
+    return new MySQLFeeds($feeds_result, $this);
   }
 }
