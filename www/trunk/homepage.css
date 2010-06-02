@@ -217,3 +217,9 @@ a:visited
 {
 color:blue;
 }
+
+.feedName
+{
+color:navy;
+font-weight:bold;
+}

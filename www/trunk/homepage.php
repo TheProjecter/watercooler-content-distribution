@@ -62,7 +62,7 @@
 		}
 	      print("<div onclick=\"getStories('{$currentFeed->id}', 'feedreader_stories')\">");
 	      //print("<img src=\"{$icon}\" alt=\"{$domain}\"></img>");
-	      print("<div style=\"float:right; margin-left:1em;\">{$currentFeed->name}</div></div><br />");//"
+	      print("<div class=\"feedName\" style=\"float:right; margin-left:1em;\">{$currentFeed->name}</div></div><br />");//"
 	    }
 	    ?>
 	  </ul>
@@ -80,6 +80,7 @@
 	  </h1>
 	</div>
 	<div id="feedBrowser">
+	  <?php include_once('feedBrowser.php') ?>
         </div>
       </div>
       <div id="footer">
