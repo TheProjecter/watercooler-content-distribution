@@ -248,24 +248,6 @@ background-image:url('orange_gradient.jpg');
 width:67.8em;
 }
 
-#footerLeft
-{
-float:left;
-text-align:left;
-background-color: white;
-padding: 0.5em;
-border: .1em groove navy;
-}
-
-#footerRight
-{
-float:right;
-text-align:right;
-background-color: white;
-padding: 0.5em;
-border: .1em groove navy;
-}
-
 /* CSS CLASSES */
 
 .corner
@@ -317,6 +299,18 @@ width:11em;
 {
 text-align:center;
 border:1px solid navy;
+}
+
+.left
+{
+text-align:left;
+float:left;
+}
+
+.right
+{
+text-align:left;
+float:right;
 }
 
 .submit input
@@ -396,7 +390,7 @@ float:left;
 .feed button
 {
 background-color:orange;
-height:3em;
+height:2em;
 width:19em;
 margin-right:1em;
 }
@@ -404,4 +398,14 @@ margin-right:1em;
 .feed
 {
 text-align:center;
+}
+
+.bigButton
+{
+background-color:orange;
+height:3em;
+width:10em;
+text-align:center;
+color:navy;
+font-weight:bolder;
 }
