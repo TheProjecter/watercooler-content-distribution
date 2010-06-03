@@ -104,6 +104,11 @@
       // set up and execute the request
       reader.load('retrieve_feeds.php',{id:feedId});
       }
+
+function addFeed(feed) {
+
+  //  iUser::addFeeds(
+}
     </script>
     
   </body>
