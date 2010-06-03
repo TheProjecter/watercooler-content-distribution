@@ -56,7 +56,7 @@ else
 <html lang="EN" dir="ltr" xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="content-type" content="text/xml; charset=utf-8" />
-    <title><?php echo $user->username?>'s Settings</title>
+    <title><?php echo $user->username?>'s Settings</title> <!-- ' -->
     <link rel="stylesheet" href="signup.css" title="signup" />
     <script type="text/JavaScript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js">
       $(document).ready(function(){$('#userName').focus();});
@@ -90,7 +90,7 @@ else
 
 	<!-- Current Password -->
 	<div class="lineWidth"><label class="leftCol" for="currentPass">Current Password</label>
-	  <input class="middleCol" id="currentPass" type="password" name="userCurrentPass[M ]E" maxlength="10" />
+	  <input class="middleCol" id="currentPass" type="password" name="userCurrentPass" maxlength="10" />
 	</div>
 	
 	<!-- New Password -->
@@ -174,7 +174,7 @@ else
 	</div>
 	<div style="text-align:center;">
           <button class="clickable" type="button" onclick="addFeed()">Add More Feeds</button>
-	  <input class="clickable" type="submit" name="submit" value="Register!"/>
+	  <input class="clickable" type="submit" name="submit" value="Update!"/>
 	</div>
       </fieldset>
       
@@ -245,7 +245,7 @@ $givenPass  = md5($_REQUEST['userCurrentPass']);
     // Validate the password input
 if($actualPass != $givenPass)
   {
-    echo 'Please enter your correct password';
+    echo '<p style="color:red">Please enter your correct password</p>';
     exit();
   }
 
@@ -254,7 +254,7 @@ if($actualPass != $givenPass)
       {
 	if (strlen($_REQUEST['userNewPass']) < 6)
 	  {
-	    echo 'Please choose a password of at least 6 characters';
+	    echo '<p style="color:red">Please choose a password of at least 6 characters</p>';
 	    $_REQUEST['userNewPass'] = '';
 	    exit();
 	  }
@@ -265,13 +265,13 @@ if($actualPass != $givenPass)
 	    $userRepeatNewPass = $_REQUEST['userRepeatNewPass'];
 	    if ($userRepeatNewPass != $_REQUEST['userNewPass'])
 	      {
-		echo 'Password mismatch.  Please re-enter your password.';
+		echo '<p style="color:red">Password mismatch.  Please re-enter your password.</p>';
 		exit();
 	      }
 	  }
 	else
 	  {
-	    echo 'Please enter your password again in the Repeat Password field.';
+	    echo '<p style="color:red">Please enter your password again in the Repeat Password field.</p>';
 	    exit();
 	  }
 	$user->password = md5($_REQUEST['userNewPass']);
@@ -286,7 +286,7 @@ if(empty($_REQUEST['userName'])==FALSE && sanityCheck($_REQUEST['userName'], 'st
       {
 	if($_REQUEST['userName'] != $user->username)
 	  {
-	    echo 'Username is already in use.  Please try another username.';
+	    echo '<p style="color:red">Username is already in use.  Please try another username.</p>';
 	    exit();
 	  }
 	
@@ -294,10 +294,9 @@ if(empty($_REQUEST['userName'])==FALSE && sanityCheck($_REQUEST['userName'], 'st
     else
       {
 	$user->username = $_REQUEST['userName'];
-	echo "<p>Username successfully updated to {$user->username}</p>";
+	echo "<p style=\"color:navy\">Username successfully updated to {$user->username}</p>";
       }
   }
-
 
 
 // Make sure that the email is syntactically valid
@@ -305,7 +304,7 @@ if (empty($_REQUEST['userEmail'])==FALSE && sanityCheck($_REQUEST['userEmail'], 
   {
     if (checkEmail($_REQUEST['userEmail']) == FALSE)
       {
-	echo 'Please enter a valid email address.';
+	echo '<p style="color:red">Please enter a valid email address.</p>';
 	exit();
       }
     else
@@ -313,7 +312,7 @@ if (empty($_REQUEST['userEmail'])==FALSE && sanityCheck($_REQUEST['userEmail'], 
 	if ($user->email != $_REQUEST['userEmail'])
 	  {
 	    $user->email = $_REQUEST['userEmail'];
-	    echo "<p>Email address successfully updated to {$user->email} </p>";
+	    echo "<p style=\"color:navy\">Email address successfully updated to {$user->email} </p>";
 	  }
       }
   }
@@ -325,7 +324,7 @@ if (empty($_REQUEST['userCell'])==FALSE)
       {
 	if (strlen($_REQUEST['userCell']) != 10)
 	  {
-	    echo 'A valid cell phone number must be exactly ten digits long';
+	    echo '<p style="color:red">A valid cell phone number must be exactly ten digits long</p>';
 	    $_REQUEST['userCell'] = '';
 	    exit();
 	  }
@@ -335,10 +334,10 @@ if (empty($_REQUEST['userCell'])==FALSE)
 	      {
 		if ($this_user_object != $user)
 		  {
-		    echo 'There is already an account associated with this cell phone number.  If you do not have an account with username ';
+		    echo '<p style="color:red">There is already an account associated with this cell phone number.  If you do not have an account with username ';
 		    $this_user_array  = $this_user_object->get((array)'username');
 		    echo $this_user_array['username'];
-		    echo ', email our <a href"mailto:tripledouble1210@gmail.com">Customer Service Department</a>.';
+		    echo ', email our <a href"mailto:tripledouble1210@gmail.com">Customer Service Department</a>.</p>';
 		    exit();
 		  }
 	      }
@@ -347,7 +346,7 @@ if (empty($_REQUEST['userCell'])==FALSE)
       }
     else
       {
-	echo 'Please enter a valid cell phone number (only numeric characters).';
+	echo '<p style="color:red">Please enter a valid cell phone number (only numeric characters).</p>';
 	$_REQUEST['userCell'] = '';
 	exit();
       }
