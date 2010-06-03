@@ -1,0 +1,273 @@
+html 
+{
+text-align:center;
+margin:0;
+padding:0;
+color:black;
+background:white;
+}
+
+h1, h3
+{
+margin: 0;
+}
+
+li
+{
+list-style: none;
+margin: 0;
+padding: 0;
+text-align: left;
+}
+
+ul
+{
+margin: 0;
+padding: 0;
+}
+
+a:link
+{
+text-decoration:none;
+}
+
+a:visited
+{
+color:blue;
+}
+
+a img
+{
+border:none;
+}
+
+/* IDS */
+
+#wrap 
+{
+text-align:center;
+width:70em;
+margin:0 auto 0 auto;
+background:white;
+padding:1em;
+}
+
+#outline
+{
+text-align:center;
+}
+
+#feedreader
+{
+height: 22.5em;
+width: 38em;
+margin: 1em auto;
+border: .1em groove navy;
+padding: 1em;
+float:  left;
+background-color:#ffa20f;
+background-image:url('orange_gradient.jpg');
+}
+
+#userspace
+{
+height: 22.5em;
+width: 26.4em;
+margin: 1em auto;
+margin-left: 1em;
+border: .1em groove navy;
+padding: 1em;
+float:  left;
+background-color:#ffa20f;
+background-image:url('orange_gradient.jpg');
+}
+
+#nav
+{
+border: .1em groove navy;
+width: 36em;
+padding:1em;
+background-color:white;
+margin-bottom: 1em;
+}
+
+#nav ul
+{
+margin:0;
+padding:0;
+list-style:none;
+}
+
+#nav li
+{
+display:inline;
+margin-bottom:0;
+padding:0;
+}
+
+#logo
+{
+text-align:center;
+width:100%;
+margin:0 auto 0 auto;
+}
+
+#feedBrowser
+{
+height:17.5em;
+width:25.2em;
+background-color:white;
+border:.1em groove navy;
+padding:0 0 0 1em;
+}
+
+#feedHeader
+{
+height:1.5em;
+font-weight:bolder;
+color:navy;
+}
+
+#feedRows
+{
+margin:1em 1em 0 0;
+height:13.5em;
+overflow: auto;
+}
+
+#browse
+{
+border: .1em groove navy;
+width: 24.2em;
+padding:1em;
+background-color:white;
+margin-bottom: 1em;
+}
+
+#feedreader_feeds
+{
+float:left;
+padding:1em;
+height:15.5em;
+width:16em;
+border: .1em groove navy;
+margin-right: 1em;
+background-color: white;
+overflow:auto;
+}
+
+#feedreader_stories
+{
+float:left;
+width:16.6em;
+padding:1em;
+height:15.5em;
+border: .1em groove navy;
+background-color: white;
+overflow: auto;
+}
+
+#footer
+{
+border: .1em groove navy;
+clear:both;
+padding: 1em;
+height:2.2em;
+background-color:#ffa20f;
+background-image:url('orange_gradient.jpg');
+width:67.8em;
+}
+
+#footerLeft
+{
+float:left;
+text-align:left;
+background-color: white;
+padding: 0.5em;
+border: .1em groove navy;
+}
+
+#footerRight
+{
+float:right;
+text-align:right;
+background-color: white;
+padding: 0.5em;
+border: .1em groove navy;
+}
+
+
+/* CLASSES */
+
+.story
+{
+margin: 0 0 2em 0;
+}
+
+.story a
+{
+text-decoration:none;
+}
+
+.story a:link
+{
+color:navy;
+}
+
+.story a:visited
+{
+color:navy;
+}
+
+.story a:hover
+{
+background-color:orange;
+}
+
+.active a:active
+{
+
+}
+
+.storyDate
+{
+margin: .25em 0 .75em 0;
+font-style: italic;
+color:#666666;
+}
+
+.feedName
+{
+color:navy;
+font-weight:bold;
+text-align:left;
+}
+
+.title
+{
+text-align:center;
+text-transform:uppercase;
+font-family:arial;
+font-size:x-large;
+font-weight:bold;
+color:navy;
+}
+
+.icon
+{
+text-align:left;
+float:left;
+}
+
+.feed button
+{
+background-color:orange;
+height:3em;
+width:18em;
+margin-right:1em;
+}
+
+.feed
+{
+text-align:center;
+}

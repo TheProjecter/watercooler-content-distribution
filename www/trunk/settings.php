@@ -57,7 +57,7 @@ else
   <head>
     <meta http-equiv="content-type" content="text/xml; charset=utf-8" />
     <title><?php echo $user->username?>'s Settings</title> <!-- ' -->
-    <link rel="stylesheet" href="signup.css" title="signup" />
+    <link rel="stylesheet" href="watercooler.css" title="signup" />
     <script type="text/JavaScript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js">
       $(document).ready(function(){$('#userName').focus();});
     </script>
@@ -111,7 +111,7 @@ else
 	<!-- Carrier -->
 	<div class="lineWidth">
 	  <label class="leftCol" for="carrier">Carrier</label>
-	  <select id="carrier" name="userCarrier">
+	  <select style="float:left; border: 1px solid navy;" id="carrier" name="userCarrier">
 	    <option value="AT&#38;T">AT&#38;T</option>
 	    <option <?php if($displayCarrier == 'Verizon') echo 'selected'; ?> value="Verizon">Verizon</option>
 	    <option <?php if($displayCarrier == 'T-Mobile') echo 'selected'; ?> value="T-Mobile">T-Mobile</option>
