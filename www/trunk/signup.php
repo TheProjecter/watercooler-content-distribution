@@ -352,10 +352,8 @@ if(checkSet() != FALSE)
 
     else
       {
-	print("Registration Successful!  User ");
-	print($_REQUEST['userName']);
-	print(" added to the database.  ");
-	print('<a href="index.php">Here is your homepage!</a>');
+	print("Registration Successful!");
+	print('<a href="index.php">Login here.</a>');
 	print('</br></br>');
       }
   }
