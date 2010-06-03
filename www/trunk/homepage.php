@@ -4,8 +4,7 @@
   <head>
     <meta http-equiv="content-type" content="text/xml; charset=utf-8" />
     <title><?php echo $user->username; ?>'s homepage</title><!-- ' -->
-    <link rel="stylesheet" href="homepage.css" title="signup" />
-    <link rel="stylesheet" href="template.css" title="template" />
+    <link rel="stylesheet" href="watercooler.css" title="watercooler" />
     <script src="http://www.google.com/jsapi"></script>
     <script>google.load("jquery", "1");</script>
   </head>
@@ -17,7 +16,7 @@
       <a href="index.php"><img src="watercooler_logo.png" alt="Welcome to the Watercooler" /></a>
 	</div>
       </div>
-      <div id="outline">
+      <div style="border-style:none;" class="center">
         <div id="feedreader">
 	  <div id="nav">
 	    <h1 class="title">
@@ -60,9 +59,9 @@
 		  $icon = 'feed-icon-14x14.png';
 		}
 //"
-	      print("<div onclick=\"getStories('{$currentFeed->id}', 'feedreader_stories')\">");
-	      //print("<img src=\"{$icon}\" alt=\"{$domain}\"></img>");
-	      print("<div class=\"feedName\" style=\"float:right; margin-left:1em;\">{$currentFeed->name}</div></div><br />");//"
+	      print("<div class=\"feed\"> <button type=\"button\" onclick=\"getStories('{$currentFeed->id}', 'feedreader_stories')\">");
+	      print("<img class=\"icon\" src=\"{$icon}\" alt=\"{$domain}\"></img>");
+	      print("<div class=\"feedName\">{$currentFeed->name}</div></button>");//"
 	    }
 	    ?>
 	    </ul>
@@ -105,9 +104,10 @@
       reader.load('retrieve_feeds.php',{id:feedId});
       }
 
-function addFeed(feed) {
-
-  //  iUser::addFeeds(
+function addFeed(feed_id) {
+  //$feed = Feed::find('id',$id);
+  //$if($feed !== NULL)
+  //  $user->addFeed($feed);
 }
     </script>
     

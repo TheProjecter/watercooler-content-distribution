@@ -17,7 +17,7 @@ $fieldNumber = 0;
   <head>
     <meta http-equiv="content-type" content="text/xml; charset=utf-8" />
     <title>Sign up</title>
-    <link rel="stylesheet" href="signup.css" title="signup" />
+    <link rel="stylesheet" href="watercooler.css" title="signup" />
     <script type="text/JavaScript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js">
       $(document).ready(function(){$('#userName').focus();});
     </script>
@@ -25,7 +25,7 @@ $fieldNumber = 0;
   <body>
     <!-- Header -->
     <div id="header">
-      <div class="corner" style="position:absolute; text-align:left;">
+      <div class="corner">
 	<a href="index.php">home</a>
       </div>
       <div id="logo">
@@ -72,7 +72,7 @@ $fieldNumber = 0;
 	<!-- Carrier -->
 	<div class="lineWidth">
 	  <label class="leftCol" for="carrier">Carrier</label>
-	  <select id="carrier" name="userCarrier">
+	  <select style="float:left; border: 1px solid navy;" id="carrier" name="userCarrier">
 	    <option value="AT&T">AT&#38;T</option>
 	    <option <?php if($_REQUEST['userCarrier'] == 'Verizon') echo 'selected'; ?> value="Verizon">Verizon</option>
 	    <option <?php if($_REQUEST['userCarrier'] == 'T-Mobile') echo 'selected'; ?> value="T-Mobile">T-Mobile</option>
@@ -88,7 +88,7 @@ $fieldNumber = 0;
 	<div class="lineWidth">
 	  <label class="leftCol" for="reception">Methods of Reception</label>
 	  <object>
-	    <input type="checkbox" name="receive_email" value="yes" <?php if($_REQUEST['receive_email'] == 'yes') echo 'checked'; ?>/>Email<br />
+	    <input style="margin-left:-2.6em;" type="checkbox" name="receive_email" value="yes" <?php if($_REQUEST['receive_email'] == 'yes') echo 'checked'; ?>/>Email<br />
 	    <input type="checkbox" name="receive_sms_text" value="yes" <?php if($_REQUEST['receive_sms_text'] == 'yes') echo 'checked'; ?>/>SMS (Text)<br />
 	    <input type="checkbox" name="receive_sms_link" value="yes" <?php if($_REQUEST['receive_sms_link'] == 'yes') echo 'checked'; ?>/>SMS (Link)<br />
 	  </object>
@@ -118,7 +118,7 @@ $fieldNumber = 0;
 
 	  <!--Add More Feeds -->
 	</div>
-	<div style="text-align:center;">
+	<div>
           <button class="clickable" type="button" onclick="addFeed()">Add More Feeds</button>
 	  <input class="clickable" type="submit" name="submit" value="Register!"/>
 	</div>
