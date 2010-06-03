@@ -169,17 +169,48 @@ Adding additional checks to avoid crashing due to these URLS
 Tested with Tim's Email server and totally 46 emails and texts sent
 All received as intended
 
-6.5 Test
-Change "story" is per feed specific, to facilitate 
-improvement reducing on amount of email spent
+6.5 Bug test
+Fixing the duplicate email bug
+added tons of print messages in default mode, to be removed later
+identified bug reason, hypothesis made
+
+6.5.1 Test
+replaced SQL code in UpdateFeed()
+Added logic not to add existing entry
 
 6.6 Test
-Debugging new implementation, changed definition of story to:
-[Feed Title, Feed URL, [Entry Titles], [Entry Contents], [Entry Categories], [Entry URLs], [Entry Timestamps]] 
+Appearing seemed to work, now run it in server for a day to see
+Modifying driver also to cooperate
+
+6.6.1 Test
+Added even more unicode conversion as bugs found
+
+6.6.2 Test
+Make debug log look nicer
+Try to resolve bugs that title cant match in some rare scenarios
+
+6.6.3 Test
+Changed title to be normalized from unicode, avoid failure to match in rare case
+changing story definition once again to contain more information
+# old story is [Feed Title, Entry Title, Entry Content, Entry Category, Entry URL, Entry Timestamp]
+# new story is [Feed Title, Feed URL, Entry Title, Entry Content, Entry Category, Entry URL, Entry Timestamp]
+This will not affect email server in anyway
+
+6.6.4 Test
+changed empty content "default" to nicer version as Matt suggested
+
+6.6.5 Beta
+The 6.6.4 is tested, giving intended behaviour.
+*** Starting new branch below ***
+
+6.7 Test
+Change "story" is per feed specific, to facilitate improvement reducing on amount of email spent:
+[Feed Title, Feed URL, [Entry Titles], [Entry Contents], [Entry Categories], [Entry URLs], [Entry Timestamps]]
+added more comments to make codes more readable
 
 
 ------ CODE FREEZE UNTIL BUGS FOUND -------
------- USE 6.4 TO TEST! -----------------
+------ USE 6.6.5 TO TEST! -----------------
 
 Future:
 add threads to parallelize processing data when a list of URL is obtained
@@ -206,6 +237,7 @@ import MySQLdb
 
 
 # define ending characters, and check it
+# return true if the char is an element of LegalEndings, false otherwise
 # verified logic
 def __CheckEnding(ending):
 	LegalEndings = [']', '...', '.', '!', '?', '"', '\'']
@@ -229,13 +261,17 @@ def __PreHTMLUnicode(content):
 	return content
 
 
-# functions to replace corresponding unicode to ' ' and '--'
+# functions to replace corresponding unicode to ascii value
+# they are necessarily to help the python library, improving "visual correctness"
 # verified logic
 def __ProHTMLUnicodeSpace(content):
 	for index in (range((len(content))-5)):
 		ending = index+6
 		if (content[index:ending] == '&nbsp;'):
 			newcontent = content[:index] + ' ' + content[ending:]
+			return __ProHTMLUnicodeSpace(newcontent)
+		if (content[index:ending] == '&#149;'):
+			newcontent = content[:index] + '.' + content[ending:]
 			return __ProHTMLUnicodeSpace(newcontent)
 	return content
 
@@ -251,8 +287,14 @@ def __ProHTMLUnicodeDash(content):
 		if (content[index:ending] == '&#8211;'):
 			newcontent = content[:index] + '-' + content[ending:]
 			return __ProHTMLUnicodeDash(newcontent)
+		if (content[index:ending] == '&#8212;'):
+			newcontent = content[:index] + '--' + content[ending:]
+			return __ProHTMLUnicodeDash(newcontent)
 		if ((content[index:ending] == '&#8221;') or (content[index:ending] == '&#8220;')):
 			newcontent = content[:index] + '"' + content[ending:]
+			return __ProHTMLUnicodeDash(newcontent)
+		if (content[index:ending] == '&#8226;'):
+			newcontent = content[:index] + '.' + content[ending:]
 			return __ProHTMLUnicodeDash(newcontent)
 	return content
 
@@ -292,12 +334,12 @@ def __LeadingSpace(content):
 		return content
 
 
-# a function to remove trash words at the end of content (2, 3)
+# a function to remove trash words at the end of content
 # lemma: There is no useful information after this syntax: 'legal_ending' [space]* \n [space]* \n
 def __AdsFilter(content):
 	# define CHARS_SET
 	CHARS_SET = re.compile(r'[a-zA-Z0-9]')
-	last_legal_pos=0
+	last_legal_pos = 0
 	endpos = 0
 	# find last legal ending position
 	for index in range(len(content)):
@@ -307,7 +349,7 @@ def __AdsFilter(content):
 	if (last_legal_pos != 0):
 		endpos = 0
 		end = len(content)
-		current = last_legal_pos+1
+		current = last_legal_pos + 1
 		newcurr = 0
 		# detect non-space position, from legal_ending_position to end
 		# checking this: is it all space?
@@ -357,7 +399,8 @@ def __AdsFilter(content):
 
 
 # an advanced function to remove more trash content
-# lemma: There is no useful information when there are two legal ending syntax,
+# lemma: There is no useful information after former legal ending syntax,
+#        when there are two legal ending syntax,
 #        and, the previous one is immediately seperated by following syntax:
 #        '2nd last legal ending' [space]* \n [space]* \n [space]* \n [space]* \n
 def __AdvAdsFilter(content):
@@ -549,12 +592,16 @@ def _DisplayGlobal(myfeed, type):
 #	input: f = local file to write to
 #		   log = local log for error
 #		   myfeed = feedparser parsed object
-#   output: List of stories
+#          latest_ts = latest time stamp, of all feeds in the database
+#          feedurl = the URL of the feed
+#   output: A story, containing all new entries, as:
+#           [Feed Title, Feed URL, [Entry Titles], [Entry Contents], [Entry Categories], [Entry URLs], [Entry Timestamps]]
+#           Note, for no new entries, the output will be [] AND NOT:
+#           [Feed Title, Feed URL, [], [], [], [], []]
 
-def _RSS(f, log, myfeed, latest_ts, debug):
-	# intialize the story list, note, for each entry, it is a list, and append
-	#   the list into "stories"
-	# story is [Feed Title, Entry Title, Entry Content, Entry Category, Entry URL, Entry Timestamp]
+def _RSS(f, log, myfeed, latest_ts, feedurl, debug):
+	# intialize the story, and corresponding entries lists
+	# story is [Feed Title, Feed URL, [Entry Titles], [Entry Contents], [Entry Categories], [Entry URLs], [Entry Timestamps]]
 	story = []
 	entrytitle_list = []
 	entrycontent_list = []
@@ -580,6 +627,7 @@ def _RSS(f, log, myfeed, latest_ts, debug):
 
 	print 'Feed Title:' , feedtitle
 
+	print 'LC DEBUG LATEST_TS IN RSS', str(latest_ts)
 	# write all entries parsed on local file
 	for count in range(n_entries):
 		# check time_stamp of the entry before proceeding
@@ -651,20 +699,44 @@ def _RSS(f, log, myfeed, latest_ts, debug):
 			entry_ts_list.append(UNIX_time)
 
 			# make a story from above parsed content
-			# story is [Feed Title, Entry Title, Entry Content, Entry Category, Entry URL, Entry Timestamp]
+			# story is [Feed Title, Feed URL, [Entry Titles], [Entry Contents], [Entry Categories], [Entry URLs], [Entry Timestamps]]
 			if content == '':
-				content = 'Undefined'
+				content = 'Feed brought to you by the Watercooler'
 			entrycontent_list.append(content)
 			entrycategory_list.append('Undefined')
+	# end for ---------------------------------------------------------------------------------------------------------
 	if (len(entry_ts_list) > 0):
-		story = [feedtitle, entrytitle_list, entrycontent_list, entrycategory_list, entryURL_list, entry_ts_list]
+		story = [feedtitle, feedurl, entrytitle_list, entrycontent_list, entrycategory_list, entryURL_list, entry_ts_list]
+
+	# CONSISTENCY CHECK
+	con1 = len(entrytitle_list)
+	con2 = len(entrycontent_list)
+	con3 = len(entrycategory_list)
+	con4 = len(entryURL_list)
+	con5 = len(entry_ts_list)
+	if ((con1 != con2) or (con1 != con3) or (con1 != con4) or (con1 != con5)):
+		print 'CONSISTENCY CHECK FAILED IN RSS STORY '
+		print 'STORY IS:'
+		print str(story)
+		print '\n'
 
 	return story
 
 
-def _ATOM(f, log, myfeed, latest_ts, debug):
-	# intialize the story list, note, for each entry, it is a list, and append
-	#   the list into "stories" [Feed Title, Entry Title, Entry Content, Entry Category, Entry URL, Entry Timestamp]
+# a specialized function to parse and process ATOM feeds
+#	input: f = local file to write to
+#		   log = local log for error
+#		   myfeed = feedparser parsed object
+#          latest_ts = latest time stamp, of all feeds in the database
+#          feedurl = the URL of the feed
+#   output: A story, containing all new entries, as:
+#           [Feed Title, Feed URL, [Entry Titles], [Entry Contents], [Entry Categories], [Entry URLs], [Entry Timestamps]]
+#           Note, for no new entries, the output will be [] AND NOT:
+#           [Feed Title, Feed URL, [], [], [], [], []]
+
+def _ATOM(f, log, myfeed, latest_ts, feedurl, debug):
+	# intialize the story, and corresponding entries lists
+	# story is [Feed Title, Feed URL, [Entry Titles], [Entry Contents], [Entry Categories], [Entry URLs], [Entry Timestamps]]
 	story = []
 	entrytitle_list = []
 	entrycontent_list = []
@@ -689,6 +761,7 @@ def _ATOM(f, log, myfeed, latest_ts, debug):
 		feedtitle = unicodedata.normalize('NFKD', feedtitle).encode('ascii','ignore')
 	print 'Feed Title:' , feedtitle
 
+	print 'LC DEBUG LATEST_TS IN ATOM', str(latest_ts)
 	# write all entries parsed on local file
 	for count in range(n_entries):
 		# check time_stamp of the entry before proceeding
@@ -785,14 +858,26 @@ def _ATOM(f, log, myfeed, latest_ts, debug):
 			entry_ts_list.append(UNIX_time)
 
 			# make a story from above parsed content
-			# story is [Feed Title, Entry Title, Entry Content, Entry Category, Entry URL, Entry Timestamp]
+			# story is [Feed Title, Feed URL, [Entry Titles], [Entry Contents], [Entry Categories], [Entry URLs], [Entry Timestamps]]
 			if content == '':
-				content = 'Undefined'
+				content = 'Feed brought to you by the Watercooler'
 			entrycontent_list.append(content)
 			entrycategory_list.append('Undefined')
-
+	# end for ---------------------------------------------------------------------------------------------------------
 	if (len(entry_ts_list) > 0):
-		story = [feedtitle, entrytitle_list, entrycontent_list, entrycategory_list, entryURL_list, entry_ts_list]
+		story = [feedtitle, feedurl, entrytitle_list, entrycontent_list, entrycategory_list, entryURL_list, entry_ts_list]
+
+	# CONSISTENCY CHECK
+	con1 = len(entrytitle_list)
+	con2 = len(entrycontent_list)
+	con3 = len(entrycategory_list)
+	con4 = len(entryURL_list)
+	con5 = len(entry_ts_list)
+	if ((con1 != con2) or (con1 != con3) or (con1 != con4) or (con1 != con5)):
+		print 'CONSISTENCY CHECK FAILED IN ATOM STORY '
+		print 'STORY IS:'
+		print str(story)
+		print '\n'
 
 	return story
 
@@ -909,7 +994,7 @@ def UpdateFeed():
 	debug = False
 	# create a local log for indicating error
 	errlog = open("ERRORLOG.txt", mode ='a')
-
+	print 'UPDATEFEED STARTED AT 997 \n'
 	# connect to the database
 	conn = MySQLdb.connect (host = "localhost", user = "root", passwd = "adminsql", db = "watercooler")
 
@@ -935,7 +1020,7 @@ def UpdateFeed():
 		latest_ts_tuple = timestamp_list[0]
 		latest_ts = latest_ts_tuple[1]
 	else:
-		print ('TimeStamp POS Trapped 1, potential bug!')
+		print ('TimeStamp POS Trapped 1, potential bug if not initial!')
 		latest_ts = 1
 
 	cursor.close ()
@@ -1022,22 +1107,13 @@ def UpdateFeed():
 		if ((myfeed.version is not None) and (myfeed.has_key('version')) and (myfeed.version[:3] == "rss")):
 			if (debug):
 				print 'VERBOSE: RSS feed detected!'
-			raw_stories = _RSS(f, errlog, myfeed, latest_ts, debug)
-			stories = []
-			if (len(raw_stories) > 0):
-				stories.append(raw_stories[0])
-				stories.append(str(source_URL))
-				stories.extend(raw_stories[1:])
+			stories = _RSS(f, errlog, myfeed, latest_ts, source_URL, debug)
 			
 		elif ((myfeed.version is not None) and (myfeed.has_key('version')) and (myfeed.version[:4] == "atom")):
 			if (debug):
 				print 'VERBOSE: ATOM feed detected!'
-			raw_stories = _ATOM(f, errlog, myfeed, latest_ts, debug)
-			stories = []
-			if (len(raw_stories) > 0):
-				stories.append(raw_stories[0])
-				stories.append(str(source_URL))
-				stories.extend(raw_stories[1:])
+			stories = _ATOM(f, errlog, myfeed, latest_ts, source_URL, debug)
+
 		else:
 			if (debug):
 				print 'UNKNOWN feed type! Probably invalid URL'
@@ -1054,6 +1130,7 @@ def UpdateFeed():
 	# Process the List List:
 	# 	Comparing the time stamp of each story with "newest" time stamp obtained
 	# 	remove all old story
+	processed_stories = []
 	"""
 	for r_story in all_stories:
 		r_story_ts = r_story[5]
@@ -1064,14 +1141,16 @@ def UpdateFeed():
 	# get list of IDs... sources_id_list
 	cursor2 = conn.cursor ()
 	cursor2.execute ("""
-                SELECT DISTINCT sid, source_name
+                SELECT DISTINCT sid, source_url
                 FROM feed_sources
                 ORDER BY sid;
                 """)
 	sources_id_list = cursor2.fetchall ()
 
-	# story is [Feed Title, Entry Title, Entry Content, Entry Category, Entry URL, Entry Timestamp]
+	# story is [Feed Title, Feed URL, [Entry Titles], [Entry Contents], [Entry Categories], [Entry URLs], [Entry Timestamps]]
 	cursor3 = conn.cursor ()
+	cursor_chkexist = conn.cursor ()
+
 	"""
 	# LC DEBUG: DISPLAY ALL PROCESSED_STORIES
 	debug_counter0 = 0
@@ -1086,11 +1165,11 @@ def UpdateFeed():
 	#print str(all_stories)
 	for p_story in all_stories:
 		# print 'LC CHECK 1 ARRIVAL, PER STORY START' # LC DEBUG
-		# loop to check and get feed title
+		# loop to check against feed URL
 		mysid = 0
 		if (len(p_story) > 0):
 			for id_list in sources_id_list:
-				if (id_list[1] == p_story[0]):
+				if (id_list[1][:255] == p_story[1][:255]):
 					mysid = id_list[0] 
 					break
 			if (mysid == 0):
@@ -1099,18 +1178,74 @@ def UpdateFeed():
 				errlog.write('   FEED ENTRY TITLE IS:')
 				errlog.write(p_story[1])
 				errlog.write('\n')
+				cursor_chkexist.close ()
 				cursor2.close()
 				cursor3.close()
 				conn.commit()
 				conn.close()
 				return []
-			for iteration in (range(len(p_story[5]))):
+			# for each entry in the story...
+			for iteration in (range(len(p_story[6]))):
+				# check existence of entry
+				cursor_chkexist.execute("""
+					SELECT fid
+					FROM feed_stories
+					WHERE feed_stories.url = (%s);
+					""", p_story[5][:255])
+				entry_existence = cursor_chkexist.fetchall ()
+
+				# story exist implies the len check > 0
+				if (len(entry_existence) > 0):
+					# check again if the content match
+					cursor_getstory = conn.cursor ()
+					cursor_getstory.execute ("""
+								SELECT content
+								FROM feed_stories
+								WHERE feed_stories.url = (%s);
+								""", p_story[5][:255])
+					db_story = cursor_getstory.fetchall ()
+					cursor_getstory.close ()
+					if (len(db_story) == 0):
+						print 'DEBUG 1093, db_story IS NULL:', db_story
+					else:
+						print 'HERE IS db_story RETURNED: ', db_story
+
+					# safety check
+					if (len(db_story) == 0):
+						print 'DEBUG 1099, db_story is NULL when it should not be'
+					else:
+						if (len(db_story[0]) == 0):
+							print 'DEBUG 1102, db_story[0] is NULL when it should not be'
+						else:
+							if (db_story[0][0][:255] != p_story[3][:255]):
+								# add the story
+								processed_stories.append(p_story)
+							else:
+								print 'DUPLICATE STORY DETECTED, CONTENT MATCHES'
+							# delete that story
+							cursor_deletestory = conn.cursor ()
+							cursor_deletestory.execute ("""
+								DELETE FROM feed_stories
+								WHERE feed_stories.url = (%s);
+								""", p_story[5][:255])
+							cursor_deletestory.close ()
+							print 'HERE I REPLACE TO DB: ----------------'
+				else:
+					# implies story does not exist
+					processed_stories.append(p_story)
+					print 'HERE I ADD TO DB: ----------------'
+
+				# Add entry to DB
+				print p_story[2][:255], p_story[3][:255], p_story[5][:255], str(p_story[6])
+				print '-------------------------------------'
 				cursor3.execute ("""
 					INSERT INTO feed_stories (title, content, url, time_stamp, sid, gid)
 					VALUES (%s, %s, %s, %s, %s, %s)
 					ON DUPLICATE KEY UPDATE fid=fid+1;
-					""", (p_story[1][iteration][:255], p_story[2][iteration][:255], p_story[4][iteration][:255], int(p_story[5][iteration]), mysid, 1))
+					""", (p_story[2][:255], p_story[3][:255], p_story[5][:255], int(p_story[6]), mysid, 1))
+				sys.stdout.flush()
 
+	cursor_chkexist.close ()
 	cursor3.close ()
 	cursor2.close ()
 	conn.commit ()
@@ -1119,7 +1254,7 @@ def UpdateFeed():
 	# return processed stories list
 	# LC DEBUG
 	# print processed_stories
-	return all_stories
+	return processed_stories
 
 if __name__ == "__main__":
 	UpdateFeed()
