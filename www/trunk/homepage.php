@@ -87,8 +87,8 @@
           </div>
 	</div>
 	<div id="footer">
-	  <a href="settings.php" id="footerLeft">Settings</a>
-	  <a href="unsubscribe.php" id="footerRight">Unsubscribe</a>
+	  <a href="settings.php"><button type="button" class="left bigButton">Settings</button></a>
+	  <a href="unsubscribe.php"><button type="button" class="right bigButton">Unsubscribe</button></a>
 	</div>
       </div>
     </div>
