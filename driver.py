@@ -25,11 +25,14 @@ Enable logs by default for the testing purpose
 Change dereferencing index for the stories list
 This is to synchronize with the story definition change in FeedRetriever 6.6.3
 
+2.5
+Synchronize with FeedRetriever Fork 6.7
+
 """
 global debug
 debug = False
 logs = True
-import FeedRetriever
+import FeedRetrieverfork
 import EmailServer
 import time
 import sys
@@ -43,7 +46,7 @@ def Driver():
 	# a loop to call all backend functions
 	while (True):
 		# gather new feeds entries
-		stories = FeedRetriever.UpdateFeed()
+		stories = FeedRetrieverfork.UpdateFeed()
 		sys.stdout.flush()
 
 		if (debug):
