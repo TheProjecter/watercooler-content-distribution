@@ -86,12 +86,11 @@ text-align: left;
 
 ul
 {
-width:16.6em;
-height:25.5em;
+height:15.5em;
+width:16.1em;
 margin: 0;
 padding:0;
 overflow: auto;
-height:11em;
 }
 
 /* ELEMENT IDS */
@@ -393,8 +392,8 @@ float:left;
 .feed button
 {
 background-color:orange;
-height:2em;
-width:18.5em;
+width:18em;
+height:3em;
 }
 
 .feed
