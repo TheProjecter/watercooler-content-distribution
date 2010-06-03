@@ -22,15 +22,7 @@ carrior_table = [("AT&T"),
 			("Verizon"),
 			("Sprint")]
 
-favorites_table = [(1, 1, 1),
-				(1, 2, 2),
-				(1, 3, 3),
-				(2, 1, 3),
-				(2, 2, 2),
-				(2, 3, 1),
-				(3, 1, 2),
-				(3, 2, 1),
-				(3, 3, 3)]
+favorites_table = [(1, 1, 1)]
 
 sources_table = [("espn", "http://sports.espn.go.com/espn/rss/news")]
 
