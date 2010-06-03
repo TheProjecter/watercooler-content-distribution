@@ -200,7 +200,7 @@ if(checkSet() != FALSE)
       {
 	if(User::find('username',$_REQUEST['userName']) != NULL)
 	  {
-	    echo 'Username is already in use.  Please try another username.';
+	    echo '<p style="color:red">Username is already in use.  Please try another username.</p>';
 	    exit();
 	  }
 	else
@@ -210,7 +210,7 @@ if(checkSet() != FALSE)
       }
     else
       {
-        echo 'Username is not set';
+        echo '<p style="color:red">Username is not set</p>';
 	$_REQUEST['userName'] = '';
         exit();
       }
@@ -224,7 +224,7 @@ if(checkSet() != FALSE)
       {
 	if (strlen($_REQUEST['userPassword']) < 6)
 	  {
-	    echo 'Please choose a password of at least 6 characters';
+	    echo '<p style="color:red">Please choose a password of at least 6 characters</p>';
 	    $_REQUEST['userPassword'] = '';
 	    exit();
 	  }
@@ -235,7 +235,7 @@ if(checkSet() != FALSE)
       }
     else
       {
-        echo 'Please enter a valid Password';
+        echo '<p style="color:red">Please enter a valid Password</p>';
 	$_REQUEST['userPassword'] = '';
         exit();
       }
@@ -246,13 +246,13 @@ if(checkSet() != FALSE)
 	$userRepeatPass = $_REQUEST['userRepeatPass'];
 	if ($userPassword != $userRepeatPass)
 	  {
-	    echo 'Password mismatch.  Please re-enter your password.';
+	    echo '<p style="color:red">Password mismatch.  Please re-enter your password.</p>';
 	    exit();
 	  }
       }
     else
       {
-	echo 'Please enter your password again in the Repeat Password field.';
+	echo '<p style="color:red">Please enter your password again in the Repeat Password field.</p>';
 	exit();
       }
 
@@ -261,7 +261,7 @@ if(checkSet() != FALSE)
       {
 	if (checkEmail($_REQUEST['userEmail']) == FALSE)
 	  {
-	    echo 'Please enter a valid email address.';
+	    echo '<p style="color:red">Please enter a valid email address.</p>';
 	    $_REQUEST['userEmail'] = '';
 	    exit();
 	  }
@@ -269,7 +269,7 @@ if(checkSet() != FALSE)
 	    {
 	      if(User::find('email',$_REQUEST['userEmail']) != NULL)
 		{
-		  echo 'This email is already in use. TODO:  We will add a feature to allow users to fix this problem.';
+		  echo '<p style="color:red">This email is already in use. Please use another email address.</p>';
 		  exit();
 		}
 	      else
@@ -280,7 +280,7 @@ if(checkSet() != FALSE)
       }
     else
       {
-	echo 'A valid email address is required to register with Watercooler.';
+	echo '<p style="color:red">A valid email address is required to register with Watercooler.</p>';
 	exit();
       }
 
@@ -291,7 +291,7 @@ if(checkSet() != FALSE)
 	  {
 	    if (strlen($_REQUEST['userCell']) != 10)
 	      {
-		echo 'A valid cell phone number must be exactly ten digits long';
+		echo '<p style="color:red">A valid cell phone number must be exactly ten digits long</p>';
 		$_REQUEST['userCell'] = '';
 		exit();
 	      }
@@ -299,10 +299,10 @@ if(checkSet() != FALSE)
 	      {
 		if(($this_user_object = User::find('phone_number',$_REQUEST['userCell'])) != NULL)
 		  {
-		    echo 'There is already an account associated with this cell phone number.  If you do not have an account with username ';
+		    echo '<p style="color:red">There is already an account associated with this cell phone number.  If you do not own an account named ';
 		    $this_user_array  = $this_user_object->get((array)'username');
 		    echo $this_user_array['username'];
-		    echo ', email our customer service rep in Banglapore.';
+		    echo ', please email our <a href="mailto:tripledouble1210@gmail.com">webmaster</p>';
 		    exit();
 		  }
 		$userCell = $_REQUEST['userCell'];
@@ -310,19 +310,19 @@ if(checkSet() != FALSE)
 	  }
 	else
 	  {
-	    echo 'Please enter a valid cell phone number (only numeric characters).';
+	    echo '<p style="color:red">Please enter a valid cell phone number (only numeric characters).</p>';
 	    $_REQUEST['userCell'] = '';
 	    exit();
 	  }
       }
-    elseif($_REQUEST['receive_sms_text'] == 'yes' || $_REQUEST['receive_sms_link'])
+    elseif($_REQUEST['receive_sms_text'] == 'yes' || $_REQUEST['receive_sms_link'] == 'yes')
       {
-	$userCell = $_REQUEST['userCell'];
+	echo '<p style="color:red">Please enter your cell phone number or deselect the SMS(text) and SMS(link) default methods of reception.</p>';
+	exit();
       }
     else
       {
-	echo 'Please enter your cell phone number or deselect the SMS(text) and SMS(link) default methods of reception.';
-	exit();
+	$userCell = $_REQUEST['userCell'];
       }
 
     if (isset($_REQUEST['feed'])) {
@@ -346,21 +346,20 @@ if(checkSet() != FALSE)
     
     if (User::create($userInfo) == NULL)
       {
-	echo 'User registration failed.  You are fucked.';
+	echo '<p style="color:red">User registration failed.</p>';
 	exit();
       }
 
     else
       {
-	print("Registration Successful!");
+	print('<p style="color:navy">Registration Successful!</p>');
 	print('<a href="index.php">Login here.</a>');
-	print('</br></br>');
       }
   }
   else
     {
       // this will be the default message if the form accessed without POSTing
-      echo '<p>Please fill in the form above</p>';
+      echo '<p style="color:navy;">Please fill in the form above</p>';
     }
 
 ?>
