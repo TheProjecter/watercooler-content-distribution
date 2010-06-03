@@ -32,6 +32,7 @@ logs = True
 import FeedRetriever
 import EmailServer
 import time
+import sys
 
 def Driver():
 	# a driver to debug
@@ -43,6 +44,7 @@ def Driver():
 	while (True):
 		# gather new feeds entries
 		stories = FeedRetriever.UpdateFeed()
+		sys.stdout.flush()
 
 		if (debug):
 			# current debug/testing purpose

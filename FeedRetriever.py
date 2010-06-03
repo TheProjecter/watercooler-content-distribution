@@ -1160,7 +1160,7 @@ def UpdateFeed():
 			VALUES (%s, %s, %s, %s, %s, %s)
 			ON DUPLICATE KEY UPDATE fid=fid+1;
 			""", (p_story[2][:255], p_story[3][:255], p_story[5][:255], int(p_story[6]), mysid, 1))
-
+		sys.stdout.flush()
 
 	cursor_chkexist.close ()
 	cursor3.close ()
