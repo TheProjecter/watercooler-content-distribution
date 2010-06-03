@@ -196,6 +196,9 @@ changing story definition once again to contain more information
 # new story is [Feed Title, Feed URL, Entry Title, Entry Content, Entry Category, Entry URL, Entry Timestamp]
 This will not affect email server in anyway
 
+6.6.4 Test
+changed empty content "default" to nicer version as Matt suggested
+
 
 ------ CODE FREEZE UNTIL BUGS FOUND -------
 ------ USE 6.4 TO TEST! -----------------
@@ -673,7 +676,7 @@ def _RSS(f, log, myfeed, latest_ts, feedurl, debug):
 			# make a story from above parsed content
 			# story is [Feed Title, Feed URL, Entry Title, Entry Content, Entry Category, Entry URL, Entry Timestamp]
 			if content == '':
-				content = 'Undefined'
+				content = 'Feed brought to you by the Watercooler'
 			story = [feedtitle, feedurl, entrytitle, content, 'Undefined', entryURL, UNIX_time]
 			stories.append(story)
 
@@ -797,7 +800,7 @@ def _ATOM(f, log, myfeed, latest_ts, feedurl, debug):
 			# make a story from above parsed content
 			# story is [Feed Title, Feed URL, Entry Title, Entry Content, Entry Category, Entry URL, Entry Timestamp]
 			if content == '':
-				content = 'Undefined'
+				content = 'Feed brought to you by the Watercooler'
 			story = [feedtitle, feedurl, entrytitle, content, 'Undefined', entryURL, UNIX_time]
 			stories.append(story)
 
