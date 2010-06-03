@@ -322,6 +322,12 @@ interface iUser {
 */
   public function set(array $userinfo);
 
+/* function iUser::addFeed adds a feed to a user's list of subscribed feeds
+
+   $feed: (iFeed) the feed to add to the user
+*/
+  public function addFeed(iFeed $feed);
+
 /* function iUser::addFeeds adds feeds to a user's list of subscribed feeds
 
    $feeds: (iFeeds) the set of feeds to add to the user

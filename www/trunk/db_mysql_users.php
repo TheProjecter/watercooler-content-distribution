@@ -367,11 +367,18 @@ class MySQLUser extends MySQLDBObject implements iUser {
     return $userinfo;
   }
 
+/* MySQLUser::addFeed implements iUser::addFeed (see corresponding 
+   documentation)
+*/
+  public function addFeed(iFeed $feed) {
+    return $this->addFeeds(new MySQLFeeds(array($feed), $this->db));
+  }
+
 /* MySQLUser::addFeeds implements iUser::addFeeds (see corresponding 
    documentation)
 */
   public function addFeeds(iFeeds $feeds) {
-    return self::__addFeeds($feeds);
+    return $this->__addFeeds($feeds);
   }
 
   /* MySQLUser::__addFeeds is a helper function to MySQLUser::addFeeds which
