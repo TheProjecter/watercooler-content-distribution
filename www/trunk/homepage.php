@@ -12,22 +12,21 @@
   <body>
     <div id="wrap">
       <div id="header">
-	<a href="logout.php" style="position:absolute; text-align:left;">logout</a>
-	<div id="logo" style="text-align:center;">
-	  <img style="text-align: center;" src="watercooler_logo.png" alt="Welcome to the Watercooler" />
+	<a href="logout.php" style="float:left; position:absolute; text-align:left;">logout</a>
+	<div id="logo">
+      <a href="index.php"><img src="watercooler_logo.png" alt="Welcome to the Watercooler" /></a>
 	</div>
       </div>
       <div id="outline">
-      </div>
-      <div id="feedreader">
-	<div id="nav">
-	  <h1 class="title">
-	    <?php echo $user->username; ?>'s Latest News <!-- ' -->
-	  </h1>
-	</div>
-	<div id="feedreader_feeds">
-	  <ul>
-	    <?php
+        <div id="feedreader">
+	  <div id="nav">
+	    <h1 class="title">
+	      <?php echo $user->username; ?>'s Latest News <!-- ' -->
+	    </h1>
+	  </div>
+	  <div id="feedreader_feeds">
+	    <ul>
+	      <?php
 
             function getDomain($url)
             {
@@ -66,34 +65,35 @@
 	      print("<div class=\"feedName\" style=\"float:right; margin-left:1em;\">{$currentFeed->name}</div></div><br />");//"
 	    }
 	    ?>
-	  </ul>
-	</div>
-	<div id="feedreader_stories">
-	  <!--
-	     getStories(<?php print("");  ?>);
-	    -->
-        </div>
-      </div>
-      <div id="userspace">
-	<div id="browse">
-	  <h1 class="title">Browse Feeds</h1>
-	</div>
-	<div id="feedBrowser">
-	  <div id="feedHeader" style="margin:1em 1em 0 0; border-bottom: 2px solid navy;">
-	    <div style="width:12em;text-align:left; float:left;">Title</div>
-	    <div style="width:3.5em; text-align:right; float:right; margin-right:1em;">Users</div>
+	    </ul>
 	  </div>
-	  <div id="feedRows">
-	    <?php include_once('feedBrowser.php') ?>
+	  <div id="feedreader_stories">
+	    <!--
+	       getStories(<?php print("");  ?>);
+	      -->
+          </div>
+	</div>
+	<div id="userspace">
+	  <div id="browse">
+	    <h1 class="title">Browse Feeds</h1>
 	  </div>
-        </div>
-      </div>
-      <div id="footer">
-	<a href="settings.php" id="footerLeft">Settings</a>
-	<a href="unsubscribe.php" id="footerRight">Unsubscribe</a>
+	  <div id="feedBrowser">
+	    <div id="feedHeader" style="margin:1em 1em 0 0; border-bottom: 2px solid navy;">
+	      <div style="width:12em;text-align:left; float:left;">Title</div>
+	      <div style="width:3.5em; text-align:right; float:right; margin-right:1em;">Users</div>
+	    </div>
+	    <div id="feedRows">
+	      <?php include_once('feedBrowser.php') ?>
+	    </div>
+          </div>
+	</div>
+	<div id="footer">
+	  <a href="settings.php" id="footerLeft">Settings</a>
+	  <a href="unsubscribe.php" id="footerRight">Unsubscribe</a>
+	</div>
       </div>
     </div>
-    
+
     <script type="text/javascript">
       function getStories(feedId, readerElementId) {
       // get reader element

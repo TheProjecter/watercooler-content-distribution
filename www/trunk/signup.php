@@ -23,16 +23,23 @@ $fieldNumber = 0;
     </script>
   </head>
   <body>
-    <div class="corner" style="position:absolute; text-align:left;">
-      <a href="index.php">home</a>
+    <!-- Header -->
+    <div id="header">
+      <div class="corner" style="position:absolute; text-align:left;">
+	<a href="index.php">home</a>
+      </div>
+      <div id="logo">
+	<a href="index.php"><img src="watercooler_logo.png" alt="Welcome to the Watercooler" /></a>
+      </div>
     </div>
-    <div style="text-align:center; width:100%; margin:0 auto 0 auto;">
-      <img style="text-align: center;" src="watercooler_logo.png" alt="Welcome to the Watercooler" />
-    </div>
-    
+
+    <!-- Form -->
     <form action="<?php echo $_SERVER['PHP_SELF'];?>" method="post">
+
+      <!-- Personal Information Fieldset -->
       <fieldset><legend>Personal Information</legend>
 
+	<!-- Username -->
 	<div class="lineWidth">
 	  <label class="leftCol" for="userName">Username</label>
 	  <input class="middleCol" id="userName" type="text" name="userName" maxlength="25" value="<?php echo $_REQUEST['userName']; ?>"/>
@@ -40,24 +47,29 @@ $fieldNumber = 0;
 	    $('#userName').focus();
           </script>
 	</div>
-
+	
+	<!-- Password -->
 	<div class="lineWidth">
 	  <label class="leftCol" for="pass">Password</label>
 	  <input class="middleCol" id="pass" type="password" name="userPassword" maxlength="10" />
 	</div>
 
+	<!-- Repeat Password -->
 	<div class="lineWidth"><label class="leftCol" for="repeatPass">Repeat Password</label>
 	  <input class="middleCol" id="repeatPass"type="password" name="userRepeatPass" maxlength="10" />
 	</div>
 
+	<!-- Email -->
 	<div class="lineWidth"><label class="leftCol" for="email">Email</label>
-	  <input class="middleCol" id="email" type="text" name="userEmail" maxlength="50"/ value="<?php echo $_REQUEST['userEmail'];  ?>">
-	  </div>
-
+	  <input class="middleCol" id="email" type="text" name="userEmail" maxlength="50"/ value="<?php echo $_REQUEST['userEmail'];  ?>"/>
+	</div>
+	
+	<!-- Phone Number -->
 	<div class="lineWidth"><label class="leftCol" for="cell">Cell Phone #</label>
 	  <input class="middleCol" id="cell" type="text" name="userCell" maxlength="10" value="<?php echo $_REQUEST['userCell']; ?>"/>
 	</div>
 
+	<!-- Carrier -->
 	<div class="lineWidth">
 	  <label class="leftCol" for="carrier">Carrier</label>
 	  <select id="carrier" name="userCarrier">
@@ -69,17 +81,20 @@ $fieldNumber = 0;
 	</div>
       </fieldset>
 
+      <!-- Feed Information Fieldset -->
       <fieldset><legend>Feed Information</legend>
 
+	<!-- Methods of Reception -->
 	<div class="lineWidth">
-	  <label class="leftCol" for="reception">Default Methods of Reception</label>
-	  <object class="multifield">
+	  <label class="leftCol" for="reception">Methods of Reception</label>
+	  <object>
 	    <input type="checkbox" name="receive_email" value="yes" <?php if($_REQUEST['receive_email'] == 'yes') echo 'checked'; ?>/>Email<br />
 	    <input type="checkbox" name="receive_sms_text" value="yes" <?php if($_REQUEST['receive_sms_text'] == 'yes') echo 'checked'; ?>/>SMS (Text)<br />
 	    <input type="checkbox" name="receive_sms_link" value="yes" <?php if($_REQUEST['receive_sms_link'] == 'yes') echo 'checked'; ?>/>SMS (Link)<br />
 	  </object>
 	</div>
 	
+	<!-- Feeds -->
         <div class="lineWidth">
 	  <label for="feeds">Feeds</label>
 	  <object class="middleCol">
@@ -98,25 +113,18 @@ $fieldNumber = 0;
                   print("<input type=\"text\" name=\"feed[]\" maxlength=\"500\" /><br />");
               }
 	    ?>
-          </div>
-	</object>
+            </div>
+	  </object>
 
-	<div class="lineWidth">
-          <button class="rightcolumn" type="button" onclick="addFeed()">Add More Feeds</button>
+	  <!--Add More Feeds -->
 	</div>
-      </div>
-
-	<input class="rightcolumn" type="submit" name="submit" value="Register!" style="margin-left: 14.7em;"/>
+	<div style="text-align:center;">
+          <button class="clickable" type="button" onclick="addFeed()">Add More Feeds</button>
+	  <input class="clickable" type="submit" name="submit" value="Register!"/>
+	</div>
       </fieldset>
     </form>
- 
- </div>
-    <!--
-       <div class="validated">
-	 <a href="http://validator.w3.org/check?uri=referer"><img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0 Strict" /></a>
-       </div>
-       -->
-  <script type="text/javascript">
+    <script type="text/javascript">
       function addFeed()
       {
       var currentFeeds = document.getElementById('rightCol');
@@ -127,17 +135,16 @@ $fieldNumber = 0;
       currentFeeds.appendChild(newFeeds);
       currentFeeds.appendChild(document.createElement('br'));
       }
-
+      
       function expandFeed()
       {
-	var url;
+      var url;
       }
       
-  </script>
-  </body>
-</html>
-
-<?php
+    </script>
+    <fieldset id="feedback">
+      
+ <?php
 
  /**
  * This function can be used to check the sanity of variables
@@ -359,3 +366,6 @@ if(checkSet() != FALSE)
     }
 
 ?>
+    </fieldset>
+  </body>
+</html>
