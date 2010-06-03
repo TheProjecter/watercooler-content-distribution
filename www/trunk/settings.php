@@ -51,58 +51,73 @@ else
   $displayReceiveLink = $user->send_sms_link;
 
 ?>
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 	  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html lang="EN" dir="ltr" xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="content-type" content="text/xml; charset=utf-8" />
-    <title>Settings</title>
+    <title><?php echo $user->username?>'s Settings</title>
     <link rel="stylesheet" href="signup.css" title="signup" />
-    <script type="text/JavaScript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js" />
+    <script type="text/JavaScript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js">
+      $(document).ready(function(){$('#userName').focus();});
+    </script>
   </head>
   <body>
-    <div class="corner" style="position:absolute; text-align:left;">
-      <a href="index.php">home</a>
-    </div>
-    <div style="text-align:center; width:100%; margin:0 auto 0 auto;">
-      <img style="text-align: center;" src="watercooler_logo.png" alt="Welcome to the Watercooler" />
+    <!-- Header -->
+    <div id="header">
+      <div class="corner" style="position:absolute; text-align:left;">
+	<a href="index.php">home</a>
+      </div>
+      <div id="logo">
+	<a href="index.php"><img src="watercooler_logo.png" alt="Welcome to the Watercooler" /></a>
+      </div>
     </div>
 
+    <!-- Form -->
     <form action="<?php echo $_SERVER['PHP_SELF'];?>" method="post">
-      <fieldset><legend>Personal Information</legend>
 
-	<div class="lineWidth"><label class="leftCol" for="userName">Username</label>
+      <!-- Personal Information Fieldset -->
+      <fieldset><legend>Personal Information</legend>
+	
+	<!-- Username -->
+	<div class="lineWidth">
+	  <label class="leftCol" for="userName">Username</label>
 	  <input class="middleCol" id="userName" type="text" name="userName" maxlength="25" value="<?php echo $displayUserName; ?>"/>
 	  <script type="text/javascript">
 	    $('#userName').focus();
           </script>
 	</div>
-	
+
+	<!-- Current Password -->
 	<div class="lineWidth"><label class="leftCol" for="currentPass">Current Password</label>
-	  <input class="middleCol" id="currentPass" type="password" name="userCurrentPass" maxlength="10" />
+	  <input class="middleCol" id="currentPass" type="password" name="userCurrentPass[M ]E" maxlength="10" />
 	</div>
 	
+	<!-- New Password -->
 	<div class="lineWidth"><label class="leftCol" for="newPass">New Password</label>
 	  <input class="middleCol" id="newPass" type="password" name="userNewPass" maxlength="10" />
 	</div>
-	
-	<div class="lineWidth"><label class="leftCol" for="repeatNewPass">Repeat Password</label>
-	  <input class="middleCol" id="repeatNewPass"type="password" name="userRepeatNewPass" maxlength="10" />
+
+	<!-- Repeat New Password -->
+	<div class="lineWidth"><label class="leftCol" for="repeatNewPass">Repeat New Password</label>
+	  <input class="middleCol" id="repeatNewPass" type="password" name="userRepeatNewPass" maxlength="10" />
 	</div>
-	
+
+	<!-- Email -->
 	<div class="lineWidth"><label class="leftCol" for="email">Email</label>
-	  <input class="middleCol" id="email" type="text" name="userEmail" maxlength="50"/ value="<?php echo $displayEmail;  ?>">
+	  <input class="middleCol" id="email" type="text" name="userEmail" maxlength="50" value="<?php echo $displayEmail;  ?>" />
 	</div>
-	  
+
+	<!-- Phone Number -->
 	<div class="lineWidth"><label class="leftCol" for="cell">Cell Phone #</label>
 	  <input class="middleCol" id="cell" type="text" name="userCell" maxlength="10" value="<?php echo $displayCell ?>"/>
 	</div>
 
+	<!-- Carrier -->
 	<div class="lineWidth">
 	  <label class="leftCol" for="carrier">Carrier</label>
 	  <select id="carrier" name="userCarrier">
-	    <option value="AT&T">AT&#38;T</option>
+	    <option value="AT&#38;T">AT&#38;T</option>
 	    <option <?php if($displayCarrier == 'Verizon') echo 'selected'; ?> value="Verizon">Verizon</option>
 	    <option <?php if($displayCarrier == 'T-Mobile') echo 'selected'; ?> value="T-Mobile">T-Mobile</option>
 	    <option <?php if($displayCarrier == 'Sprint') echo 'selected'; ?> value="Sprint">Sprint</option>
@@ -110,8 +125,10 @@ else
         </div>
       </fieldset>
 
+      <!-- Feed Information Fieldset -->
       <fieldset><legend>Feed Information</legend>
 
+	<!-- Methods of Reception -->
 	<div class="lineWidth">
 	  <label class="leftCol" for="reception">Default Methods of Reception</label>
 	  <object class="middleCol">
@@ -121,6 +138,7 @@ else
           </object>
         </div>
 	
+	<!-- Feeds -->
         <div class="lineWidth">
 	  <label for="feeds">Feeds</label>
 	  <object class="middleCol">
@@ -151,26 +169,30 @@ else
             ?>
             </div>
 	  </object>
-
-  	  <div class="lineWidth">
-            <button class="rightcolumn" type="button" onclick="addFeed()">Add More Feeds</button>
-	  </div>
+	  
+	  <!--Add More Feeds -->
 	</div>
-	<input class="rightcolumn" type="submit" name="submit" value="Update" style="margin-left:14.7em;" />
-        <div class="lineWidth" style="font-weight:bold; width:24em; color:red; text-align:center;"> <br />
-  <script type="text/javascript">
-    function addFeed()
-    {
-      var currentFeeds = document.getElementById('rightCol');
-      var newFeeds = document.createElement('input');
-      newFeeds.setAttribute('type', 'text');
-      newFeeds.setAttribute('name', 'feed[]');
-      newFeeds.setAttribute('maxlength', '500');
-      currentFeeds.appendChild(newFeeds);
-      currentFeeds.appendChild(document.createElement('br'));
-    }
-  </script>
-
+	<div style="text-align:center;">
+          <button class="clickable" type="button" onclick="addFeed()">Add More Feeds</button>
+	  <input class="clickable" type="submit" name="submit" value="Register!"/>
+	</div>
+      </fieldset>
+      
+      
+      <!-- Add Feed Function -->
+      <script type="text/javascript">
+	function addFeed()
+	{
+	var currentFeeds = document.getElementById('rightCol');
+	var newFeeds = document.createElement('input');
+	newFeeds.setAttribute('type', 'text');
+	newFeeds.setAttribute('name', 'feed[]');
+	newFeeds.setAttribute('maxlength', '500');
+	currentFeeds.appendChild(newFeeds);
+	currentFeeds.appendChild(document.createElement('br'));
+	}
+      </script>
+      <fieldset id="feedback">
 <?php
 
  /**
@@ -349,9 +371,8 @@ print('<a href="index.php">Here is your homepage!</a>');
 print('</br></br>');
 
 ?>
-        </div>
+
       </fieldset>
     </form>
-  </div>
-</body>
+  </body>
 </html>

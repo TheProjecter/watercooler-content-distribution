@@ -1,11 +1,8 @@
+/* HTML ELEMENTS */
+
 body
 {
 background-color:white;
-}
-
-.corner
-{
-float: left;
 }
 
 h1
@@ -14,15 +11,6 @@ color:navy;
 font-style:bold;
 text-align:center;
 font-family:sans-serif;
-}
-
-div.outerbody
-{
-text-align:left;
-background-color:white;
-padding:1em;
-width:30em;
-margin: 0 auto 0 auto;
 }
 
 label
@@ -34,45 +22,16 @@ margin-right: 0.5em;
 display: block;
 }
 
-.multifield {
-float: left;
-}
-
-.rightcolumn {
-float: left;
-margin-top: 1em;
-margin-left: 13.5em;
-background: #ffa20c;
-}
-
-input
+object
 {
-color: navy;
-background: #fee3ad;
-border: 1px solid navy;
+float:left;
 }
-
-.submit input, button
-{
-margin-left: 4.5em;
-color: #000;
-background: #ffa20c;
-border: 2px outset #d7b9c9
-} 
-
-addFeeds, button
-{
-margin-left: 4.5em;
-color: #000;
-background: #ffa20c;
-border: 2px outset #d7b9c9
-} 
 
 fieldset
 {
 margin: 0 auto 1em auto;
 border: 1px solid navy;
-width: 25em;
+width: 27em;
 }
 
 legend
@@ -84,27 +43,31 @@ padding: 2px 6px;
 margin-left: 2em;
 }
 
-.validated
+input
 {
-height:31px;
-width:88px;
-bottom:5px;
-right:5px;
+color: navy;
+background: #fee3ad;
+border: 1px solid navy;
 }
 
-.lineWidth
+a img
 {
-float:left;
-width:35em;
-margin: .5em .5em .5em .5em;
+border:none;
 }
 
-.middleCol
+a:link
 {
-float:left;
-text-align:left;
-width:11em;
+text-decoration:none;
+border-style:none;
 }
+
+a:visited
+{
+color:blue;
+}
+
+
+/* IDS */
 
 #nav
 {
@@ -121,11 +84,70 @@ margin: 0 auto 0 auto;
 #logo
 {
 text-align:center;
-float:left;
-border: 1px solid black;
+width:100%;
+margin:0 auto 0 auto;
 }
 
-a:visited
+#feedback
 {
-color:blue;
+text-align:center;
+}
+
+#header
+{
+text-align:center;
+width:69em;
+margin:0 auto 0 auto;
+background:white;
+padding:.5em;
+}
+
+/* GENERAL CLASSES */
+
+.corner
+{
+float: left;
+}
+
+.clickable 
+{
+width: 24em;
+margin-top: 1em;
+text-align: center;
+color: #000;
+background: #ffa20c;
+border: 2px outset #d7b9c9
+}
+
+button.clickable
+{
+width:22em;
+}
+
+.validated
+{
+height:31px;
+width:88px;
+bottom:5px;
+right:5px;
+}
+
+.lineWidth
+{
+float:left;
+width:25em;
+margin: .5em .5em .5em .5em;
+}
+
+.middleCol
+{
+float:left;
+text-align:left;
+width:11em;
+}
+
+.center
+{
+text-align:center;
+border:1px solid black;
 }

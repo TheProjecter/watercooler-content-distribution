@@ -1,6 +1,10 @@
+
+/* HTML ELEMENTS */
+
 body,
 html 
 {
+text-align:center;
 margin:0;
 padding:0;
 color:black;
@@ -12,31 +16,80 @@ h1, h3
 margin: 0;
 }
 
+li
+{
+list-style: none;
+margin: 0;
+padding: 0;
+text-align: left;
+}
+
+ul
+{
+margin: 0;
+padding: 0;
+}
+
+a:link
+{
+text-decoration:none;
+}
+
+a:visited
+{
+color:blue;
+}
+
+a img
+{
+border:none;
+}
+
+/* IDS */
+
 #wrap 
 {
 text-align:center;
-width:63.2em;
-margin:0 auto;
+width:70em;
+margin:0 auto 0 auto;
 background:white;
 padding:1em;
 }
 
-.title
+#outline
 {
 text-align:center;
-text-transform:uppercase;
-font-family:arial;
-font-size:x-large;
-font-weight:bold;
-color:navy;
+}
+
+#feedreader
+{
+height: 22.5em;
+width: 38em;
+margin: 1em auto;
+border: .1em groove navy;
+padding: 1em;
+float:  left;
+background-color:#ffa20f;
+background-image:url('orange_gradient.jpg');
+}
+
+#userspace
+{
+height: 22.5em;
+width: 26.4em;
+margin: 1em auto;
+margin-left: 1em;
+border: .1em groove navy;
+padding: 1em;
+float:  left;
+background-color:#ffa20f;
+background-image:url('orange_gradient.jpg');
 }
 
 #nav
 {
-border: .1em solid navy;
-border-style:solid;
-border-width:1px;
-width: 34em;
+border: .1em groove navy;
+width: 36em;
 padding:1em;
 background-color:white;
 margin-bottom: 1em;
@@ -56,37 +109,19 @@ margin-bottom:0;
 padding:0;
 }
 
-#feedreader
+#logo
 {
-height: 22.5em;
-width: 37em;
-margin: 1em auto;
-border: .1em groove navy;
-padding: 1em;
-float:  left;
-background-color:#ffa20f;
-background-image:url('orange_gradient.jpg');
-}
-
-#userspace
-{
-height: 22.5em;
-width: 20em;
-margin: 1em auto;
-margin-left: 1em;
-border: .1em groove navy;
-padding: 1em;
-float:  left;
-background-color:#ffa20f;
-background-image:url('orange_gradient.jpg');
+text-align:center;
+width:100%;
+margin:0 auto 0 auto;
 }
 
 #feedBrowser
 {
 height:17.5em;
-width:18.8em;
+width:25.2em;
 background-color:white;
-border:.1em solid navy;
+border:.1em groove navy;
 padding:0 0 0 1em;
 }
 
@@ -106,10 +141,8 @@ overflow: auto;
 
 #browse
 {
-border: .1em solid navy;
-border-style:solid;
-border-width:1px;
-width: 18em;
+border: .1em groove navy;
+width: 24.2em;
 padding:1em;
 background-color:white;
 margin-bottom: 1em;
@@ -120,8 +153,8 @@ margin-bottom: 1em;
 float:left;
 padding:1em;
 height:15.5em;
-width:10em;
-border: .1em solid navy;
+width:11em;
+border: .1em groove navy;
 margin-right: 1em;
 background-color: white;
 }
@@ -129,24 +162,23 @@ background-color: white;
 #feedreader_stories
 {
 float:left;
-width:21em;
+width:21.6em;
 padding:1em;
 height:15.5em;
-border: .1em solid navy;
-border-style: groove;
+border: .1em groove navy;
 background-color: white;
 overflow: auto;
 }
 
 #footer
 {
-border: .1em solid navy;
+border: .1em groove navy;
 clear:both;
 padding: 1em;
 height:2.2em;
 background-color:#ffa20f;
 background-image:url('orange_gradient.jpg');
-width:60.2em;
+width:67.8em;
 }
 
 #footerLeft
@@ -167,28 +199,8 @@ padding: 0.5em;
 border: .1em groove navy;
 }
 
-.validated
-{
-height:31px;
-width:88px;
-position:absolute;
-bottom:5px;
-right:5px;
-}
 
-li
-{
-list-style: none;
-margin: 0;
-padding: 0;
-text-align: left;
-}
-
-ul
-{
-margin: 0;
-padding: 0;
-}
+/* CLASSES */
 
 .story
 {
@@ -227,15 +239,20 @@ font-style: italic;
 color:#666666;
 }
 
-a:visited
-{
-color:blue;
-}
-
 .feedName
 {
 color:navy;
 font-weight:bold;
 text-align:left;
+}
+
+.title
+{
+text-align:center;
+text-transform:uppercase;
+font-family:arial;
+font-size:x-large;
+font-weight:bold;
+color:navy;
 }
 
