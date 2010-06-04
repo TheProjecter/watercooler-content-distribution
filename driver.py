@@ -28,11 +28,14 @@ This is to synchronize with the story definition change in FeedRetriever 6.6.3
 2.5
 Synchronize with FeedRetriever Fork 6.7
 
+3.0
+Synchronize with FeedRetriever 7.0 beta
+
 """
 global debug
 debug = False
 logs = True
-import FeedRetrieverfork
+import FeedRetriever
 import EmailServer
 import time
 import sys
@@ -46,7 +49,9 @@ def Driver():
 	# a loop to call all backend functions
 	while (True):
 		# gather new feeds entries
-		stories = FeedRetrieverfork.UpdateFeed()
+		stories = FeedRetriever.UpdateFeed()
+		# print 'IN DRIVER 50, ALL STORIES IS: '
+		# print str(stories)
 		sys.stdout.flush()
 
 		if (debug):
@@ -94,7 +99,7 @@ def Driver():
 					driverlog.flush()
 
 				EmailServer.sendStories(cutted_stories)
-				time.sleep(30)
+				time.sleep(10)
 				cutted_stories = []
 		print ' ------------------------------------------ '
 		print 'Here is remaining ', str(limiter % 10), ' story passed to email server'
@@ -107,6 +112,7 @@ def Driver():
 				driverlog.write('\n')
 				driverlog.flush()
 		EmailServer.sendStories(cutted_stories)
+		sys.stdout.flush()
 		time.sleep(180)
 		cutted_stories = []
 		# print cutted_stories
@@ -118,10 +124,6 @@ def Driver():
 
 if __name__ == "__main__":
 	Driver()
-
-
-
-
 
 
 
