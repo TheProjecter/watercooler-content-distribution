@@ -211,8 +211,10 @@ if(checkSet() != FALSE)
 	print('<p style="color:navy">Registration Successful!</p>');
 
 	$hyperlink = 'confirm.php' . "?id={$user->id}&pin={$emailPin}";
-	$confirmationString = "python2.5 -c \"import EmailServer; EmailServer.sendConfirmEmail('{$page_uri_base}{$hyperlink}','{$user->username}','{$user->email}');\"";
-	system($confirmationString);
+	$EmailConfirmationString = "python2.5 -c \"import EmailServer; EmailServer.sendConfirmEmail('{$page_uri_base}{$hyperlink}','{$user->username}','{$user->email}');\"";
+	exec($EmailConfirmationString);
+	$SMSConfirmationString = "python2.5 -c \"import EmailServer; EmailServer.sendConfirmSMS('{$user->phone_number}','{$user->carrier}','{$user->username}', '{$smsPin}');\"";
+	exec($SMSConfirmationString);
 
 
 
