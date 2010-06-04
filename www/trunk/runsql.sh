@@ -1,3 +1,3 @@
 #!/bin/bash
 
-sudo mysql -u root -p -D watercooler
+mysql -u root --password=adminsql -D watercooler

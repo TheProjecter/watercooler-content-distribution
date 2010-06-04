@@ -18,7 +18,7 @@ if (!isset($user)) {
   <body>
     <div id="wrap">
       <div id="logo">
-	<img src="watercooler_logo.png" alt="Welcome to the Watercooler"></img>
+	<a href="index.php"><img src="watercooler_logo.png" alt="Welcome to the Watercooler" /></a>
       </div>
       <form action="login.php" method="post">
         <fieldset class="thin"><legend>Watercooler</legend>
