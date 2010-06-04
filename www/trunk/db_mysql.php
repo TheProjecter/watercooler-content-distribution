@@ -26,7 +26,9 @@ class MySQLDBObject extends DatabaseObject {
 	  'username'=>'username',
 	  'email'=>'email',
 	  'password'=>'password',
-	  'phone_number'=>'phone_number');
+	  'phone_number'=>'phone_number',
+	  'phone_pin'=>'phone_status', 'phone_confirmed'=>'phone_status',
+	  'email_pin'=>'email_status', 'email_confirmed'=>'email_status');
 
   /* $feedattrs_to_cols is an associative array mapping attribute names given 
      as the $feedinfo parameter to methods in classes derived from this one to

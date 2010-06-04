@@ -342,8 +342,8 @@ if(checkSet() != FALSE)
 		      'send_email'=>$_REQUEST['receive_email'] === 'yes', 
 		      'send_sms_text'=>$_REQUEST['receive_sms_text'] === 'yes',
 		      'send_sms_link'=>$_REQUEST['receive_sms_link'] === 'yes',
-		      'email_status'=>$emailPin,
-		      'phone_status'=>$smsPin,
+		      'email_pin'=>$emailPin,
+		      'phone_pin'=>$smsPin,
 		      'feeds'=>$feeds);
     
     if (($user = User::create($userInfo)) == NULL)

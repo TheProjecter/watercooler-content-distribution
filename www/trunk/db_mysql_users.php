@@ -175,14 +175,25 @@ class MySQLUser extends MySQLDBObject implements iUser {
   private static function parseUserInfo(array $userinfo, MySQLDB $db) {
     static $valid_userinfo_attrs = 
       array('username'=>TRUE, 'email'=>TRUE, 'password'=>TRUE, 
-	    'phone_number'=>TRUE);
+	    'phone_number'=>TRUE, 'phone_pin'=>TRUE, 'phone_confirmed'=>TRUE,
+	    'email_pin'=>TRUE, 'email_confirmed'=>TRUE);
+
+    $db_userinfo = array();
+
+    // check for simultaneous pin and confirmed
+    if (isset($userinfo['email_pin']) && isset($userinfo['email_confirmed']))
+      throw new InvalidArgumentException('email_pin and email_confirmed '.
+					 'attributes cannot be set '.
+					 'simultaneously');
+    if (isset($userinfo['phone_pin']) && isset($userinfo['phone_confirmed']))
+      throw new InvalidArgumentException('phone_pin and phone_confirmed '.
+					 'attributes cannot be set '.
+					 'simultaneously');
+
     // rename the userinfo keys as database column names
     foreach ($userinfo as $key=>$value)
       if (isset($valid_userinfo_attrs[$key]))
 	$db_userinfo[self::$userattrs_to_cols[$key]] = $value;
-
-    // XXX fake unused database fields for now
-    $db_userinfo['status'] = 1;
 
     return $db_userinfo;
   }
