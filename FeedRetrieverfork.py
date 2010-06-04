@@ -1191,7 +1191,7 @@ def UpdateFeed():
 					SELECT fid
 					FROM feed_stories
 					WHERE feed_stories.url = (%s);
-					""", p_story[5][:255])
+					""", p_story[5][iteration][:255])
 				entry_existence = cursor_chkexist.fetchall ()
 
 				# story exist implies the len check > 0
@@ -1202,7 +1202,7 @@ def UpdateFeed():
 								SELECT content
 								FROM feed_stories
 								WHERE feed_stories.url = (%s);
-								""", p_story[5][:255])
+								""", p_story[5][iteration][:255])
 					db_story = cursor_getstory.fetchall ()
 					cursor_getstory.close ()
 					if (len(db_story) == 0):
@@ -1217,7 +1217,7 @@ def UpdateFeed():
 						if (len(db_story[0]) == 0):
 							print 'DEBUG 1102, db_story[0] is NULL when it should not be'
 						else:
-							if (db_story[0][0][:255] != p_story[3][:255]):
+							if (db_story[0][0][:255] != p_story[3][iteration][:255]):
 								# add the story
 								processed_stories.append(p_story)
 							else:
@@ -1227,7 +1227,7 @@ def UpdateFeed():
 							cursor_deletestory.execute ("""
 								DELETE FROM feed_stories
 								WHERE feed_stories.url = (%s);
-								""", p_story[5][:255])
+								""", p_story[5][iteration][:255])
 							cursor_deletestory.close ()
 							print 'HERE I REPLACE TO DB: ----------------'
 				else:
@@ -1236,13 +1236,13 @@ def UpdateFeed():
 					print 'HERE I ADD TO DB: ----------------'
 
 				# Add entry to DB
-				print p_story[2][:255], p_story[3][:255], p_story[5][:255], str(p_story[6])
+				print p_story[2][iteration][:255], p_story[3][iteration][:255], p_story[5][iteration][:255], str(p_story[6][iteration])
 				print '-------------------------------------'
 				cursor3.execute ("""
 					INSERT INTO feed_stories (title, content, url, time_stamp, sid, gid)
 					VALUES (%s, %s, %s, %s, %s, %s)
 					ON DUPLICATE KEY UPDATE fid=fid+1;
-					""", (p_story[2][:255], p_story[3][:255], p_story[5][:255], int(p_story[6]), mysid, 1))
+					""", (p_story[2][iteration][:255], p_story[3][iteration][:255], p_story[5][iteration][:255], int(p_story[6][iteration]), mysid, 1))
 				sys.stdout.flush()
 
 	cursor_chkexist.close ()
