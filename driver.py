@@ -113,7 +113,7 @@ def Driver():
 				driverlog.flush()
 		EmailServer.sendStories(cutted_stories)
 		sys.stdout.flush()
-		time.sleep(180)
+		time.sleep(60)
 		cutted_stories = []
 		# print cutted_stories
 	if (logs):

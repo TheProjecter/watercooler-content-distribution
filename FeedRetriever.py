@@ -1245,7 +1245,7 @@ def UpdateFeed():
 								list_content.append(p_story[3][iteration][:255])
 								list_category.append(p_story[4][iteration][:255])
 								list_URL.append(p_story[5][iteration][:255])
-								list_ts.append(p_story[6][iteration][:255])
+								list_ts.append(p_story[6][iteration])
 
 							else:
 								print 'DUPLICATE ENTRY DETECTED, CONTENT MATCHES'
