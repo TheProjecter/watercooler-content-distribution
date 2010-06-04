@@ -353,12 +353,14 @@ if(checkSet() != FALSE)
       {
 	print('<p style="color:navy">Registration Successful!</p>');
 
-	$emailPin = mt_rand(0,9999);
-	$smsPin = mt_rand(0,9999);
+	$emailPin = mt_rand(1000,9999);
+	$smsPin = mt_rand(1000,9999);
 	$hyperlink = 'confirm.php' . "?id={$user->id}&pin={$emailPin}";
-	$commandString = "python2.5 -c \"import EmailServer; EmailServer.sendConfirmEmail('{$page_uri_base}{$hyperlink}','{$user->username}','{$user->email}');\"";
-	print($commandString);
-	system($commandString);
+	$confirmationString = "python2.5 -c \"import EmailServer; EmailServer.sendConfirmEmail('{$page_uri_base}{$hyperlink}','{$user->username}','{$user->email}');\"";
+	system($confirmationString);
+
+	$rssString = "/var/www/rss/{$user->username}.rss";
+	system("touch {$rssString}");
 
 	print('<p>You have been sent a confirmation email and text message.  Please follow the instructions in the email and text message in order to enjoy full access to the Watercooler.</p>');
 	print('<a href="index.php">Login here.</a>');
