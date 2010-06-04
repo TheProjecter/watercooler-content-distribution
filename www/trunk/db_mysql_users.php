@@ -206,6 +206,9 @@ class MySQLUser extends MySQLDBObject implements iUser {
     if (isset($db_userinfo['phone_status'])
 	&& $db_userinfo['phone_status'] === TRUE)
       $db_userinfo['phone_status'] = 0;
+    if (isset($db_userinfo['email_status'])
+	&& $db_userinfo['email_status'] === TRUE)
+      $db_userinfo['email_status'] = 0;
 
     return $db_userinfo;
   }
