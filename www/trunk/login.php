@@ -14,10 +14,20 @@ if(isset($_REQUEST['userName']) && isset($_REQUEST['userPassword']))
       }
     if($sessionUser->password == md5($_REQUEST['userPassword']))
       {
-	$_SESSION['uid'] = $sessionUser->uid;
-	$_SESSION['password'] = $sessionUser->password;
+	if($sessionUser->email_confirmed)
+	  {
+	    $_SESSION['uid'] = $sessionUser->uid;
+	    $_SESSION['password'] = $sessionUser->password;
 
-	header("Location: {$page_uri_base}");
+	    header("Location: {$page_uri_base}");
+	  }
+	else
+	  {
+	    echo 'You have not yet confirmed your email. If you need the '.
+	      'confirmation email to be resent, please click '.
+	      "<a href=\"sendConfirmation.php?id={$sessionUser->id}\">".
+	      'here</a>.';
+	  }
       }
     else
       {
