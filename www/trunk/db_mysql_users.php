@@ -386,11 +386,24 @@ class MySQLUser extends MySQLDBObject implements iUser {
      typehinting on parameter $feeds.
   */
   private function __addFeeds(MySQLFeeds $feeds) {
+    /* $feeds_find_sql is the SQL statement used to verify that the user has
+       not already subscribed to a feed */
+    static $feeds_find_sql =
+      'SELECT TRUE FROM favorites WHERE uid=:uid AND sid=:sid;';
+    /* $feeds_sql is the SQL statement used to add a feed subscription to the 
+       user */
     static $feeds_sql = 
       'INSERT IGNORE INTO favorites (uid, sid, priority)
        VALUES (:uid, :sid, :priority)';
 
-    // prepare the SQL statement (to be used multiple times)
+    // prepare the find subscription SQL statement (to be used multiple times)
+    $feeds_find_stmt = $this->db->pdo->prepare($feeds_find_sql);
+    // bind the static values
+    $feeds_find_stmt->bindValue(':uid', $this->uid);
+    // bind the sid to $sid
+    $feeds_find_stmt->bindParam(':sid', $sid);
+
+    // prepare the add subscription SQL statement (to be used multiple times)
     $feeds_stmt = $this->db->pdo->prepare($feeds_sql);
     // bind the static values
     $feeds_stmt->bindValue(':uid', $this->uid);
@@ -402,8 +415,13 @@ class MySQLUser extends MySQLDBObject implements iUser {
     foreach ($feeds as $feed) {
       // change the sid to use in the statement
       $sid = $feed->sid;
-      // execute the statement
-      $feeds_stmt->execute();
+
+      // check that the user is not already subscribed
+      $feeds_find_stmt->execute();
+      if ($feeds_find_stmt->fetch() === FALSE) {
+	// execute the add subscription statement
+	$feeds_stmt->execute();
+      }
     }
   }
 
