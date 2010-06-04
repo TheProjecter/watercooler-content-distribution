@@ -12,10 +12,14 @@ foreach($user->feeds as $currentFeed)
     $icon .= '/favicon.ico';*/
     // set to default favicon
     $icon = 'feed-icon-14x14.png';
-
+    $currentName = $currentFeed->name;
+    if(substr($currentFeed->url,0,strlen($currentName)) == $currentName)
+      {
+	$currentName = getDomain($currentFeed->url);
+      }
     print("<li class=\"feed\"><button type=\"button\" onclick=\"getStories('{$currentFeed->id}')\">");
     print("<img class=\"icon\" src=\"{$icon}\" alt=\"{$domain}\"></img>");
-    print("<div class=\"feedName\">{$currentFeed->name}</div></button></li>");
+    print("<div class=\"feedName\">{$currentName}</div></button></li>");
   }
 print('</ul>');
 

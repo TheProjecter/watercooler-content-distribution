@@ -2,7 +2,9 @@
 //include databse functions and objects
 //include('db.php');
 //include('db_sqlite.php');
-include('db_init.php');
+ob_start();
+include_once('db_init.php');
+include_once('common.php');
 
 //start user session
 session_start();
@@ -315,14 +317,10 @@ if(checkSet() != FALSE)
 	    exit();
 	  }
       }
-    elseif($_REQUEST['receive_sms_text'] == 'yes' || $_REQUEST['receive_sms_link'] == 'yes')
-      {
-	echo '<p style="color:red">Please enter your cell phone number or deselect the SMS(text) and SMS(link) default methods of reception.</p>';
-	exit();
-      }
     else
       {
-	$userCell = $_REQUEST['userCell'];
+	echo '<p style="color:red">Please enter your cell phone number.  Note that you will not receive text messages from Watercooler unless you select a texting reception method.</p>';
+	exit();
       }
 
     if (isset($_REQUEST['feed'])) {
@@ -344,8 +342,9 @@ if(checkSet() != FALSE)
 		      'send_sms_link'=>$_REQUEST['receive_sms_link'] === 'yes',
 		      'feeds'=>$feeds);
     
-    if (User::create($userInfo) == NULL)
+    if (($user = User::create($userInfo)) == NULL)
       {
+
 	echo '<p style="color:red">User registration failed.</p>';
 	exit();
       }
@@ -353,7 +352,17 @@ if(checkSet() != FALSE)
     else
       {
 	print('<p style="color:navy">Registration Successful!</p>');
+
+	$emailPin = mt_rand(0,9999);
+	$smsPin = mt_rand(0,9999);
+	$hyperlink = 'confirm.php' . "?id={$user->id}&pin={$emailPin}";
+	$commandString = "python2.5 -c \"import EmailServer; EmailServer.sendConfirmEmail('{$page_uri_base}{$hyperlink}','{$user->username}','{$user->email}');\"";
+	print($commandString);
+	system($commandString);
+
+	print('<p>You have been sent a confirmation email and text message.  Please follow the instructions in the email and text message in order to enjoy full access to the Watercooler.</p>');
 	print('<a href="index.php">Login here.</a>');
+	header("Location: {$page_uri_base}success.php?email={$user->email}&cell={$user->phone_number}");
       }
   }
   else

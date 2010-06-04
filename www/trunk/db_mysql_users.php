@@ -570,7 +570,7 @@ class MySQLUser extends MySQLDBObject implements iUser {
     // bind column values
     foreach (array_merge($db_userinfo, $carrier_bind) as $col=>$value)
       $create_stmt->bindValue(':'.$col, $value);
-    
+
     // execute the SQL statement
     $create_stmt->execute();
 
