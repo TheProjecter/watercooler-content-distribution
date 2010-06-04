@@ -20,8 +20,8 @@ function format($cell)
   <body>
     <div id="wrap">
       <div id="logo">
-	<img src="watercooler_logo.png" alt="Welcome to the Watercooler"></img>
-      </div>
+	<a href="index.php"><img src="watercooler_logo.png" alt="Welcome to the Watercooler" /></a>
+      <div id="logo">
       <fieldset style="width:22em;"><legend>Registration Successful</legend>
   <p style="color:navy;">A confirmation email has been sent to <?= $_REQUEST['email'] ?>.  Please follow the link in the email to activate your Watercooler account.</p>
   <p style="color:navy;">In addition, a confirmation text message has been sent to <?php echo format($_REQUEST['cell']) ?>.  Enter the pin number in the subject of the text message into the corresponding field in your settings page to activate sms alerts.</p>
