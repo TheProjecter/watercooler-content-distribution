@@ -73,9 +73,10 @@ def Driver():
 		for story in stories:
 			if limiter < 1000:
 				cutted_story = []
-				cutted_story.append(str(story[5]))
-				cutted_story.append(str(story[2]))
-				cutted_story.append(str(story[3]))
+				cutted_story.append(story[1])
+				cutted_story.append(story[5])
+				cutted_story.append(story[2])
+				cutted_story.append(story[3])
 				cutted_stories.append(cutted_story)
 				limiter = limiter + 1
 			if ((limiter % 10) == 0):
