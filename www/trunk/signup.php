@@ -50,6 +50,16 @@ $fieldNumber = 0;
 	    $('#userName').focus();
           </script>
 	</div>
+
+	<!-- Username -->
+	<div class="lineWidth">
+	  <label class="leftCol" for="userName">Username</label>
+	  <input class="middleCol" id="userName" type="text" name="userName" maxlength="25" value="<?php echo $displayUserName; ?>"/>
+	  <script type="text/javascript">
+	    $('#userName').focus();
+          </script>
+	</div>
+
 	
 	<!-- Password -->
 	<div class="lineWidth">
