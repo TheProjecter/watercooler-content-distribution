@@ -41,13 +41,11 @@ $fieldNumber = 0;
     <!-- Form -->
     <form action="<?php echo $_SERVER['PHP_SELF'];?>" method="post">
 
+
       <!-- Personal Information Fieldset -->
       <fieldset><legend>Personal Information</legend>
 
 	<!-- Username -->
-	<div class="lineWidth">
-	  <label class="leftCol" for="userName">Username</label>
-	  <input class="middleCol" id="userName" type="text" name="userName" maxlength="25" value="<?php echo $_REQUEST['userName']; ?>"/>
 	  <script type="text/javascript">
 	    $('#userName').focus();
           </script>

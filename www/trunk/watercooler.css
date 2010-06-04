@@ -391,6 +391,7 @@ float:left;
 
 .feed button
 {
+cursor:pointer;
 background-image:url('blue_grad_small.png');
 width:18em;
 height:3em;
@@ -403,6 +404,7 @@ text-align:center;
 
 .bigButton
 {
+cursor:pointer;
 background-image:url('blue_grad_small.png');
 height:3em;
 width:10em;

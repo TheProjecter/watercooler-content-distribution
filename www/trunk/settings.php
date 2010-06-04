@@ -80,6 +80,19 @@ else
     <!-- Form -->
     <form action="<?php echo $_SERVER['PHP_SELF'];?>" method="post">
       
+
+      <fieldset><legend>PIN Validation</legend>
+  <?php
+  echo '<div class="lineWidth">';
+echo '<label class="leftCol" for="pin">PIN</label>';
+echo '<input class="middleCol" id="pin" type="text" name="pin" maxlength="4" value="';
+echo "<?php echo $_REQUEST['userName']; ?>"/>
+
+          echo ''
+        ?>
+      </fieldset>
+
+
       <!-- Personal Information Fieldset -->
       <fieldset><legend>Personal Information</legend>
 	
