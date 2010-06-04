@@ -19,7 +19,7 @@ def getUsersBySourceURL ( my_source_url ):
                         db = "watercooler")
     
     cursor = conn.cursor ()
-        cursor.execute ("""
+    cursor.execute ("""
              SELECT username, email, phone_number, carrior_name, method_type
              FROM users, favorites, feed_sources, carriors, receptions, reception_methods
              WHERE users.uid = favorites.uid
@@ -35,3 +35,56 @@ def getUsersBySourceURL ( my_source_url ):
     
     return retVal
 
+# functionality: gets the email status by username
+# parameters:
+# my_username = (string) username
+# returns:
+# () if url not in database, ((email_status)) if url in database
+
+def getEmailStatusByUsername ( my_username ):
+
+    conn = MySQLdb.connect (host = "localhost",
+                        user = "root",
+                        passwd = "adminsql",
+                        db = "watercooler")
+
+    cursor = conn.cursor ()
+    
+    cursor.execute ("""
+                    SELECT email_status
+                    FROM users
+                    WHERE username = (%s);
+                    """, my_username)
+
+    retVal = cursor.fetchall ()
+    cursor.close ()
+    conn.close ()
+
+    return retVal
+
+# functionality: gets the phone status by username 
+# parameters:
+# my_username = (string) username
+# returns:
+# () if url not in database, ((phone_status)) if url in database
+
+def getPhoneStatusByUsername ( my_username ):
+
+    conn = MySQLdb.connect (host = "localhost",
+                        user = "root",
+                        passwd = "adminsql",
+                        db = "watercooler")
+
+    cursor = conn.cursor ()
+
+    cursor.execute ("""
+                    SELECT phone_status
+                    FROM users
+                    WHERE username = (%s);
+                    """, my_username)
+
+    retVal = cursor.fetchall ()
+    cursor.close ()
+    conn.close ()
+
+    return retVal

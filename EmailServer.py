@@ -164,19 +164,29 @@ def sendStories(listOfFeeds):
             phone = user[2]
             carrier = user[3]
             send_method = user[4] 
+
+            # Check the users' status
+            emailStatusList = Database.getEmailStatusByUsername(username)
+            emailStatus = emailStatusList[0][0] 
+
+            textStatusList = Database.getPhoneStatusByUsername(username)
+            textStatus = textStatusList[0][0]
             
             # Send stories based on user's prefer method
-            if send_method == "email":
+            if send_method == "email" and emailStatus == 0:
                 message = formatEmail(feed, emailAddr)
                 sendAsEmail(emailAddr, message)
             
-            elif send_method == "sms_text" or send_method == "sms_link":
+            if send_method == "sms_text" and textStatus == 0:
+                sendFeedAsSMS(feed, user)
+
+            if send_method == "sms_link" and textStatus == 0:
                 sendFeedAsSMS(feed, user)
 
 def sendConfirmEmail(link, username, emailAddr):
     """(API) Send confirmation Email to user
     
-	All inputs are strings. Link is the link you want user to click. 
+    All inputs are strings. Link is the link you want user to click. 
     """
     # Construct the message body
     message = MIMEMultipart()
@@ -197,14 +207,14 @@ def sendConfirmEmail(link, username, emailAddr):
 
 def sendConfirmSMS(phoneNum, provider, username, pin):
     """(API) Send confirmation SMS to user
-	
-	All inputs are strings, including pin.
+    
+    All inputs are strings, including pin.
     """
-	# Form body of message
+    # Form body of message
     subject = "PIN:" + pin
     content = "Thank you for using Watercooler. Please enter this pin in your settings page."
-	
-	# Send message as SMS
+    
+    # Send message as SMS
     sendAsText(phoneNum, provider, subject, content)
 
 
