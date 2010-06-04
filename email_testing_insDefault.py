@@ -9,21 +9,20 @@ conn = MySQLdb.connect (host = "localhost",
                         db = "watercooler")
 cursor = conn.cursor ()
 
-users_table =  [("lampcover", "lctemp", "lc", "tang", "650-804-0503", "lampcover@gmail.com", 1, 1)]
+users_table =  [("lcdefault", "lcpassword", "simon", "tang", "650-804-0503", "lampcover@gmail.com", 0, 0, 1)]
 
 receptions_table = [(1, 1)]
 
 reception_table = [("email"),
-			("sms_text"),
-			("sms_link")]
+		   ("sms_text"),
+		   ("sms_link")]
 
 carrior_table = [("AT&T"),
-			("T-Mobile"),
-			("Verizon"),
-			("Sprint")]
+		 ("T-Mobile"),
+		 ("Verizon"),
+		 ("Sprint")]
 
 favorites_table = [(1, 1, 1)]
-
 
 sources_table = [("espn", "http://sports.espn.go.com/espn/rss/news")]
 
@@ -35,8 +34,8 @@ category_table = [("top_story"),
 		  ("most_viewed")]
 
 cursor.executemany ("""
-		    INSERT INTO users (username, password, first_name, last_name, phone_number, email, status, cid)
-		    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+		    INSERT INTO users (username, password, first_name, last_name, phone_number, email, email_status, phone_status, cid)
+		    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
 		    """, users_table)
 
 cursor.executemany ("""
@@ -55,9 +54,9 @@ cursor.executemany ("""
 		    """, carrior_table)
 
 cursor.executemany ("""
-		INSERT INTO favorites (uid, sid, priority)
-		VALUES (%s, %s, %s)
-		""", favorites_table)
+		    INSERT INTO favorites (uid, sid, priority)
+		    VALUES (%s, %s, %s)
+		    """, favorites_table)
 
 cursor.executemany ("""
 		    INSERT INTO feed_sources (source_name, source_url)
@@ -77,4 +76,3 @@ cursor.executemany ("""
 cursor.close ()
 conn.commit ()
 conn.close ()
-
