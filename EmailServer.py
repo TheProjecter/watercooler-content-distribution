@@ -140,7 +140,7 @@ def sendFeedAsSMS(feed, user):
                         entries_URL[index])
 
 def sendStories(listOfFeeds):
-    """Send the stories in the list of feeds to the subscribers
+    """(API) Send the stories in the list of feeds to the subscribers
 
     For each of the listOfFeeds, sendStories will pull a list of users 
     who subscribe to that feed. Then, it will send the stories to users
@@ -173,6 +173,38 @@ def sendStories(listOfFeeds):
             elif send_method == "sms_text" or send_method == "sms_link":
                 sendFeedAsSMS(feed, user)
 
+def sendConfirmEmail(link, username, emailAddr):
+    """(API) Send confirmation Email to user
+    
+	All inputs are strings. Link is the link you want user to click. 
+    """
+    # Construct the message body
+    message = MIMEMultipart()
+    message['Subject'] = "Please confirm your Email address"
+    message['From'] = SENDER
+    message['To'] = emailAddr
+    
+    # Form an html form of the email body  
+    body = "<html><head></head><body>"
+     
+    content = "Hello " + username + ",<br /><br />Thank you for using Watercooler. Please click on the link below to confirm your Email address:<br \><br \><a href=\"" + link + "\">Confirm</a>"
+    
+    body += content
+    body += "</body></html>"
+    message.attach(MIMEText(body, "html"))
+    
+    sendAsEmail(emailAddr, message)
 
+def sendConfirmSMS(phoneNum, provider, username, pin):
+    """(API) Send confirmation SMS to user
+	
+	All inputs are strings, including pin.
+    """
+	# Form body of message
+    subject = "PIN:" + pin
+    content = "Thank you for using Watercooler. Please enter this pin in your settings page."
+	
+	# Send message as SMS
+    sendAsText(phoneNum, provider, subject, content)
 
 
