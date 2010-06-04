@@ -24,52 +24,9 @@
 	    </h1>
 	  </div>
 	  <div id="feedreader_feeds">
-	    <ul>
-	      <?php
-
-            function getDomain($url)
-            {
-	      $www_stripped = ereg_replace('www\.','',$url);
-	      $domain = parse_url($www_stripped);
-	      if(!empty($domain["host"]))
-		{
-		  return $domain["host"];
-		}
-	      else
-		{
-		  return $domain["path"];
-		}
-
-	    }
-
-            foreach($user->feeds as $currentFeed)
-            {
-	      $domain = getDomain($currentFeed->url);
-	      $icon = "http://";
-	      $icon .=$domain;
-	      $icon .= '/favicon.ico';
-	      $handle = @fopen($icon, 'r');
-	      
-	      if($handle !== false)
-		{
-		  $icon = $icon;
-		}
-	      else
-		{
-		  $icon = 'feed-icon-14x14.png';
-		}
-//"
-	      print("<div class=\"feed\"> <button type=\"button\" onclick=\"getStories('{$currentFeed->id}', 'feedreader_stories')\">");
-	      print("<img class=\"icon\" src=\"{$icon}\" alt=\"{$domain}\"></img>");
-	      print("<div class=\"feedName\">{$currentFeed->name}</div></button>");//"
-	    }
-	    ?>
-	    </ul>
+            <?php include('getFeeds.php'); ?>
 	  </div>
 	  <div id="feedreader_stories">
-	    <!--
-	       getStories(<?php print("");  ?>);
-	      -->
           </div>
 	</div>
 	<div id="userspace">
@@ -82,7 +39,7 @@
 	      <div style="width:3.5em; text-align:right; float:right; margin-right:1em;">Users</div>
 	    </div>
 	    <div id="feedRows">
-	      <?php include_once('feedBrowser.php') ?>
+	      <?php include('feedBrowser.php') ?>
 	    </div>
           </div>
 	</div>
@@ -94,23 +51,31 @@
     </div>
 
     <script type="text/javascript">
-      function getStories(feedId, readerElementId) {
-      // get reader element
-      reader = $('#'+readerElementId);
-      // notify user that data is being fetched
-      reader.html('<h1>Fetching stories...</h1>');
-      
-      // set up and execute the request
-      reader.load('retrieve_feeds.php',{id:feedId});
+      function getFeeds() {
+        // get reader element
+        reader = $('#feedreader_feeds');
+
+        // set up and execute the request
+        reader.load('getFeeds.php');
       }
 
-function addFeed(feed_id) {
-  //$feed = Feed::find('id',$id);
-  //$if($feed !== NULL)
-  //  $user->addFeed($feed);
-}
+      function getStories(feedId) {
+        // get reader element
+	reader = $('#feedreader_stories');
+	// notify user that data is being fetched
+	reader.html('<h1>Fetching stories...</h1>');
+      
+	// set up and execute the request
+	reader.load('getStories.php',{id:feedId});
+      }
+
+      function addFeed(feedId) {
+	$.post('addFeed.php', {id:feedId},
+	       function(data) {
+		 getFeeds();
+	       }, 'text');
+      }
     </script>
     
   </body>
 </html>   
-
