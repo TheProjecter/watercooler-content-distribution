@@ -14,5 +14,6 @@ if (isset($_SESSION['uid']) && isset($_SESSION['password'])) {
       || !$user->email_confirmed) {
     unset($_SESSION['uid']);
     unset($_SESSION['password']);
+    unset($user);
   }
 }
