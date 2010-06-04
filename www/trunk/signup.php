@@ -332,6 +332,8 @@ if(checkSet() != FALSE)
 	$feeds = Feeds::create($feedinfos);
     }
 
+    $emailPin = mt_rand(1000,9999);
+    $smsPin = mt_rand(1000,9999);
     $userInfo = array('username'=>$userName, 
 		      'password'=>md5($userPassword), 
 		      'email'=>$userEmail, 
@@ -340,6 +342,8 @@ if(checkSet() != FALSE)
 		      'send_email'=>$_REQUEST['receive_email'] === 'yes', 
 		      'send_sms_text'=>$_REQUEST['receive_sms_text'] === 'yes',
 		      'send_sms_link'=>$_REQUEST['receive_sms_link'] === 'yes',
+		      'email_status'=>$emailPin,
+		      'phone_status'=>$smsPin,
 		      'feeds'=>$feeds);
     
     if (($user = User::create($userInfo)) == NULL)
@@ -353,8 +357,6 @@ if(checkSet() != FALSE)
       {
 	print('<p style="color:navy">Registration Successful!</p>');
 
-	$emailPin = mt_rand(1000,9999);
-	$smsPin = mt_rand(1000,9999);
 	$hyperlink = 'confirm.php' . "?id={$user->id}&pin={$emailPin}";
 	$confirmationString = "python2.5 -c \"import EmailServer; EmailServer.sendConfirmEmail('{$page_uri_base}{$hyperlink}','{$user->username}','{$user->email}');\"";
 	system($confirmationString);
