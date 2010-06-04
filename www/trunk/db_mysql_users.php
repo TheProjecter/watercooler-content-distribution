@@ -178,7 +178,12 @@ class MySQLUser extends MySQLDBObject implements iUser {
 	    'phone_number'=>TRUE, 'phone_pin'=>TRUE, 'phone_confirmed'=>TRUE,
 	    'email_pin'=>TRUE, 'email_confirmed'=>TRUE);
 
-    $db_userinfo = array();
+    if ($userinfo['phone_confirmed'] === FALSE)
+      throw new UnexpectedValueException('attribute phone_confirmed cannot be'.
+					 ' set to FALSE');
+    if ($userinfo['email_confirmed'] === FALSE)
+      throw new UnexpectedValueException('attribute email_confirmed cannot be'.
+					 ' set to FALSE');
 
     // check for simultaneous pin and confirmed
     if (isset($userinfo['email_pin']) && isset($userinfo['email_confirmed']))
@@ -190,10 +195,17 @@ class MySQLUser extends MySQLDBObject implements iUser {
 					 'attributes cannot be set '.
 					 'simultaneously');
 
+    $db_userinfo = array();
+
     // rename the userinfo keys as database column names
     foreach ($userinfo as $key=>$value)
       if (isset($valid_userinfo_attrs[$key]))
 	$db_userinfo[self::$userattrs_to_cols[$key]] = $value;
+
+    // fix pin and confirmed attributes
+    if (isset($db_userinfo['phone_status'])
+	&& $db_userinfo['phone_status'] === TRUE)
+      $db_userinfo['phone_status'] = 0;
 
     return $db_userinfo;
   }
@@ -481,7 +493,9 @@ class MySQLUser extends MySQLDBObject implements iUser {
     */
     static $valid_userattrs = 
       array('username'=>TRUE, 'email'=>TRUE, 'password'=>TRUE, 
-	    'phone_number'=>TRUE);
+	    'phone_number'=>TRUE, 'phone_pin'=>TRUE, 'phone_confirmed'=>TRUE,
+	    'email_pin'=>TRUE, 'email_confirmed'=>TRUE);
+
     static $carrier_sql = '(SELECT carrior_name FROM carriors WHERE
                            cid=(SELECT cid FROM users WHERE uid=:uid2))';
 
@@ -518,6 +532,24 @@ class MySQLUser extends MySQLDBObject implements iUser {
       $get_result = $get_stmt->fetch(PDO::FETCH_ASSOC);
       if ($get_result === FALSE)
 	throw new Exception('PDOStatement::fetch failed');
+    }
+
+    // fix pin and confirmed attributes
+    if (isset($get_result['phone_pin']) && $get_result['phone_pin'] === 0)
+      $get_result['phone_pin'] = NULL;
+    if (isset($get_result['phone_confirmed'])) {
+      if ($get_result['phone_confirmed'] === 0)
+	$get_result['phone_confirmed'] = TRUE;
+      else
+	$get_result['phone_confirmed'] = FALSE;
+    }
+    if (isset($get_result['email_pin']) && $get_result['email_pin'] === 0)
+      $get_result['email_pin'] = NULL;
+    if (isset($get_result['email_confirmed'])) {
+      if ($get_result['email_confirmed'] === 0)
+	$get_result['email_confirmed'] = TRUE;
+      else
+	$get_result['email_confirmed'] = FALSE;
     }
 
     // get id if requested
