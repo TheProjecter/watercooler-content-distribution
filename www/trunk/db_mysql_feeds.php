@@ -42,6 +42,63 @@ class MySQLFeeds extends MySQLDBObject implements iFeeds {
     return new $c($feeds, $db);
   }
 
+/* MySQLFeeds::searchPartial implements iFeeds::searchPartial (see 
+   corresponding documentation)
+*/
+  public static function searchPartial($attr, $partial_value,
+				       iDatabase $db = NULL) {
+    if ($db === NULL)
+      $db = self::$site_db;
+    return self::__searchPartial($attr, $partial_value, $db);
+  }
+
+  public static function __searchPartial($attr, $partial_value,
+					 MySQLDB $db) {
+    /* $valid_search_feedattrs is a list of attributes which can be used as
+       the $attr parameter to this function. Keep this list updated with
+       MySQLDBObject::$feedattrs_to_cols.
+    */
+    static $valid_search_feedattrs = 
+      array('name'=>TRUE, 'url'=>TRUE);
+
+    if (isset($valid_search_feedattrs[$attr]))
+      $db_attr = self::$feedattrs_to_cols[$attr];
+    else
+      throw new InvalidArgumentException('parameter $attr is not a valid '.
+					 'attribute');
+
+    $search_sql = "SELECT sid FROM feed_sources WHERE $db_attr LIKE :value;";
+    $search_stmt = $db->pdo->prepare($search_sql);
+    $search_stmt->bindValue(':value', "%{$partial_value}%");
+    $search_stmt->execute();
+    // set fetch mode to create instances of MySQLFeed
+    $search_stmt->setFetchMode(PDO::FETCH_CLASS, 'MySQLFeed', array($db));
+
+    // fetch the result and create a new instance of this class
+    $search_result = $search_stmt->fetchAll();
+    if ($search_result !== FALSE) {
+      $c = __CLASS__;
+      return new $c($search_result, $db);
+    } else
+      return NULL;    
+  }
+
+/* MySQLFeeds::merge implements iFeeds::merge (see corresponding documentation)
+*/
+  public function merge(iFeeds $feeds) {
+    return self::__merge($feeds);
+  }
+  /* MySQLFeeds::__merge is a helper function to MySQLFeeds::merge which
+     performs the actual merge operation. This function was added in order to
+     use typehinting on parameter $feeds.
+  */
+  public function __merge(MySQLFeeds $feeds) {
+    if ($this->db !== $feeds->db)
+      throw new InvalidArgumentException('$db must match between objects');
+    $c = __CLASS__;
+    return new $c(array_merge($this->feeds, $feeds->feeds), $this->db);
+  }
+
   public function sortByPopularity() {
     // XXX this is the slowest SQL query on the planet
 

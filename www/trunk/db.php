@@ -44,6 +44,7 @@ interface iStories extends Iterator {
                attributes to get, selected from the possible keys in the
 	       following list of key-value pairs returned by this function
 	         'fid': (integer) the feed storys' id numbers
+		 'id': (integer) an alias for 'fid' attribute
 	         'title': (string) the feed storys' titles
 		 'content': (string) the feed storys' contents
 		 'url': (string) the feed storys' urls
@@ -75,11 +76,12 @@ interface iStories extends Iterator {
                from the following list of attributes with their default sorting
 	       orders
 	         'fid': (asc) the feed storys' id numbers
+		 'id': (asc) an alias for 'fid' attribute
 	         'title': (asc) the feed storys' titles
 		 'content': (asc) the feed storys' contents
 		 'url': (asc) the feed storys' urls
 		 'timestamp': (desc) the feed storys' timestamps
-  $reverse: (boolean) TRUE if the sorting direction should be reversed
+   $reverse: (boolean) TRUE if the sorting direction should be reversed
 */
   public function sort($storyattr, $reverse = FALSE);
 }
@@ -93,6 +95,7 @@ interface iStory {
    $attr: (string) an attribute name, selected from the following attribute-
           value pairs
 	    'fid': (integer) the feeds's id number
+	    'id': (integer) an alias for 'fid' attribute
    $value: (mixed) the value associated with the attribute
    $db: (object) an object representing the database to use, or NULL to use
         the database established as the site default. Note that the type of
@@ -109,6 +112,7 @@ interface iStory {
                attributes to get, selected from the possible keys in the
 	       following list of key-value pairs returned by this function
 	         'fid': (integer) the feed story's id number
+		 'id': (integer) an alias for 'fid' attribute
 	         'title': (string) the feed story's title
 		 'content': (string) the feed story's content
 		 'url': (string) the feed story's url
@@ -142,6 +146,38 @@ interface iFeeds extends Iterator {
    returns an iFeeds object representing the registered or updated feeds
 */
   public static function create(array $feedinfos, iDatabase $db = NULL);
+
+/* function iFeeds::searchPartial searches for feeds in the database matching
+   the given feed information
+
+   $attr: (string) the feed attribute to use in the search, selected from the
+          following list
+	         'name': (string) part of the feeds' names
+	 	 'url': (string) part of the feeds' url
+   $db: (object) an object representing the database to use, or NULL to use
+        the database established as the site default. Note that the type of
+	object required for this parameter is implementation-specific
+
+    returns an iFeeds object representing the matched feeds
+*/
+  public static function searchPartial($attr, $partial_value,
+				       iDatabase $db = NULL);
+
+/* function iFeeds::merge merges this iFeeds object with another, creating a
+   new iFeed object that represents all feeds in both groups
+
+   $feeds: (object) the iFeeds implementing object to merge with. Note that the
+           two objects to merge must be instances of the same class and objects
+	   from the same database
+
+   returns an iFeeds implementing object representing all feeds in both groups
+*/
+  public function merge(iFeeds $feeds);
+
+/* function iFeeds::sortByPopularity changes the sorted order of the feeds
+   returned by any method in this class. Note that calling this method resets
+   the Iterator implemented by this class. */
+  public function sortByPopularity();
 }
 
 /* interface iFeed handles all operations involving a single feed source
@@ -153,6 +189,7 @@ interface iFeed {
    $attr: (string) an attribute name, selected from the following attribute-
           value pairs
 	    'sid': (integer) the feeds's id number
+	    'id': (integer) an alias for 'sid' attribute
 	    'name': (string) the feed's name
 	    'url': (string) the feed's url
    $value: (mixed) the value associated with the attribute
@@ -160,7 +197,7 @@ interface iFeed {
         the database established as the site default. Note that the type of
 	object required for this parameter is implementation-specific
 
-   returns an iFeed object representing the matched user, or NULL if none was
+   returns an iFeed object representing the matched feed, or NULL if none was
      found
 */
   public static function find($attr, $value, iDatabase $db = NULL);
@@ -184,6 +221,7 @@ interface iFeed {
                attributes to get, selected from the possible keys in the
 	       following list of key-value pairs returned by this function
 	         'sid': (integer) the feed's id number
+		 'id': (integer) an alias for 'sid' attribute
 	         'name': (string) the feed's name
 		 'url': (string) the feed's url
 		 'stories': (iStories) an object representing the feed's 
@@ -218,6 +256,7 @@ interface iUsers {
    $userinfo: (array) the user information to use in the search, encoded in
               the following key-value pairs
 	         'uid': (integer) the user's id number
+		 'id': (integer) an alias for 'uid' attribute
 	         'username': (string) the user's username
 	 	 'email': (string) the user's email
 		 'phone_number': (string) the user's cell phone number
@@ -244,6 +283,7 @@ interface iUsers {
    $userinfo: (array) the user information to use in the search, encoded in
               the following key-value pairs
 	         'uid': (array of integers) the users' id numbers
+		 'id': (integer) an alias for 'uid' attribute
 	         'username': (array of strings) the users' usernames
 	 	 'email': (array of strings) the users' emails
 		 'phone_number': (array of strings) the users' cell phone
@@ -286,6 +326,7 @@ interface iUser {
    $attr: (string) an attribute name, selected from the following attribute-
           value pairs
 	    'uid': (integer) the user's id number
+	    'id': (integer) an alias for 'uid' attribute
             'username': (string) the user's username
 	    'email': (string) the user's email
 	    'phone_number': (string) the user's phone number
@@ -340,6 +381,7 @@ interface iUser {
                attributes to get, selected from the possible keys in the
 	       following list of key-value pairs returned by this function
 	         'uid': (integer) the user's id number
+		 'id': (integer) an alias for 'uid' attribute
 	         'username': (string) the user's username
 		 'password': (string) the user's password (or hash of password)
 	 	 'email': (string) the user's email
