@@ -2,6 +2,7 @@
 require_once('common.php');
 require_once('db_init.php');
 
+// XXX add authentication to this
 $user = User::find('id', $_REQUEST['id']);
 if ($user !== NULL && !$user->email_confirmed) {
   $hyperlink = 'confirm.php' . "?id={$user->id}&pin={$user->email_pin}";
