@@ -31,7 +31,7 @@ object
 float:left;
 }
 
-input
+input, textarea
 {
 color: navy;
 background: #fee3ad;
@@ -409,4 +409,15 @@ width:10em;
 text-align:center;
 color:navy;
 font-weight:bolder;
+}
+
+.publisher label
+{
+width:7em;
+}
+
+.publisher input, .publisher textarea
+{
+width:20em;
+
 }

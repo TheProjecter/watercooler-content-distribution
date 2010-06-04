@@ -361,8 +361,53 @@ if(checkSet() != FALSE)
 	$confirmationString = "python2.5 -c \"import EmailServer; EmailServer.sendConfirmEmail('{$page_uri_base}{$hyperlink}','{$user->username}','{$user->email}');\"";
 	system($confirmationString);
 
-	$rssString = "/var/www/rss/{$user->username}.rss";
-	system("touch {$rssString}");
+
+
+
+
+
+
+	$rssString = "/var/www/rss/{$user->username}.xml";
+	$rssTemplate = "/var/www/rss/template.xml";
+
+
+	// initialize the feed to the template and set permissions
+	system("cp {$rssTemplate} {$rssString}");
+	system("chmod g+w {$rssString}");
+
+	// set the default title
+	$category = "title";
+	$scriptString = "sed -i 's/<$category>.*<\/$category>/<!-- Feedinfo --><$category>{$user->username}<\/$category>/g'";
+	system("{$scriptString} {$rssString}");
+
+	// set the default website
+	$category = "link";
+	$scriptString = "sed -i 's/<$category>.*<\/$category>/<!-- Feedinfo --><$category>http:\/\/watercooler\.geogriffin\.info<\/$category>/g'";
+	system("{$scriptString} {$rssString}");
+
+	// set the default description
+	$category = "description";
+	$scriptString = "sed -i 's/<$category>.*<\/$category>/<!-- Feedinfo --><$category>My feed<\/$category>/g'";
+	system("{$scriptString} {$rssString}");
+
+	// set the publishing date
+	$category = "pubDate";
+	$date = date('F\ j\,\ Y\ g:i\ A\ T');
+	$scriptString = "sed -i 's/<$category>.*<\/$category>/<!-- Feedinfo --><$category>{$date}<\/$category>/g'";
+	system("{$scriptString} {$rssString}");
+
+	// set the last build date
+	$category = "lastBuildDate";
+	$date = date('F\ j\,\ Y\ g:i\ A\ T');
+	$scriptString = "sed -i 's/<$category>.*<\/$category>/<!-- Feedinfo --><$category>{$date}<\/$category>/g'";
+	system("{$scriptString} {$rssString}");
+
+	// set the default managing editor
+	$category = "managingEditor";
+	$scriptString = "sed -i 's/<$category>.*<\/$category>/<!-- Feedinfo --><$category>{$user->email}<\/$category>/g'";
+	system("{$scriptString} {$rssString}");
+
+
 
 	print('<p>You have been sent a confirmation email and text message.  Please follow the instructions in the email and text message in order to enjoy full access to the Watercooler.</p>');
 	print('<a href="index.php">Login here.</a>');
