@@ -2,6 +2,7 @@
 
 include_once('db_init.php');
 include_once('common.php');
+include_once('auth.php');
 
 ?>
 
@@ -69,15 +70,45 @@ include_once('common.php');
 	  <div class="lineWidth">
 	    <input class="middleCol clickable" type="submit" name="submit" value="Publish!" style="float:none; margin-left:8em; text-align:center; font-weight:bolder; height:2em;"/>
 	  </div>
+  <?php echo 'working2'; ?>
 	</fieldset>
       </form>
     </div>
-  </body>
-</html>
 
 <?php
-  
-  exec("rss/stripFooter.sh rss/{$user->username}");
-$addContent
+
+
+echo 'working';  
+$rssString = "/var/www/rss/{$user->username}.xml";
+
+// set the default title
+$category = "title";
+$scriptString = "sed -i 's@<!-- Feedinfo --><$category>.*</$category>@<!-- Feedinfo --><$category>{$_REQUEST['feedTitle']}</$category>@g'";
+system("{$scriptString} {$rssString}");
+print("{$scriptString} {$rssString}");
+
+// set the default website
+$category = "link";
+$scriptString = "sed -i 's/<!-- Feedinfo --><$category>.*<\/$category>/<!-- Feedinfo --><$category>{$_REQUEST['feedWebsite']}<\/$category>/g'";
+system("{$scriptString} {$rssString}");
+
+// set the default description
+$category = "description";
+$scriptString = "sed -i 's/<!-- Feedinfo --><$category>.*<\/$category>/<!-- Feedinfo --><$category>{$_REQUEST['feedDescription']}<\/$category>/g'";
+system("{$scriptString} {$rssString}");
+
+// set the last build date
+$category = "lastBuildDate";
+$date = date('F\ j\,\ Y\ g:i\ A\ T');
+$scriptString = "sed -i 's/<!-- Feedinfo --><$category>.*<\/$category>/<!-- Feedinfo --><$category>{$date}<\/$category>/g'";
+system("{$scriptString} {$rssString}");
+
+$scriptLocale = "/var/www/rss/stripFooter";
+system("touch temp;");
+system("sed '$d' < {$rssScript} > temp;");
+system("sed '$d' < temp > {$rssScript};");
 
 ?>
+
+  </body>
+</html>
