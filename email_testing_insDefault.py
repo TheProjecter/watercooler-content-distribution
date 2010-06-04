@@ -24,6 +24,7 @@ carrior_table = [("AT&T"),
 
 favorites_table = [(1, 1, 1)]
 
+
 sources_table = [("espn", "http://sports.espn.go.com/espn/rss/news")]
 
 feeds_table = [("2010 NBA Playoffs: LeBron James confident Cleveland Cavaliers can come back against Boston Celtics", "LeBron James isn't listening to the nationwide criticism of his listless Game 5 performance against Boston.", "http://sports.espn.go.com/nba/playoffs/2010/news/story?id=5183847&campaign=rss&source=ESPNHeadlines", 1273684800, 1, 1)
@@ -54,9 +55,9 @@ cursor.executemany ("""
 		    """, carrior_table)
 
 cursor.executemany ("""
-		    INSERT INTO favorites (uid, sid, priority)
-		    VALUES (%s, %s, %s)
-		    """, favorites_table)
+		INSERT INTO favorites (uid, sid, priority)
+		VALUES (%s, %s, %s)
+		""", favorites_table)
 
 cursor.executemany ("""
 		    INSERT INTO feed_sources (source_name, source_url)
