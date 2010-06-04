@@ -541,7 +541,7 @@ class MySQLUser extends MySQLDBObject implements iUser {
     if (isset($get_result['phone_pin']) && $get_result['phone_pin'] === 0)
       $get_result['phone_pin'] = NULL;
     if (isset($get_result['phone_confirmed'])) {
-      if ($get_result['phone_confirmed'] === 0)
+      if ($get_result['phone_confirmed'] == 0)
 	$get_result['phone_confirmed'] = TRUE;
       else
 	$get_result['phone_confirmed'] = FALSE;
@@ -549,7 +549,7 @@ class MySQLUser extends MySQLDBObject implements iUser {
     if (isset($get_result['email_pin']) && $get_result['email_pin'] === 0)
       $get_result['email_pin'] = NULL;
     if (isset($get_result['email_confirmed'])) {
-      if ($get_result['email_confirmed'] === 0)
+      if ($get_result['email_confirmed'] == 0)
 	$get_result['email_confirmed'] = TRUE;
       else
 	$get_result['email_confirmed'] = FALSE;
