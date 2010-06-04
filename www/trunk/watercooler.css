@@ -146,7 +146,7 @@ border: .1em groove navy;
 padding: 1em;
 float:  left;
 background-color:#ffa20f;
-background-image:url('orange_gradient.jpg');
+background-image:url('orange_grad_large.png');
 }
 
 #userspace
@@ -159,7 +159,7 @@ border: .1em groove navy;
 padding: 1em;
 float:  left;
 background-color:#ffa20f;
-background-image:url('orange_gradient.jpg');
+background-image:url('orange_grad_large.png');
 }
 
 #nav
@@ -246,7 +246,7 @@ clear:both;
 padding: 1em;
 height:2.2em;
 background-color:#ffa20f;
-background-image:url('orange_gradient.jpg');
+background-image:url('orange_grad_large.png');
 width:67.8em;
 }
 
@@ -391,6 +391,7 @@ float:left;
 
 .feed button
 {
+background-image:url('blue_grad_small.png');
 width:18em;
 height:3em;
 }
@@ -402,6 +403,7 @@ text-align:center;
 
 .bigButton
 {
+background-image:url('blue_grad_small.png');
 height:3em;
 width:10em;
 text-align:center;
