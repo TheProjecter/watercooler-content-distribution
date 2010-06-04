@@ -196,7 +196,7 @@ if(checkSet() != FALSE)
 		      'send_sms_text'=>$_REQUEST['receive_sms_text'] === 'yes',
 		      'send_sms_link'=>$_REQUEST['receive_sms_link'] === 'yes',
 		      'email_pin'=>$emailPin,
-		      'phone_pin'=>$smsPin,
+		      'phone_pin'=>0,
 		      'feeds'=>$feeds);
     
     if (($user = User::create($userInfo)) == NULL)
@@ -213,8 +213,8 @@ if(checkSet() != FALSE)
 	$hyperlink = 'confirm.php' . "?id={$user->id}&pin={$emailPin}";
 	$EmailConfirmationString = "python2.5 -c \"import EmailServer; EmailServer.sendConfirmEmail('{$page_uri_base}{$hyperlink}','{$user->username}','{$user->email}');\"";
 	exec($EmailConfirmationString);
-	$SMSConfirmationString = "python2.5 -c \"import EmailServer; EmailServer.sendConfirmSMS('{$user->phone_number}','{$user->carrier}','{$user->username}', '{$smsPin}');\"";
-	exec($SMSConfirmationString);
+	//$SMSConfirmationString = "python2.5 -c \"import EmailServer; EmailServer.sendConfirmSMS('{$user->phone_number}','{$user->carrier}','{$user->username}', '{$smsPin}');\"";
+	//exec($SMSConfirmationString);
 
 
 
