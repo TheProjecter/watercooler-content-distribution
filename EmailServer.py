@@ -155,9 +155,10 @@ def sendStories(listOfFeeds):
         entries_contents = feed[3]
         
         listOfUsers = Database.getUsersBySourceURL(feedURL)
-        
+        print 'LC DEBUG EM 158, LIST OF USERS: '
+        print str(listOfUsers), '\n'
         for user in listOfUsers:
-            
+
             # Rename variables
             username = user[0]
             emailAddr = user[1]
@@ -173,14 +174,20 @@ def sendStories(listOfFeeds):
             textStatus = textStatusList[0][0]
             
             # Send stories based on user's prefer method
+            if emailStatus != 0:
+                print 'LC DEBUG EM 178, emailStatus != 0, NO SENT for ', username, ' ||| '
+
             if send_method == "email" and emailStatus == 0:
+                print 'LC DEBUG EM 181, sending email to ', username, ' ||| '
                 message = formatEmail(feed, emailAddr)
                 sendAsEmail(emailAddr, message)
-            
+
             if send_method == "sms_text" and textStatus == 0:
+                print 'LC DEBUG EM 186, sending text sms to ', username, ' ||| '
                 sendFeedAsSMS(feed, user)
 
             if send_method == "sms_link" and textStatus == 0:
+                print 'LC DEBUG EM 190, sending link sms to ', username, ' ||| '
                 sendFeedAsSMS(feed, user)
 
 def sendConfirmEmail(link, username, emailAddr):
