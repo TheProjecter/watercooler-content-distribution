@@ -82,14 +82,6 @@ else
       
 
       <fieldset><legend>PIN Validation</legend>
-  <?php
-  echo '<div class="lineWidth">';
-echo '<label class="leftCol" for="pin">PIN</label>';
-echo '<input class="middleCol" id="pin" type="text" name="pin" maxlength="4" value="';
-echo "<?php echo $_REQUEST['userName']; ?>"/>
-
-          echo ''
-        ?>
       </fieldset>
 
 
