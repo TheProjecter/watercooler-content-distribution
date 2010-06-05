@@ -214,6 +214,9 @@ Fixed duplication email bug
 7.0 Beta
 Unless more bugs are found, this is the version for public demo
 
+7.0.1 Beta
+Put length limit of title to 255 also (in addition to content)
+
 ------ CODE FREEZE UNTIL BUGS FOUND -------
 ------ USE 7.0 TO TEST! -----------------
 
@@ -629,6 +632,7 @@ def _RSS(f, log, myfeed, latest_ts, feedurl, debug):
 	if myfeed.feed.has_key('title'):
 		feedtitle = myfeed.feed.title
 		feedtitle = unicodedata.normalize('NFKD', feedtitle).encode('ascii','ignore')
+		feedtitle = feedtitle[:255]
 
 	print 'Feed Title:' , feedtitle
 
@@ -764,6 +768,7 @@ def _ATOM(f, log, myfeed, latest_ts, feedurl, debug):
 	if myfeed.feed.has_key('title'):
 		feedtitle = myfeed.feed.title
 		feedtitle = unicodedata.normalize('NFKD', feedtitle).encode('ascii','ignore')
+		feedtitle = feedtitle[:255]
 	print 'Feed Title:' , feedtitle
 
 	print 'LC DEBUG LATEST_TS IN ATOM', str(latest_ts)
@@ -1067,6 +1072,7 @@ def UpdateFeed():
 		if ((myfeed is not None) and (myfeed.feed is not None) and (myfeed.feed.has_key('title'))):
 			source_feed_title = myfeed.feed.title
 			source_feed_title = unicodedata.normalize('NFKD', source_feed_title).encode('ascii','ignore')
+			source_feed_title = source_feed_title[:255]
 			if (len(source_feed_title) > 0):
 				cursor_title = conn.cursor ()
 				cursor_title.execute ("""
