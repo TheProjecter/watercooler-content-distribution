@@ -33,6 +33,7 @@ float:left;
 
 input, textarea
 {
+font-family: arial;
 color: navy;
 background: #fee3ad;
 border: 1px solid navy;

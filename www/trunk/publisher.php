@@ -70,7 +70,6 @@ include_once('auth.php');
 	  <div class="lineWidth">
 	    <input class="middleCol clickable" type="submit" name="submit" value="Publish!" style="float:none; margin-left:8em; text-align:center; font-weight:bolder; height:2em;"/>
 	  </div>
-  <?php echo 'working2'; ?>
 	</fieldset>
       </form>
     </div>
@@ -78,14 +77,18 @@ include_once('auth.php');
 <?php
 
 
-echo 'working';  
 $rssString = "/var/www/rss/{$user->username}.xml";
 
 // set the default title
 $category = "title";
-$scriptString = "sed -i 's@<!-- Feedinfo --><$category>.*</$category>@<!-- Feedinfo --><$category>{$_REQUEST['feedTitle']}</$category>@g'";
+$scriptString = "sed -i 's/<!-- Feedinfo --><$category>.*<\/$category>/<!-- Feedinfo --><$category>{$_REQUEST['feedTitle']}<\/$category>/g'";
 system("{$scriptString} {$rssString}");
-print("{$scriptString} {$rssString}");
+
+// set the pubdate
+$category = "pubdate";
+$date = date('F\ j\,\ Y\ g:i\ A\ T');
+$scriptString = "sed -i 's/<!-- Feedinfo --><$category>.*<\/$category>/<!-- Feedinfo --><$category>{$date}<\/$category>/g'";
+system("{$scriptString} {$rssString}");
 
 // set the default website
 $category = "link";
@@ -99,14 +102,45 @@ system("{$scriptString} {$rssString}");
 
 // set the last build date
 $category = "lastBuildDate";
-$date = date('F\ j\,\ Y\ g:i\ A\ T');
 $scriptString = "sed -i 's/<!-- Feedinfo --><$category>.*<\/$category>/<!-- Feedinfo --><$category>{$date}<\/$category>/g'";
 system("{$scriptString} {$rssString}");
 
-$scriptLocale = "/var/www/rss/stripFooter";
-system("touch temp;");
-system("sed '$d' < {$rssScript} > temp;");
-system("sed '$d' < temp > {$rssScript};");
+// remove ending
+system("sed -i '\$d' {$rssString}");
+system("sed -i '\$d' {$rssString}");
+
+// add opening item tag
+$tag = '<item>';
+system("echo \"{$tag}\" >> {$rssString}");
+
+// add story title
+$line = "<title>{$_REQUEST['storyTitle']}</title>";
+system("echo \"{$line}\" >> {$rssString}");
+
+// add link
+$line = "<link>{$_REQUEST['storyLink']}</link>";
+system("echo \"{$line}\" >> {$rssString}");
+
+// add description
+$line = "<description>{$_REQUEST['storyDescription']}</description>";
+system("echo \"{$line}\" >> {$rssString}");
+
+// add pubdate
+$date = date('F\ j\,\ Y\ g:i\ A\ T');
+$line = "<pubdate>{$date}</pubdate>";
+system("echo \"{$line}\" >> {$rssString}");
+
+// add ending item tag
+$tag = '</item>';
+system("echo \"{$tag}\" >> {$rssString}");
+
+// add ending channel tag
+$tag = '</channel>';
+system("echo \"{$tag}\" >> {$rssString}");
+
+// add ending rss tag
+$tag = '</rss>';
+system("echo \"{$tag}\" >> {$rssString}");
 
 ?>
 

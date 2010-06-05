@@ -246,7 +246,7 @@ if(checkSet() != FALSE)
 	system("{$scriptString} {$rssString}");
 
 	// set the publishing date
-	$category = "pubDate";
+	$category = "lastBuildDate";
 	$date = date('F\ j\,\ Y\ g:i\ A\ T');
 	$scriptString = "sed -i 's/<$category>.*<\/$category>/<!-- Feedinfo --><$category>{$date}<\/$category>/g'";
 	system("{$scriptString} {$rssString}");
