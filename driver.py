@@ -31,6 +31,9 @@ Synchronize with FeedRetriever Fork 6.7
 3.0
 Synchronize with FeedRetriever 7.0 beta
 
+3.1
+Synchronize with FeedRetriever 7.1
+
 """
 global debug
 debug = False
@@ -50,9 +53,9 @@ def Driver():
 	while (True):
 		# gather new feeds entries
 		stories = FeedRetriever.UpdateFeed()
-		# print 'IN DRIVER 50, ALL STORIES IS: '
-		# print str(stories)
-		sys.stdout.flush()
+		#print 'IN DRIVER 50, ALL STORIES IS: '
+		#print str(stories)
+		#sys.stdout.flush()
 
 		if (debug):
 			# current debug/testing purpose
