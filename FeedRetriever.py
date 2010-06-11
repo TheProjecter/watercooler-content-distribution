@@ -217,8 +217,11 @@ Unless more bugs are found, this is the version for public demo
 7.0.1 Beta
 Put length limit of title to 255 also (in addition to content)
 
+7.1 Release
+Fixed duplicate email bug!
+
 ------ CODE FREEZE UNTIL BUGS FOUND -------
------- USE 7.0 TO TEST! -----------------
+------ USE 7.1 TO TEST! -----------------
 
 Future:
 add threads to parallelize processing data when a list of URL is obtained
@@ -632,7 +635,7 @@ def _RSS(f, log, myfeed, latest_ts, feedurl, debug):
 	if myfeed.feed.has_key('title'):
 		feedtitle = myfeed.feed.title
 		feedtitle = unicodedata.normalize('NFKD', feedtitle).encode('ascii','ignore')
-		feedtitle = feedtitle[:255]
+		feedtitle = feedtitle[:240]
 
 	print 'Feed Title:' , feedtitle
 
@@ -768,7 +771,7 @@ def _ATOM(f, log, myfeed, latest_ts, feedurl, debug):
 	if myfeed.feed.has_key('title'):
 		feedtitle = myfeed.feed.title
 		feedtitle = unicodedata.normalize('NFKD', feedtitle).encode('ascii','ignore')
-		feedtitle = feedtitle[:255]
+		feedtitle = feedtitle[:240]
 	print 'Feed Title:' , feedtitle
 
 	print 'LC DEBUG LATEST_TS IN ATOM', str(latest_ts)
@@ -1004,7 +1007,7 @@ def UpdateFeed():
 	debug = False
 	# create a local log for indicating error
 	errlog = open("ERRORLOG.txt", mode ='a')
-	print 'UPDATEFEED STARTED AT 997 \n'
+	# print 'UPDATEFEED STARTED AT 997 \n'
 	# connect to the database
 	conn = MySQLdb.connect (host = "localhost", user = "root", passwd = "adminsql", db = "watercooler")
 
@@ -1072,7 +1075,7 @@ def UpdateFeed():
 		if ((myfeed is not None) and (myfeed.feed is not None) and (myfeed.feed.has_key('title'))):
 			source_feed_title = myfeed.feed.title
 			source_feed_title = unicodedata.normalize('NFKD', source_feed_title).encode('ascii','ignore')
-			source_feed_title = source_feed_title[:255]
+			source_feed_title = source_feed_title[:240]
 			if (len(source_feed_title) > 0):
 				cursor_title = conn.cursor ()
 				cursor_title.execute ("""
@@ -1176,11 +1179,11 @@ def UpdateFeed():
 			debug_counter = debug_counter + 1
 		debug_counter0 = debug_counter0 + 1
 	"""
-	# print 'LC DEBUG 1170, ALL STORIES '
-	# print str(all_stories)
-	# print '\n'
-	# print 'LC DEBUG 1171, LENGTH ', str(len(all_stories))
-	# print '\n'
+	#print 'LC DEBUG 1170, ALL STORIES '
+	#print str(all_stories)
+	#print '\n'
+	#print 'LC DEBUG 1171, LENGTH ', str(len(all_stories))
+	#print '\n'
 	for p_story in all_stories:
 		# holdings var for each p_story...
 		list_title = []
@@ -1188,16 +1191,16 @@ def UpdateFeed():
 		list_category = []
 		list_URL = []
 		list_ts = []
-		# print 'LC CHECK 1 ARRIVAL, PER STORY START' # LC DEBUG
+		#print 'LC CHECK 1 ARRIVAL, PER STORY START' # LC DEBUG
 		# loop to check against feed URL
-		# print 'LC DEBUG 1176, P_STORY '
-		# print str(p_story)
-		# print '\n'
-		# sys.stdout.flush()
+		#print 'LC DEBUG 1176, P_STORY '
+		#print str(p_story)
+		#print '\n'
+		#sys.stdout.flush()
 		mysid = 0
 		if (len(p_story) > 0):
 			for id_list in sources_id_list:
-				if (id_list[1][:255] == p_story[1][:255]):
+				if (id_list[1][:240] == p_story[1][:240]):
 					mysid = id_list[0] 
 					break
 			if (mysid == 0):
@@ -1219,7 +1222,7 @@ def UpdateFeed():
 					SELECT fid
 					FROM feed_stories
 					WHERE feed_stories.url = (%s);
-					""", p_story[5][iteration][:255])
+					""", p_story[5][iteration][:240])
 				entry_existence = cursor_chkexist.fetchall ()
 
 				# story exist implies the len check > 0
@@ -1230,7 +1233,7 @@ def UpdateFeed():
 								SELECT content
 								FROM feed_stories
 								WHERE feed_stories.url = (%s);
-								""", p_story[5][iteration][:255])
+								""", p_story[5][iteration][:240])
 					db_story = cursor_getstory.fetchall ()
 					cursor_getstory.close ()
 					if (len(db_story) == 0):
@@ -1245,12 +1248,12 @@ def UpdateFeed():
 						if (len(db_story[0]) == 0):
 							print 'DEBUG 1102, db_story[0] is NULL when it should not be'
 						else:
-							if (db_story[0][0][:255] != p_story[3][iteration][:255]):
+							if (db_story[0][0][:240] != p_story[3][iteration][:240]):
 								# add the entry to the list, as content does not match
-								list_title.append(p_story[2][iteration][:255])
-								list_content.append(p_story[3][iteration][:255])
-								list_category.append(p_story[4][iteration][:255])
-								list_URL.append(p_story[5][iteration][:255])
+								list_title.append(p_story[2][iteration][:240])
+								list_content.append(p_story[3][iteration][:240])
+								list_category.append(p_story[4][iteration][:240])
+								list_URL.append(p_story[5][iteration][:240])
 								list_ts.append(p_story[6][iteration])
 
 							else:
@@ -1260,27 +1263,27 @@ def UpdateFeed():
 							cursor_deletestory.execute ("""
 								DELETE FROM feed_stories
 								WHERE feed_stories.url = (%s);
-								""", p_story[5][iteration][:255])
+								""", p_story[5][iteration][:240])
 							cursor_deletestory.close ()
 							print 'HERE I REPLACE TO DB: ----------------'
 				else:
 					# implies entry does not exist, add to list
-					list_title.append(p_story[2][iteration][:255])
-					list_content.append(p_story[3][iteration][:255])
-					list_category.append(p_story[4][iteration][:255])
-					list_URL.append(p_story[5][iteration][:255])
+					list_title.append(p_story[2][iteration][:240])
+					list_content.append(p_story[3][iteration][:240])
+					list_category.append(p_story[4][iteration][:240])
+					list_URL.append(p_story[5][iteration][:240])
 					list_ts.append(p_story[6][iteration])
 
 					print 'HERE I ADD TO DB: ----------------'
 
 				# Add entry to DB
-				print p_story[2][iteration][:255], ' ||| ' , p_story[3][iteration][:255], ' ||| ' , p_story[5][iteration][:255], ' ||| ' , str(p_story[6][iteration])
+				print p_story[2][iteration][:240], ' ||| ' , p_story[3][iteration][:240], ' ||| ' , p_story[5][iteration][:240], ' ||| ' , str(p_story[6][iteration])
 				print '-------------------------------------'
 				cursor3.execute ("""
 					INSERT INTO feed_stories (title, content, url, time_stamp, sid, gid)
 					VALUES (%s, %s, %s, %s, %s, %s)
 					ON DUPLICATE KEY UPDATE fid=fid+1;
-					""", (p_story[2][iteration][:255], p_story[3][iteration][:255], p_story[5][iteration][:255], int(p_story[6][iteration]), mysid, 1))
+					""", (p_story[2][iteration][:240], p_story[3][iteration][:240], p_story[5][iteration][:240], int(p_story[6][iteration]), mysid, 1))
 				sys.stdout.flush()
 
 			# make a final story out of the lists
@@ -1297,7 +1300,7 @@ def UpdateFeed():
 				print str(story)
 				print '\n'
 			if (len(list_ts) > 0):
-				processed_story = [p_story[0][:255], p_story[1][:255], list_title, list_content, list_category, list_URL, list_ts]
+				processed_story = [p_story[0][:240], p_story[1][:240], list_title, list_content, list_category, list_URL, list_ts]
 				processed_stories.append(processed_story)
 
 	cursor_chkexist.close ()
