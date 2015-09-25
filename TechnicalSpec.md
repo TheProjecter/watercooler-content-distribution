@@ -1,0 +1,28 @@
+Please update this page accordingly to facilitate later development to avoid confusion or incompatibility.
+
+( ... ) means options we have
+
+Hardware Specs:
+  * Operating System: (Windows XP X86, Windows Server 2008 X86, Ubuntu9.1 X86, etc) (i do not know if MSDNAA allows us to install these Windows in those VM legally)
+  * Database Version: MYSQL, 5.1.45 X86, 32bit
+  * Python: 2.6.4 (please fix this)
+
+Other Specs:
+  * Feeds Supported currently: All version of RSS and Atom
+
+
+Notes:
+  * MSDNAA is basically free legal Microsoft software (like Windows) given to Engineering student, accessible from courseweb "Software Download"
+
+
+Definition of implementation details:
+Story: a list of items having this form:
+{Feed Title, Entry Title, Entry Content, Entry Category, Entry URL, Entry Timestamp}
+
+FeedRetriever Output: List of Stories, having following form:
+{{Story 1}, {Story 2} , ... , {Story N}}
+
+For Empty Stories:
+{}
+
+So, please make sure len(stories) >0 before you read the story out of the stories to avoid segmentation fault!
